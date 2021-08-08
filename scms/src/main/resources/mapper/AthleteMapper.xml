@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ashuo.scms.mapper.AthleteMapper">
+    <resultMap id="athleteMap" type="com.ashuo.scms.entity.Athlete">
+        <id column="athlete_id" property="athleteId"/>
+        <result column="status" property="status"/>
+        <result column="sign_time" property="signTime"/>
+        <association property="user" javaType="com.ashuo.scms.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_no" property="userNo"/>
+            <result column="user_sex" property="userSex"/>
+            <result column="nickname" property="nickname"/>
+            <association property="team" javaType="com.ashuo.scms.entity.Team">
+                <result column="team_id" property="teamId"/>
+                <result column="team_name" property="teamName"/>
+            </association>
+        </association>
+        <association property="item" javaType="com.ashuo.scms.entity.Item">
+            <id column="item_id" property="itemId"/>
+            <result column="item_name" property="itemName"/>
+            <result column="item_sex" property="itemSex"/>
+            <result column="item_place" property="itemPlace"/>
+            <result column="item_unit" property="itemUnit"/>
+            <result column="start_time" property="startTime"/>
+            <result column="end_time" property="endTime"/>
+            <association property="user" javaType="com.ashuo.scms.entity.User">
+                <id column="u_id" property="userId"/>
+                <result column="scorer" property="nickname"/>
+            </association>
+        </association>
+    </resultMap>
+
+
+    <resultMap id="personScore" type="com.ashuo.scms.dto.AthleteScoreDto">
+        <result column="team_name" property="teamName"/>
+        <result column="user_no" property="userNo"/>
+        <result column="nickname" property="nickname"/>
+        <result column="user_sex" property="userSex"/>
+        <result column="item_name" property="itemName"/>
+        <result column="score" property="score"/>
+    </resultMap>
+
+    <insert id="insertAthlete" parameterType="com.ashuo.scms.entity.Athlete"
+            useGeneratedKeys="true" keyColumn="athlete_id" keyProperty="athleteId">
+        INSERT INTO athlete(u_id, i_id, status, sign_time)
+        VALUES (#{user.userId}, #{item.itemId}, #{status}, #{signTime})
+    </insert>
+
+    <select id="queryAthleteByAthleteCondition" resultMap="athleteMap">
+        SELECT
+        a.athlete_id,
+        a.`status`,
+        a.sign_time,
+        i.item_id,
+        i.u_id,
+        u2.nickname AS scorer,
+        i.item_name,
+        i.item_sex,
+        i.item_place,
+        i.item_unit,
+        i.start_time,
+        i.end_time,
+        u.user_id,
+        u.user_no,
+        u.nickname,
+        u.user_sex,
+        t.team_id,
+        t.team_name
+        FROM
+        `athlete` a INNER JOIN `user` u ON a.u_id = u.user_id
+        INNER JOIN `team` t ON t.team_id = u.t_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
+        INNER JOIN `user` u2 ON i.u_id = u2.user_id
+        <where>
+            <if test="athlete.athleteId!=0">AND a.athlete_id=#{athlete.athleteId}</if>
+            <if test="athlete.user!=null and athlete.user.userId!=0">AND u.user_id=#{athlete.user.userId}</if>
+            <if test="athlete.user!=null and athlete.user.nickname!=null">AND u.nickname LIKE
+                '%${athlete.user.nickname}%'
+            </if>
+            <if test="athlete.item!=null and athlete.item.itemId!=0">AND i.item_id=#{athlete.item.itemId}</if>
+            <if test="athlete.item!=null and athlete.item.user!=null and athlete.item.user.userId!=0">AND
+                i.u_id=#{athlete.item.user.userId}
+            </if>
+            <if test="athlete.item!=null and athlete.item.itemName!=null">AND i.item_name LIKE
+                '%${athlete.item.itemName}%'
+            </if>
+            <if test="athlete.status==1">AND a.status=1</if>
+            <if test="athlete.status==2">AND a.status=0</if>
+        </where>
+        ORDER BY
+        i.item_id
+        DESC
+    </select>
+
+    <select id="queryAthleteByItemUserAndTeam" resultMap="athleteMap">
+        SELECT a.athlete_id,
+               a.status,
+               a.sign_time,
+               i.item_id,
+               i.item_name,
+               i.item_place,
+               i.item_unit,
+               i.start_time,
+               i.end_time,
+               u.user_id,
+               u.user_no,
+               u.nickname,
+               u.user_sex
+        FROM ( `athlete` a INNER JOIN `user` u ON a.u_id = u.user_id )
+                 INNER JOIN `item` i ON a.i_id = i.item_id
+        WHERE a.u_id = #{user.userId}
+          AND a.i_id = #{item.itemId}
+    </select>
+
+    <select id="queryAllPersonScore" resultMap="personScore">
+        SELECT t.team_name,
+               u.user_no,
+               u.nickname,
+               u.user_sex,
+               i.item_name,
+               s.score
+        FROM `athlete` a
+                 INNER JOIN `user` u ON a.u_id = u.user_id
+                 INNER JOIN `team` t ON t.team_id = u.t_id
+                 INNER JOIN `item` i ON a.i_id = i.item_id
+                 LEFT JOIN `score` s ON s.i_id = a.i_id
+            AND s.u_id = i.u_id
+        ORDER BY i.item_name,
+                 score
+    </select>
+    <update id="updateAthlete" parameterType="com.ashuo.scms.entity.Athlete">
+        UPDATE athlete
+        <set>
+            status=#{status}
+        </set>
+        <where>
+            <if test="athleteId!=0">AND athlete_id=#{athleteId}</if>
+            <if test="user!=null and user.userId!=0">AND u_id=#{user.userId}</if>
+            <if test="item!=null and item.itemId!=0">AND i_id=#{item.itemId}</if>
+        </where>
+    </update>
+
+    <delete id="deleteAthlete">
+        DELETE
+        FROM athlete
+        WHERE athlete_id = #{athleteId}
+    </delete>
+
+</mapper>

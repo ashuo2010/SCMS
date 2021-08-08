@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ashuo.scms.mapper.SyslogMapper">
+    <resultMap id="syslogMap" type="com.ashuo.scms.entity.Syslog">
+        <id column="syslog_id" property="syslogId"/>
+        <result column="execution_time" property="executionTime"/>
+        <result column="method" property="method"/>
+        <result column="parameter" property="parameter"/>
+        <association property="executionUser" javaType="com.ashuo.scms.entity.User">
+            <id column="execution_uid" property="userId"/>
+            <result column="nickname" property="nickname"/>
+            <result column="user_type" property="userType"/>
+        </association>
+    </resultMap>
+
+
+    <insert id="insertSyslog" parameterType="com.ashuo.scms.entity.Syslog"
+            useGeneratedKeys="true" keyColumn="syslog_id" keyProperty="syslogId">
+        INSERT INTO syslog(execution_time, execution_uid, method, parameter)
+        VALUES (#{executionTime}, #{executionUser.userId}, #{method}, #{parameter})
+    </insert>
+
+
+    <select id="querySyslogBySyslogCondition" resultMap="syslogMap">
+        SELECT
+        s.syslog_id,
+        s.execution_time,
+        s.execution_uid,
+        s.method,
+        s.parameter,
+        u.nickname,
+        u.user_type
+        FROM
+        (
+        `syslog` s
+        INNER JOIN `user` u ON s.execution_uid = u.user_id
+        )
+        <where>
+            <if test="syslog.executionUser!=null and syslog.executionUser.nickname!=null">u.nickname LIKE
+                '%${syslog.executionUser.nickname}%'
+            </if>
+        </where>
+        ORDER BY
+        execution_time
+    </select>
+
+    <delete id="deleteAllRanking">
+        DELETE
+        FROM ranking
+    </delete>
+
+    <delete id="deleteAllScore">
+        DELETE
+        FROM score
+    </delete>
+
+    <delete id="deleteAllAthlete">
+        DELETE
+        FROM athlete
+    </delete>
+    <delete id="deleteAllItem">
+        DELETE
+        FROM item
+    </delete>
+
+    <delete id="deleteAllUser">
+        DELETE
+        FROM user
+    </delete>
+
+    <delete id="deleteAllTeam">
+        DELETE
+        FROM team
+    </delete>
+
+    <delete id="deleteAllSyslog">
+        DELETE
+        FROM syslog
+    </delete>
+</mapper>

@@ -1,0 +1,72 @@
+{
+  "id": "2174876",
+  "name": "sportplay",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1165",
+      "name": "管理员",
+      "font_class": "guanliyuan",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "435924",
+      "name": "卡路里",
+      "font_class": "qialuli",
+      "unicode": "e7b4",
+      "unicode_decimal": 59316
+    },
+    {
+      "icon_id": "947482",
+      "name": "商品",
+      "font_class": "shangpin",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "1177735",
+      "name": "书",
+      "font_class": "shu",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "5643518",
+      "name": "密码",
+      "font_class": "mima",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "6489735",
+      "name": "食物",
+      "font_class": "shiwu",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
+      "icon_id": "7090030",
+      "name": "登录",
+      "font_class": "denglu",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "8081369",
+      "name": "列表",
+      "font_class": "iconfront-",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "14975824",
+      "name": "运动",
+      "font_class": "yundong",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    }
+  ]
+}

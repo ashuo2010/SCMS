@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ashuo.scms.mapper.ScoreMapper">
+    <resultMap id="scoreMap" type="com.ashuo.scms.entity.Score">
+        <id column="score_id" property="scoreId"/>
+        <result column="score" property="score"/>
+        <result column="create_time" property="createTime"/>
+        <result column="edit_time" property="editTime"/>
+        <association property="user" javaType="com.ashuo.scms.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_no" property="userNo"/>
+            <result column="user_sex" property="userSex"/>
+            <result column="nickname" property="nickname"/>
+            <result column="user_type" property="userType"/>
+            <association property="team" javaType="com.ashuo.scms.entity.Team">
+                <id column="t_id" property="teamId"/>
+            </association>
+        </association>
+        <association property="item" javaType="com.ashuo.scms.entity.Item">
+            <id column="item_id" property="itemId"/>
+            <result column="item_name" property="itemName"/>
+            <result column="item_sex" property="itemSex"/>
+            <result column="item_unit" property="itemUnit"/>
+            <result column="athlete_amount" property="athleteAmount"/>
+        </association>
+    </resultMap>
+    <insert id="insertScore" parameterType="com.ashuo.scms.entity.Score"
+            useGeneratedKeys="true" keyColumn="score_id" keyProperty="scoreId">
+        INSERT INTO score(i_id, u_id, score, create_time, edit_time)
+        VALUES (#{item.itemId}, #{user.userId}, #{score}, #{createTime}, #{editTime})
+    </insert>
+
+    <update id="updateScore" parameterType="com.ashuo.scms.entity.Score">
+        UPDATE score
+        <set>
+            <if test="score!=0">score=#{score},</if>
+            <if test="createTime!=null">create_time=#{createTime},</if>
+            <if test="editTime!=null">edit_time=#{editTime}</if>
+        </set>
+        where i_id=#{item.itemId} and u_id=#{user.userId}
+
+    </update>
+
+    <delete id="deleteScore">
+        delete
+        from score
+        where score_id = #{scoreId}
+    </delete>
+
+    <select id="queryScoreByScoreCondition" resultMap="scoreMap">
+        SELECT
+        s.score_id,
+        s.score,
+        s.edit_time,
+        i.item_id,
+        i.item_name,
+        i.item_sex,
+        i.item_unit,
+        i.athlete_amount,
+        u.user_id,
+        u.user_no,
+        u.nickname,
+        u.user_sex,
+        u.t_id,
+        r.rank as user_type
+        FROM
+        ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
+        INNER JOIN `item` i ON s.i_id = i.item_id
+        LEFT JOIN `ranking` r ON s.u_id = r.u_id
+        AND s.i_id = r.i_id
+        <where>
+            <if test="score.user!=null and score.user.userId!=0">AND u.user_id
+                = #{score.user.userId}
+            </if>
+            <if test="score.user!=null and score.user.nickname!=null">AND u.nickname LIKE '%${score.user.nickname}%'
+            </if>
+            <if test="score.item!=null and score.item.itemId!=0">AND i.item_id = #{score.item.itemId}</if>
+        </where>
+        ORDER BY
+        score
+        DESC
+    </select>
+
+    <select id="queryScoreByItemIdLimit" parameterType="int" resultMap="scoreMap">
+        SELECT
+        s.score_id,
+        s.score,
+        s.edit_time,
+        i.item_id,
+        i.item_name,
+        i.item_sex,
+        i.item_unit,
+        i.athlete_amount,
+        u.user_id,
+        u.user_no,
+        u.nickname,
+        u.user_sex,
+        u.t_id
+        FROM
+        ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
+        INNER JOIN `item` i ON s.i_id = i.item_id
+        <where>
+            <if test="itemId!=0">AND i.item_id = #{itemId}</if>
+        </where>
+        ORDER BY
+        s.score
+        ${condition}
+        Limit 3
+    </select>
+
+
+    <select id="queryOneScoreByScoreId" resultMap="scoreMap">
+        SELECT s.score_id,
+               s.score,
+               s.edit_time,
+               i.item_id,
+               i.item_name,
+               i.item_sex,
+               i.item_unit,
+               i.athlete_amount,
+               u.user_id,
+               u.user_no,
+               u.nickname,
+               u.user_sex,
+               u.t_id
+        FROM ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
+                 INNER JOIN `item` i ON s.i_id = i.item_id
+        WHERE s.score_id = #{scoreId}
+    </select>
+
+    <select id="queryScoreByTeamId" resultMap="scoreMap">
+        SELECT s.score_id,
+               s.score,
+               s.edit_time,
+               i.item_id,
+               i.item_name,
+               i.item_sex,
+               i.item_unit,
+               i.athlete_amount,
+               u.user_id,
+               u.user_no,
+               u.nickname,
+               u.user_sex,
+               u.t_id
+        FROM ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
+                 INNER JOIN `item` i ON s.i_id = i.item_id
+        WHERE u.user_id IN (
+            SELECT user_id
+            FROM `team`
+                     INNER JOIN `user` ON `team`.team_id = `user`.t_id
+            WHERE `team`.team_id = #{teamId}
+        )
+    </select>
+
+    <select id="queryAthleteScoreDto" resultType="com.ashuo.scms.dto.AthleteScoreDto">
+        SELECT
+        t.team_name,
+        u.user_no,
+        u.nickname,
+        u.user_sex,
+        i.item_name,
+        i.item_unit,
+        i.item_place,
+        u2.nickname AS scorer,
+        s.score,
+        s.edit_time
+        FROM
+        `athlete` a
+        INNER JOIN `user` u ON a.u_id = u.user_id
+        INNER JOIN `team` t ON t.team_id = u.t_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
+        INNER JOIN `user` u2 ON i.u_id = u2.user_id
+        LEFT JOIN `score` s ON s.i_id = a.i_id AND s.u_id=a.u_id
+        <where>
+            <if test="itemId!=0">AND i.item_id = #{itemId}</if>
+            <if test="nickname!=null">AND u.nickname LIKE '%${nickname}%'
+            </if>
+            AND s.score !=0
+        </where>
+        ORDER BY
+        i.item_name,
+        score
+    </select>
+
+</mapper>

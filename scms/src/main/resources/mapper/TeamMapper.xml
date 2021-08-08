@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ashuo.scms.mapper.TeamMapper">
+
+    <insert id="insertTeam" parameterType="com.ashuo.scms.entity.Team"
+            useGeneratedKeys="true" keyColumn="team_id" keyProperty="teamId">
+        INSERT INTO team(
+        <if test="teamId!=0">
+            team_id,
+        </if>
+        team_name, create_time, edit_time)
+        VALUES (
+        <if test="teamId!=0">
+            #{teamId},
+        </if>
+        #{teamName}, #{createTime}, #{editTime})
+    </insert>
+
+    <update id="updateTeam" parameterType="com.ashuo.scms.entity.Team">
+        UPDATE team
+        <set>
+            <if test="teamName!=null">team_name=#{teamName},</if>
+            <if test="createTime!=null">create_time=#{createTime},</if>
+            <if test="editTime!=null">edit_time=#{editTime}</if>
+        </set>
+        WHERE team_id=#{teamId}
+    </update>
+
+    <delete id="deleteTeam">
+        DELETE
+        FROM team
+        WHERE team_id = #{teamId}
+    </delete>
+
+    <select id="queryTeamByTeamName" resultType="com.ashuo.scms.entity.Team">
+        SELECT * FROM team
+        <where>
+            <if test="teamName!=null">AND team_name LIKE '%${teamName}%'</if>
+        </where>
+        ORDER BY team_id
+    </select>
+
+    <select id="queryTeamByTeamCondition" resultType="com.ashuo.scms.entity.Team">
+        SELECT * FROM team
+        <where>
+            <if test="team!=null and team.teamId!=0">AND team_id=#{team.teamId}</if>
+            <if test="team!=null and team.teamName!=null">AND team_name LIKE '%${team.teamName}%'</if>
+        </where>
+    </select>
+
+
+</mapper>

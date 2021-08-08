@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ashuo.scms.mapper.ItemMapper">
+    <sql id="itemSql">
+        SELECT i.item_id,
+               i.u_id,
+               i.item_name,
+               i.item_place,
+               i.item_unit,
+               i.item_sex,
+               i.athlete_amount,
+               i.start_time,
+               i.edit_time,
+               i.create_time,
+               i.end_time,
+               u.user_id,
+               u.user_no,
+               u.user_sex,
+               u.nickname
+        FROM `item` i
+                 INNER JOIN `user` u ON i.u_id = u.user_id
+    </sql>
+    <resultMap id="itemMap" type="com.ashuo.scms.entity.Item">
+        <id column="item_id" property="itemId"/>
+        <result column="item_name" property="itemName"/>
+        <result column="item_place" property="itemPlace"/>
+        <result column="item_unit" property="itemUnit"/>
+        <result column="item_sex" property="itemSex"/>
+        <result column="athlete_amount" property="athleteAmount"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="create_time" property="createTime"/>
+        <result column="edit_time" property="editTime"/>
+        <association property="user" javaType="com.ashuo.scms.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_no" property="userNo"/>
+            <result column="user_sex" property="userSex"/>
+            <result column="nickname" property="nickname"/>
+        </association>
+    </resultMap>
+
+    <insert id="insertItem" parameterType="com.ashuo.scms.entity.Item"
+            useGeneratedKeys="true" keyColumn="item_id" keyProperty="itemId">
+        INSERT INTO item(u_id, item_name, item_place, item_unit, item_sex, athlete_amount, start_time, end_time,
+                         create_time, edit_time)
+        VALUES (#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{athleteAmount}, #{startTime},
+                #{endTime},
+                #{createTime}, #{editTime})
+    </insert>
+
+    <update id="updateItem" parameterType="com.ashuo.scms.entity.Item">
+        UPDATE item
+        <set>
+            <if test="item.user!=null and item.user.userId!=0">u_id=#{item.user.userId},</if>
+            <if test="item.itemName!=null">item_name=#{item.itemName},</if>
+            <if test="item.itemPlace!=null">item_place=#{item.itemPlace},</if>
+            <if test="item.itemUnit!=null">item_unit=#{item.itemUnit},</if>
+            <if test="item.itemSex!=null">item_sex=#{item.itemSex},</if>
+            <if test="item.athleteAmount!=0">athlete_amount=#{item.athleteAmount},</if>
+            <if test="item.startTime!=null">start_time=#{item.startTime},</if>
+            <if test="item.endTime!=null">end_time=#{item.endTime},</if>
+            <if test="item.createTime!=null">create_time=#{item.createTime},</if>
+            <if test="item.editTime!=null">edit_time=#{item.editTime}</if>
+        </set>
+        WHERE item_id=#{item.itemId}
+    </update>
+
+    <delete id="deleteItem">
+        delete
+        from item
+        WHERE item_id = #{itemId}
+    </delete>
+
+    <select id="queryItemByItemCondition" resultMap="itemMap">
+        <include refid="itemSql"/>
+        <where>
+            <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
+            <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
+            <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
+            <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
+            <if test="item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
+            <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
+            <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
+        </where>
+    </select>
+
+    <select id="queryItemByItemName" resultMap="itemMap">
+        <include refid="itemSql"/>
+        <where>
+            <if test="itemName!=null">AND item_name LIKE '%${itemName}%'</if>
+        </where>
+    </select>
+</mapper>

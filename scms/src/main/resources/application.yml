@@ -1,0 +1,40 @@
+server:
+  port: 8088
+
+spring:
+  swagger2:
+    enabled: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    #password: 2132
+    druid:
+      initial-size: 15
+      max-active: 50
+      max-pool-prepared-statement-per-connection-size: 15
+      min-idle: 15
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/scms?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8
+  shiro-redis:
+    enabled: true
+    redis-manager:
+      host: localhost:6379
+
+jwt:
+  secret: f4e2e52034348f86b67cde581c0f9eb5
+  expire: 3600000
+  header: Authorization
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+
+  # sql OUT_PRINT
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+#pagehelper:
+#  helperDialect: mysql
+#  reasonable: true
+#  supportMethodsArguments: true
+#  params: count=countSql

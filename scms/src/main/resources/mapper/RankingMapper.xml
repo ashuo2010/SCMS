@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ashuo.scms.mapper.RankingMapper">
+    <resultMap id="rankingMap" type="com.ashuo.scms.entity.Ranking">
+        <id column="ranking_id" property="rankingId"/>
+        <result column="rank" property="rank"/>
+        <result column="edit_time" property="editTime"/>
+        <association property="team" javaType="com.ashuo.scms.entity.Team">
+            <id column="team_id" property="teamId"/>
+            <result column="team_name" property="teamName"/>
+        </association>
+        <association property="item" javaType="com.ashuo.scms.entity.Item">
+            <id column="item_id" property="itemId"/>
+            <result column="item_name" property="itemName"/>
+            <result column="athlete_amount" property="athleteAmount"/>
+        </association>
+        <association property="user" javaType="com.ashuo.scms.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_no" property="userNo"/>
+            <result column="nickname" property="nickname"/>
+            <result column="user_sex" property="userSex"/>
+        </association>
+
+    </resultMap>
+    <insert id="insertRanking" parameterType="list"
+            useGeneratedKeys="true" keyColumn="ranking_id" keyProperty="rankingId">
+        INSERT INTO ranking ( i_id, u_id, t_id, rank, edit_time )
+        VALUES
+        <foreach collection="list" item="ranking" index="index" separator=",">
+            (
+            #{ranking.item.itemId},#{ranking.user.userId},#{ranking.team.teamId},#{ranking.rank},#{ranking.editTime}
+            )
+        </foreach>
+
+    </insert>
+
+    <delete id="deleteRankingByItemId" parameterType="integer">
+        DELETE
+        FROM ranking
+        WHERE i_id = #{itemId}
+    </delete>
+
+    <select id="queryTeamTotalRanking" resultMap="rankingMap">
+        SELECT
+        r.ranking_id,
+        t.team_id,
+        t.team_name,
+        SUM( rank ) AS rank
+        FROM
+        ranking r
+        INNER JOIN `team` t ON r.t_id = t.team_id
+        <where>
+            <if test="teamName!=null">AND t.team_name LIKE '%${teamName}%'</if>
+        </where>
+        GROUP BY
+        r.t_id
+        ORDER BY
+        rank DESC
+    </select>
+
+    <select id="queryUserTotalRanking" resultMap="rankingMap">
+        SELECT
+        r.ranking_id,
+        u.user_id,
+        u.user_no,
+        u.nickname,
+        u.user_sex,
+        t.team_id,
+        t.team_name,
+        SUM( rank ) AS rank
+        FROM
+        ranking r
+        INNER JOIN `user` u ON r.u_id = u.user_id
+        INNER JOIN `team` t ON r.t_id = t.team_id
+        <where>
+            <if test="ranking.user!=null and ranking.user.userId!=0">AND u.user_id=#{ranking.user.userId}</if>
+            <if test="ranking.team!=null and ranking.team.teamId!=0">AND t.team_id=#{ranking.team.teamId}</if>
+
+            <if test="ranking.user!=null and ranking.user.nickname!=null">AND u.nickname LIKE
+                '%${ranking.user.nickname}%'
+            </if>
+        </where>
+        GROUP BY
+        r.u_id
+        ORDER BY
+        rank
+        DESC
+    </select>
+
+</mapper>

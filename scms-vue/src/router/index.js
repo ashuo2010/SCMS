@@ -1,0 +1,101 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Login from '../components/Login'
+import Home from '../components/Home'
+import Welcome from "../components/Welcome";
+import Page401 from "../components/401"
+import UserList from "../components/admin/UserList";
+import TeamList from "../components/admin/TeamList";
+import ItemList from "../components/admin/ItemList";
+import AthleteList from "../components/admin/AthleteList";
+import ScoreList from "../components/admin/ScoreList";
+import PersonRanking from "../components/admin/PersonRanking";
+import TeamRanking from "../components/admin/TeamRanking";
+import SyslogList from "../components/admin/SyslogList";
+import SystemReset from "../components/admin/SystemReset";
+import SignItem from "../components/athlete/SignItem";
+import MyItem from "../components/athlete/MyItem";
+import AthleteScoreList from "../components/admin/AthleteScoreList";
+
+Vue.use(VueRouter);
+
+const routes = [{
+        path: "/",
+        redirect: "/login",
+    },
+    {
+        path: "/login",
+        component: Login
+    },
+    {
+        path: "/home",
+        component: Home,
+        redirect: "welcome",
+        children: [{
+                path: "/welcome",
+                component: Welcome
+            },
+            {
+                path: "/401",
+                component: Page401
+            },
+            {
+                path: "/user/userlist",
+                component: UserList
+            },
+            {
+                path: "/team/teamlist",
+                component: TeamList
+            },
+            {
+                path: "/item/itemlist",
+                component: ItemList
+            },
+            {
+                path: "/athlete/athletelist",
+                component: AthleteList
+            },
+            {
+                path: "/score/scorelist",
+                component: ScoreList
+            },
+            {
+                path: "/score/athletescorelist",
+                component: AthleteScoreList
+            },
+            {
+                path: "/ranking/personRanking",
+                component: PersonRanking
+            },
+            {
+                path: "/ranking/teamRanking",
+                component: TeamRanking
+            },
+
+            {
+                path: "/syslog/sysloglist",
+                component: SyslogList
+            },
+            {
+                path: "/syslog/systemreset",
+                component: SystemReset
+            },
+
+
+            {
+                path: "/athleteItem/signitem",
+                component: SignItem
+            }, {
+                path: "/athleteItem/myitem",
+                component: MyItem
+            },
+        ]
+    }
+];
+
+const router = new VueRouter({
+    mode: 'history',
+    routes
+});
+
+export default router

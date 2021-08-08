@@ -1,0 +1,570 @@
+<template>
+  <div>
+    <!--导航-->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>参赛项目管理</el-breadcrumb-item>
+      <el-breadcrumb-item>项目列表</el-breadcrumb-item>
+    </el-breadcrumb>
+
+    <el-dialog
+      title="项目详情信息"
+      :visible.sync="dialogTableVisible"
+      width="80%"
+    >
+      <el-table :data="itemDetail" stripe style="width: 100%">
+        <el-table-column prop="itemName" label="项目名称" width="180">
+        </el-table-column>
+        <el-table-column prop="itemSex" label="项目性别" width="180">
+        </el-table-column>
+        <el-table-column prop="itemPlace" label="项目地点" width="180">
+        </el-table-column>
+        <el-table-column prop="itemUnit" label="项目分数单位" width="180">
+        </el-table-column>
+        <el-table-column prop="user.nickname" label="项目记分员" width="180">
+        </el-table-column>
+        <el-table-column prop="startTime" label="项目开始时间" width="180">
+        </el-table-column>
+        <el-table-column prop="endTime" label="项目结束时间" width="180">
+        </el-table-column>
+        <el-table-column prop="athleteAmount" label="项目参赛人数" width="180">
+        </el-table-column>
+        <el-table-column prop="createTime" label="项目创建时间" width="180">
+        </el-table-column>
+        <el-table-column prop="editTime" label="项目修改时间" width="180">
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!--项目列表主体-->
+    <el-card>
+      <!--搜索区域-->
+      <el-row :gutter="25">
+        <el-col :span="10">
+          <!--搜索添加-->
+          <el-input
+            placeholder="请输入搜索内容"
+            v-model="queryInfo.query"
+            clearable
+            @keyup.enter.native="page"
+            @clear="page"
+          >
+            <!--搜索按钮-->
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="page"
+            ></el-button>
+          </el-input>
+        </el-col>
+
+        <!--添加按钮-->
+        <el-col :span="4">
+          <el-button type="primary" @click="addDialogVisible = true"
+            >添加项目</el-button
+          >
+        </el-col>
+      </el-row>
+      <!--项目列表 stripe隔行变色-->
+      <el-table :data="item" border stripe>
+        <!--索引列-->
+
+        <el-table-column type="index"></el-table-column>
+        <el-table-column label="项目名称" prop="itemName"></el-table-column>
+        <el-table-column label="项目性别" prop="itemSex"></el-table-column>
+        <el-table-column label="项目地点" prop="itemPlace"></el-table-column>
+        <el-table-column label="项目分数单位" prop="itemUnit"></el-table-column>
+
+        <el-table-column
+          label="项目记分员"
+          prop="user.nickname"
+        ></el-table-column>
+        <el-table-column
+          label="参赛人数"
+          prop="athleteAmount"
+        ></el-table-column>
+        <el-table-column label="创建时间" prop="createTime"></el-table-column>
+        <el-table-column
+          label="最后一次修改时间"
+          prop="editTime"
+        ></el-table-column>
+        <el-table-column label="操作" prop="state">
+          <template slot-scope="scope">
+            <!--详情-->
+            <el-button
+              type="primary"
+              icon="el-icon-tickets"
+              size="mini"
+              style="margin-left: 10px"
+              @click="
+                dialogTableVisible = true;
+                getItemDetail(scope.row.itemId);
+              "
+            ></el-button>
+            <!--修改-->
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="showEditDialog(scope.row.itemId)"
+            ></el-button>
+            <!--删除-->
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="deleteItem(scope.row.itemId)"
+            ></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!--分页组件-->
+      <div>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.currentPage"
+          :page-sizes="[5, 10, 20, 50]"
+          :page-size="queryInfo.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
+    </el-card>
+    <!--新增项目区域-->
+    <el-dialog
+      title="添加项目"
+      :visible.sync="addDialogVisible"
+      width="50%"
+      @close="addDialogClosed"
+    >
+      <el-form
+        :model="addForm"
+        ref="addFormRef"
+        label-width="70px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="项目名称" prop="itemName">
+          <el-input v-model="addForm.itemName"></el-input>
+        </el-form-item>
+        <el-form-item label="项目性别" prop="itemSex">
+          <el-select v-model="addForm.itemSex" filterable placeholder="请选择">
+            <el-option
+              v-for="item in userSex"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目地点" prop="itemPlace">
+          <!-- <el-input v-model="addForm.itemPlace"></el-input> -->
+          <el-select v-model="addForm.itemPlace" placeholder="请选择">
+            <el-option
+              v-for="item in itemPlaceOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目分数单位" prop="itemUnit">
+          <el-select v-model="addForm.itemUnit" placeholder="请选择">
+            <el-option
+              v-for="item in itemUnitOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目开始时间" prop="startTime">
+          <el-date-picker
+            v-model="addForm.startTime"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="项目结束时间" prop="endTime">
+          <el-date-picker
+            v-model="addForm.endTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            type="datetime"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="项目记分员" prop="itemName">
+          <el-select v-model="addForm.user.userId" placeholder="请选择">
+            <el-option
+              v-for="item in scorers"
+              :key="item.userId"
+              :label="item.nickname"
+              :value="item.userId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="addItem">确定</el-button>
+      </span>
+    </el-dialog>
+    <!--修改项目区域-->
+    <el-dialog
+      title="修改项目"
+      :visible.sync="editDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
+      <el-form
+        :model="editForm"
+        :rules="FormRules"
+        ref="editFormRef"
+        label-width="70px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="项目ID" prop="itemId">
+          <el-input v-model="editForm.itemId" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="项目名称" prop="itemName">
+          <el-input v-model="editForm.itemName"></el-input>
+        </el-form-item>
+        <el-form-item label="项目性别" prop="itemSex">
+          <el-select v-model="editForm.itemSex" filterable placeholder="请选择">
+            <el-option
+              v-for="item in userSex"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="项目地点" prop="itemPlace">
+          <!-- <el-input v-model="editForm.itemPlace"></el-input> -->
+          <el-select v-model="editForm.itemPlace" placeholder="请选择">
+            <el-option
+              v-for="item in itemPlaceOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目地点" prop="itemUnit">
+          <el-select v-model="editForm.itemUnit" placeholder="请选择">
+            <el-option
+              v-for="item in itemUnitOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目开始时间" prop="startTime">
+          <el-date-picker
+            v-model="editForm.startTime"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="项目结束时间" prop="endTime">
+          <el-date-picker
+            v-model="editForm.endTime"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item label="项目记分员" prop="itemName">
+          <el-select v-model="editForm.user.userId" placeholder="请选择">
+            <el-option
+              v-for="item in scorers"
+              :key="item.userId"
+              :label="item.nickname"
+              :value="item.userId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="editItem">确定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  name: "ItemList",
+  data() {
+    return {
+      item: [],
+      scorers: [],
+      itemDetail: [],
+
+      userSex: [
+        {
+          value: "男",
+          label: "男",
+        },
+        {
+          value: "女",
+          label: "女",
+        },
+      ],
+
+      itemPlaceOptions: [
+        {
+          value: "田径场",
+          label: "田径场",
+        },
+        {
+          value: "体育馆",
+          label: "体育馆",
+        },
+        {
+          value: "跳水馆",
+          label: "跳水馆",
+        },
+      ],
+
+      itemUnitOptions: [
+        {
+          value: "秒",
+          label: "秒",
+        },
+        {
+          value: "米",
+          label: "米",
+        },
+        {
+          value: "个",
+          label: "个",
+        },
+        {
+          value: "分数",
+          label: "分数",
+        },
+      ],
+
+      queryInfo: {
+        currentPage: 1,
+        pageSize: 5,
+        query: "",
+      },
+      total: 0,
+      // 对话框状态
+      addDialogVisible: false,
+
+      addForm: {
+        itemName: "",
+        itemPlace: "",
+        itemUnit: "",
+        itemSex: "",
+        startTime: "",
+        endTime: "",
+        user: {
+          userId: "",
+        },
+        scorer: [],
+      },
+      editForm: {
+        itemId: "",
+        itemName: "",
+        itemPlace: "",
+        itemUnit: "",
+        itemSex: "",
+        athleteAmount: "",
+        startTime: "",
+        endTime: "",
+        user: {
+          userId: "",
+        },
+        scorer: [],
+      },
+
+      FormRules: {
+        itemPlace: [
+          //   { required: true, message: "请输入用户名", trigger: "blur" },
+          { required: true, trigger: "blur" },
+        ],
+      },
+
+      editDialogVisible: false,
+
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+    };
+  },
+  created() {
+    this.page();
+    this.getScorers();
+  },
+  methods: {
+    async page() {
+      const _this = this;
+      axios
+        .get("/item/queryItem?queryInfo=", { params: _this.queryInfo })
+        .then((res) => {
+          let data = res.data.data;
+          _this.item = data.records;
+          _this.queryInfo.currentPage = data.current;
+          _this.total = data.total;
+          _this.queryInfo.pageSize = data.size;
+        });
+    },
+    async getScorers() {
+      const _this = this;
+      axios
+        .get(
+          "/user/queryUser?userType=2&query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data;
+          _this.scorers = data.records;
+        });
+    },
+
+    async getItemDetail(id) {
+      const _this = this;
+      axios.get("/item/getItem?itemId=" + id).then((res) => {
+        let data = res.data.data;
+        _this.itemDetail = [];
+        _this.itemDetail.push(data);
+      });
+    },
+
+    handleSizeChange(newSize) {
+      const _this = this;
+      _this.queryInfo.pageSize = newSize;
+      _this.page();
+    },
+    handleCurrentChange(newPage) {
+      const _this = this;
+      _this.queryInfo.currentPage = newPage;
+      _this.page();
+    },
+
+    async showEditDialog(id) {
+      const _this = this;
+      axios.get("/item/getItem?itemId=" + id).then((res) => {
+        let data = res.data.data;
+        _this.editForm.itemId = data.itemId;
+        _this.editForm.itemName = data.itemName;
+        (_this.editForm.itemPlace = data.itemPlace),
+          (_this.editForm.itemUnit = data.itemUnit),
+          (_this.editForm.itemSex = data.itemSex),
+          (_this.editForm.startTime = data.startTime),
+          (_this.editForm.endTime = data.endTime),
+          (_this.editDialogVisible = true);
+      });
+    },
+    addDialogClosed() {
+      const _this = this;
+      _this.$refs.addFormRef.resetFields();
+    },
+    editDialogClosed() {
+      const _this = this;
+      _this.$refs.editFormRef.resetFields();
+    },
+    addItem() {
+      const _this = this;
+      _this.$refs.addFormRef.validate(async (valid) => {
+        if (!valid) return;
+        axios.post("/item/addItem", _this.addForm).then((res) => {
+          if (res.data.status != 200) {
+            return _this.$message.error("操作失败" + res.data.msg);
+          }
+          _this.$message.success("操作成功");
+          _this.addDialogVisible = false;
+          _this.page();
+        });
+      });
+    },
+    async deleteItem(id) {
+      const _this = this;
+      const confirmResult = await _this
+        .$confirm("此操作将永久删除项目，是否继续？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .catch((err) => err);
+      if (confirmResult !== "confirm") {
+        return _this.$message.info("已取消删除");
+      }
+      axios.delete("/item/deleteItem?itemId=" + id).then((res) => {
+        if (res.status == 200) {
+          _this.$message.success("删除成功");
+          _this.addDialogVisible = false;
+          _this.page();
+        } else {
+          _this.$message.error("删除失败");
+        }
+      });
+    },
+    editItem() {
+      const _this = this;
+      _this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) {
+          return;
+        }
+        axios.put("/item/editItem", _this.editForm).then((res) => {
+          if (res.data.status != 200) {
+            return _this.$message.error("操作失败");
+          }
+          _this.$message.success("操作成功");
+          _this.editDialogVisible = false;
+          _this.page();
+        });
+      });
+    },
+  },
+};
+</script>
+
+<style lang="less" scoped>
+.el-breadcrumb {
+  margin-bottom: 15px;
+  font-size: 17px;
+}
+.myTable {
+  border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.myTable td,
+.myTable th {
+  border: 1px solid #cad9ea;
+  color: #666;
+  height: 40px;
+}
+</style>

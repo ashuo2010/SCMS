@@ -1,0 +1,204 @@
+<template>
+  <div>
+    <!--导航-->
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>总分排名管理</el-breadcrumb-item>
+      <el-breadcrumb-item>团体总分排名列表</el-breadcrumb-item>
+    </el-breadcrumb>
+
+    <!--项目列表主体-->
+    <el-card>
+      <!--搜索区域-->
+      <el-row :gutter="25">
+        <el-col :span="10">
+          <!--搜索添加-->
+          <el-input
+            placeholder="请输入参赛运动员名称"
+            v-model="queryInfo.query"
+            clearable
+            @keyup.enter.native="page"
+            @clear="page"
+          >
+            <!--搜索按钮-->
+            <el-button
+              slot="append"
+              icon="el-icon-search"
+              @click="page"
+            ></el-button>
+          </el-input>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" @click="exportExcel()"
+            >导出排名列表</el-button
+          >
+        </el-col>
+      </el-row>
+      <!--项目列表 stripe隔行变色-->
+      <el-table :data="rankingList" border stripe>
+        <!--索引列-->
+
+        <el-table-column type="index"></el-table-column>
+        <el-table-column label="班级" prop="team.teamName"></el-table-column>
+        <el-table-column label="班级总得分" prop="rank"></el-table-column>
+        <el-table-column label="操作" prop="state">
+          <template slot-scope="scope">
+            <!--详情-->
+
+            <el-button
+              type="primary"
+              icon="el-icon-tickets"
+              size="mini"
+              @click="
+                dialogTableVisible = true;
+                getRankingDetail(scope.row.team.teamId);
+              "
+              >查看详情</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+      <!--分页组件-->
+      <div>
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="queryInfo.currentPage"
+          :page-sizes="[5, 10, 20, 50]"
+          :page-size="queryInfo.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="total"
+        >
+        </el-pagination>
+      </div>
+    </el-card>
+
+    <el-dialog
+      title="团体分数详情信息"
+      :visible.sync="dialogTableVisible"
+      width="80%"
+    >
+      <el-table :data="teamRankingDetail" stripe style="width: 100%">
+        <el-table-column label="班级" prop="team.teamName"></el-table-column>
+        <el-table-column label="运动员" prop="user.nickname"></el-table-column>
+        <el-table-column label="性别" prop="user.userSex"></el-table-column>
+        <el-table-column label="个人总得分" prop="rank"></el-table-column>
+      </el-table>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  name: "PersonRanking",
+  data() {
+    return {
+      rankingList: [],
+      scorers: [],
+      teamRankingDetail: [],
+
+      queryInfo: {
+        currentPage: 1,
+        pageSize: 5,
+        query: "",
+      },
+      total: 0,
+      // 对话框状态
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+    };
+  },
+  created() {
+    this.page();
+  },
+  methods: {
+    async page() {
+      const _this = this;
+      axios
+        .get("/ranking/queryTeamRanking?queryInfo=", {
+          params: _this.queryInfo,
+        })
+        .then((res) => {
+          let data = res.data.data;
+          _this.rankingList = data.records;
+          _this.queryInfo.currentPage = data.current;
+          _this.total = data.total;
+          _this.queryInfo.pageSize = data.size;
+        });
+    },
+
+    async getRankingDetail(teamId) {
+      const _this = this;
+      axios
+        .get(
+          "/ranking/queryUserRanking?currentPage=1&pageSize=999999999&team.teamId=" +
+            teamId
+        )
+        .then((res) => {
+          let data = res.data.data;
+          _this.teamRankingDetail = data.records;
+        });
+    },
+
+    async exportExcel() {
+      const _this = this;
+      const confirmResult = await _this
+        .$confirm("确定导出成绩吗？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .catch((err) => err);
+      if (confirmResult !== "confirm") {
+        return;
+      }
+      axios
+        .get("/excel/exportTeamRanking", {
+          responseType: "blob", //二进制流
+        })
+        .then((res) => {
+          const filename = res.headers["content-disposition"];
+          let blob = new Blob([res.data], { type: "application/vnd.ms-excel" });
+          let url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a"); // 创建a标签
+          link.href = url;
+          link.download = decodeURIComponent(filename.split("filename=")[1]); // 重命名文件
+          link.click();
+          URL.revokeObjectURL(url);
+        });
+    },
+
+    handleSizeChange(newSize) {
+      const _this = this;
+      _this.queryInfo.pageSize = newSize;
+      _this.page();
+    },
+    handleCurrentChange(newPage) {
+      const _this = this;
+      _this.queryInfo.currentPage = newPage;
+      _this.page();
+    },
+  },
+};
+</script>
+
+<style lang="less" scoped>
+.el-breadcrumb {
+  margin-bottom: 15px;
+  font-size: 17px;
+}
+.myTable {
+  border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.myTable td,
+.myTable th {
+  border: 1px solid #cad9ea;
+  color: #666;
+  height: 40px;
+}
+</style>
