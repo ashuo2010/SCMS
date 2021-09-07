@@ -1,5 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ashuo.scms.mapper.SeasonMapper">
+    <resultMap id="seasonMap" type="com.ashuo.scms.entity.Season">
+        <id column="season_id" property="seasonId"/>
+        <result column="season_name" property="seasonName"/>
+        <result column="season_topic_desc" property="seasonTopicDesc"/>
+        <result column="season_begin_time" property="seasonBeginTime"/>
+        <result column="season_end_time" property="seasonEndTime"/>
+        <result column="season_status" property="seasonStatus"/>
+        <result column="season_athlete_amount" property="seasonAthleteAmount"/>
+        <result column="create_time" property="createTime"/>
+        <result column="edit_time" property="editTime"/>
+    </resultMap>
 
+
+    <insert id="insertSeason" parameterType="com.ashuo.scms.entity.Season"
+            useGeneratedKeys="true" keyColumn="season_id" keyProperty="seasonId">
+        INSERT INTO season( season_name, season_topic_desc, season_begin_time, season_end_time,season_status,
+        season_athlete_amount, create_time, edit_time)
+        VALUES ( #{seasonName}, #{seasonTopicDesc}, #{seasonBeginTime},#{seasonEndTime}, #{seasonStatus},
+        #{seasonAthleteAmount}, #{createTime}, #{editTime})
+    </insert>
+
+    <delete id="deleteSeason">
+        DELETE
+        FROM SEASON
+        WHERE season_id = #{seasonId}
+    </delete>
+
+
+    <update id="updateSeason" parameterType="com.ashuo.scms.entity.Season">
+        UPDATE season
+        <set>
+            <if test="season.season_name!=null">season_name=#{season.seasonName},</if>
+            <if test="season.season_topic_desc!=null">season_topic_desc=#{season.seasonTopicDesc},</if>
+            <if test="season.season_begin_time!=null">season_begin_time=#{season.seasonBeginTime},</if>
+            <if test="season.season_end_time!=null">season_end_time=#{season.seasonEndTime},</if>
+            <if test="season.season_status!=null">season_status=#{season.seasonStatus},</if>
+            <if test="season.season_athlete_amount!=0">season_athlete_amount=#{season.seasonAthleteAmount},</if>
+            <if test="season.createTime!=null">create_time=#{season.createTime},</if>
+            <if test="season.editTime!=null">edit_time=#{season.editTime}</if>
+        </set>
+        WHERE season_id=#{season.seasonId}
+    </update>
+
+    <select id="querySeasonBySeasonCondition" resultMap="seasonMap">
+        SELECT
+        season_id,
+        season_name,
+        season_topic_desc,
+        season_begin_time,
+        season_end_time,
+        season_status,
+        season_athlete_amount,
+        create_time,
+        edit_time
+        FROM
+        season
+        <where>
+            <if test="season.seasonName!=null">AND season_name=#{season.seasonName},</if>
+            <if test="season.seasonTopicDesc!=null">AND season_topic_desc=#{season.seasonTopicDesc},</if>
+            <if test="season.seasonBeginTime!=null">AND season_begin_time=#{season.seasonBeginTime},</if>
+            <if test="season.seasonEndTime!=null">AND season_end_time=#{season.seasonEndTime},</if>
+            <if test="season.seasonStatus!=null">AND season_status=#{season.seasonStatus},</if>
+            <if test="season.seasonAthleteAmount!=null and season.seasonAthleteAmount!=0">AND season_athlete_amount=#{season.seasonAthleteAmount},</if>
+            <if test="season.createTime!=null">AND create_time=#{season.createTime},</if>
+            <if test="season.editTime!=null">AND edit_time=#{season.editTime}</if>
+        </where>
+    </select>
 </mapper>
