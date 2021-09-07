@@ -52,7 +52,7 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:mysql://localhost:3306/smms?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC");
+        dsc.setUrl("jdbc:mysql://localhost:3306/scms?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC");
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
@@ -63,7 +63,7 @@ public class CodeGenerator {
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(null);
         // 这里选择生成代码模板要放到哪个目录
-        pc.setParent("com.hua.sportplay");
+        pc.setParent("com.ashuo.scms");
         mpg.setPackageInfo(pc);
 
         // 自定义配置
