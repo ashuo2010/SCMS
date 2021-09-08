@@ -70,6 +70,7 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
+        <el-table-column label="运动会届时" prop="season.seasonName"></el-table-column>
         <el-table-column label="项目名称" prop="itemName"></el-table-column>
         <el-table-column label="项目性别" prop="itemSex"></el-table-column>
         <el-table-column label="项目地点" prop="itemPlace"></el-table-column>
@@ -84,10 +85,7 @@
           prop="athleteAmount"
         ></el-table-column>
         <el-table-column label="创建时间" prop="createTime"></el-table-column>
-        <el-table-column
-          label="最后一次修改时间"
-          prop="editTime"
-        ></el-table-column>
+       
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
             <!--详情-->
@@ -145,10 +143,22 @@
         label-width="70px"
         class="demo-ruleForm"
       >
-        <el-form-item label="项目名称" prop="itemName">
+        <el-form-item label="运动会项目届时" >
+          <el-select v-model="addForm.season.seasonId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in seasons"
+              :key="item.seasonId"
+              :label="item.seasonName"
+              :value="item.seasonId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目名称" >
           <el-input v-model="addForm.itemName"></el-input>
         </el-form-item>
-        <el-form-item label="项目性别" prop="itemSex">
+        <el-form-item label="项目性别">
           <el-select v-model="addForm.itemSex" filterable placeholder="请选择">
             <el-option
               v-for="item in userSex"
@@ -160,7 +170,19 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="项目地点" prop="itemPlace">
+        <el-form-item label="项目记分员">
+          <el-select v-model="addForm.user.userId" placeholder="请选择">
+            <el-option
+              v-for="item in scorers"
+              :key="item.userId"
+              :label="item.nickname"
+              :value="item.userId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="项目地点">
           <!-- <el-input v-model="addForm.itemPlace"></el-input> -->
           <el-select v-model="addForm.itemPlace" placeholder="请选择">
             <el-option
@@ -173,7 +195,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="项目分数单位" prop="itemUnit">
+        <el-form-item label="项目分数单位" >
           <el-select v-model="addForm.itemUnit" placeholder="请选择">
             <el-option
               v-for="item in itemUnitOptions"
@@ -185,7 +207,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="项目开始时间" prop="startTime">
+        <el-form-item label="项目开始时间" >
           <el-date-picker
             v-model="addForm.startTime"
             type="datetime"
@@ -195,7 +217,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="项目结束时间" prop="endTime">
+        <el-form-item label="项目结束时间" >
           <el-date-picker
             v-model="addForm.endTime"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -205,17 +227,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="项目记分员" prop="itemName">
-          <el-select v-model="addForm.user.userId" placeholder="请选择">
-            <el-option
-              v-for="item in scorers"
-              :key="item.userId"
-              :label="item.nickname"
-              :value="item.userId"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取消</el-button>
@@ -238,6 +250,17 @@
       >
         <el-form-item label="项目ID" prop="itemId">
           <el-input v-model="editForm.itemId" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="运动会项目届时"  prop="season.seasonName">
+          <el-select v-model="editForm.season.seasonId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in seasons"
+              :key="item.seasonId"
+              :label="item.seasonName"
+              :value="item.seasonId"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="项目名称" prop="itemName">
           <el-input v-model="editForm.itemName"></el-input>
@@ -326,7 +349,11 @@ export default {
   data() {
     return {
       item: [],
+      //记分员
       scorers: [],
+      //届时列表
+      seasons: [],
+
       itemDetail: [],
 
       userSex: [
@@ -393,6 +420,9 @@ export default {
         user: {
           userId: "",
         },
+        season: {
+          seasonId: "",
+        },
         scorer: [],
       },
       editForm: {
@@ -406,6 +436,9 @@ export default {
         endTime: "",
         user: {
           userId: "",
+        },
+        season: {
+          seasonId: "",
         },
         scorer: [],
       },
@@ -426,6 +459,7 @@ export default {
   created() {
     this.page();
     this.getScorers();
+    this.getSeasons();
   },
   methods: {
     async page() {
@@ -449,6 +483,18 @@ export default {
         .then((res) => {
           let data = res.data.data;
           _this.scorers = data.records;
+        });
+    },
+
+    async getSeasons() {
+      const _this = this;
+      axios
+        .get(
+          "/season/querySeason?seasonStatus=1&query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data;
+          _this.seasons = data.records;
         });
     },
 
@@ -476,14 +522,8 @@ export default {
       const _this = this;
       axios.get("/item/getItem?itemId=" + id).then((res) => {
         let data = res.data.data;
-        _this.editForm.itemId = data.itemId;
-        _this.editForm.itemName = data.itemName;
-        (_this.editForm.itemPlace = data.itemPlace),
-          (_this.editForm.itemUnit = data.itemUnit),
-          (_this.editForm.itemSex = data.itemSex),
-          (_this.editForm.startTime = data.startTime),
-          (_this.editForm.endTime = data.endTime),
-          (_this.editDialogVisible = true);
+        _this.editForm = data;
+        _this.editDialogVisible = true;
       });
     },
     addDialogClosed() {

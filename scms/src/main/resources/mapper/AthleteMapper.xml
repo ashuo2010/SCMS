@@ -23,6 +23,11 @@
             <result column="item_unit" property="itemUnit"/>
             <result column="start_time" property="startTime"/>
             <result column="end_time" property="endTime"/>
+            <association property="season" javaType="com.ashuo.scms.entity.Season">
+                <id column="se_id" property="seasonId"/>
+                <result column="season_name" property="seasonName"/>
+                <result column="season_status" property="seasonStatus"/>
+            </association>
             <association property="user" javaType="com.ashuo.scms.entity.User">
                 <id column="u_id" property="userId"/>
                 <result column="scorer" property="nickname"/>
@@ -53,23 +58,27 @@
         a.sign_time,
         i.item_id,
         i.u_id,
-        u2.nickname AS scorer,
         i.item_name,
         i.item_sex,
         i.item_place,
         i.item_unit,
         i.start_time,
         i.end_time,
+        se.season_id,
+        se.season_name,
+        se.season_status,
         u.user_id,
         u.user_no,
         u.nickname,
         u.user_sex,
         t.team_id,
-        t.team_name
+        t.team_name ,
+        u2.nickname AS scorer
         FROM
         `athlete` a INNER JOIN `user` u ON a.u_id = u.user_id
         INNER JOIN `team` t ON t.team_id = u.t_id
         INNER JOIN `item` i ON a.i_id = i.item_id
+        INNER JOIN `season` se ON i.se_id = se.season_id
         INNER JOIN `user` u2 ON i.u_id = u2.user_id
         <where>
             <if test="athlete.athleteId!=0">AND a.athlete_id=#{athlete.athleteId}</if>
@@ -94,39 +103,39 @@
 
     <select id="queryAthleteByItemUserAndTeam" resultMap="athleteMap">
         SELECT a.athlete_id,
-               a.status,
-               a.sign_time,
-               i.item_id,
-               i.item_name,
-               i.item_place,
-               i.item_unit,
-               i.start_time,
-               i.end_time,
-               u.user_id,
-               u.user_no,
-               u.nickname,
-               u.user_sex
+        a.status,
+        a.sign_time,
+        i.item_id,
+        i.item_name,
+        i.item_place,
+        i.item_unit,
+        i.start_time,
+        i.end_time,
+        u.user_id,
+        u.user_no,
+        u.nickname,
+        u.user_sex
         FROM ( `athlete` a INNER JOIN `user` u ON a.u_id = u.user_id )
-                 INNER JOIN `item` i ON a.i_id = i.item_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
         WHERE a.u_id = #{user.userId}
-          AND a.i_id = #{item.itemId}
+        AND a.i_id = #{item.itemId}
     </select>
 
     <select id="queryAllPersonScore" resultMap="personScore">
         SELECT t.team_name,
-               u.user_no,
-               u.nickname,
-               u.user_sex,
-               i.item_name,
-               s.score
+        u.user_no,
+        u.nickname,
+        u.user_sex,
+        i.item_name,
+        s.score
         FROM `athlete` a
-                 INNER JOIN `user` u ON a.u_id = u.user_id
-                 INNER JOIN `team` t ON t.team_id = u.t_id
-                 INNER JOIN `item` i ON a.i_id = i.item_id
-                 LEFT JOIN `score` s ON s.i_id = a.i_id
-            AND s.u_id = i.u_id
+        INNER JOIN `user` u ON a.u_id = u.user_id
+        INNER JOIN `team` t ON t.team_id = u.t_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
+        LEFT JOIN `score` s ON s.i_id = a.i_id
+        AND s.u_id = i.u_id
         ORDER BY i.item_name,
-                 score
+        score
     </select>
     <update id="updateAthlete" parameterType="com.ashuo.scms.entity.Athlete">
         UPDATE athlete

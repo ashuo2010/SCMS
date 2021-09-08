@@ -39,8 +39,8 @@
             <if test="season.seasonBeginTime!=null"> season_begin_time=#{season.seasonBeginTime},</if>
             <if test="season.seasonEndTime!=null"> season_end_time=#{season.seasonEndTime},</if>
             <if test="season.seasonStatus!=null"> season_status=#{season.seasonStatus},</if>
-            <if test="season.seasonAthleteAmount!=null and season.seasonAthleteAmount!=0">
-                season_athlete_amount=#{season.seasonAthleteAmount}
+            <if test="season.seasonAthleteAmount!=null">
+                season_athlete_amount=#{season.seasonAthleteAmount},
             </if>
             <if test="season.createTime!=null"> create_time=#{season.createTime},</if>
             <if test="season.editTime!=null"> edit_time=#{season.editTime},</if>

@@ -21,7 +21,7 @@
         u.user_sex,
         u.nickname
         FROM `item` i
-        INNER JOIN `season` se ON i.se_id = season.season_id
+        INNER JOIN `season` se ON i.se_id = se.season_id
         INNER JOIN `user` u ON i.u_id = u.user_id
     </sql>
     <resultMap id="itemMap" type="com.ashuo.scms.entity.Item">
@@ -86,7 +86,7 @@
         <include refid="itemSql"/>
         <where>
             <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
-            <if test="item.season!=null and item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
+            <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
             <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
             <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>

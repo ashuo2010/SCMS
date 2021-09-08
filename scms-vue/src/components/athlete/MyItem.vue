@@ -121,12 +121,13 @@ export default {
       axios
         .delete("/athlete/deleteAthlete?athleteId=" + athleteId)
         .then((res) => {
-          if (res.status == 200) {
+          if (res.data.status == 200) {
+            
             _this.$message.success("已取消该项目");
             _this.addDialogVisible = false;
             _this.page();
           } else {
-            _this.$message.error("取消报名失败");
+            _this.$message.error(res.data.msg);
           }
         });
     },

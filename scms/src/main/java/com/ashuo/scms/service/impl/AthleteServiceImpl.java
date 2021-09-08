@@ -57,7 +57,7 @@ public class AthleteServiceImpl implements AthleteService {
             int effNum2 = itemMapper.updateItem(item);
             //将本届运动会的报名人数增加一
             Season season = seasonService.getSeasonById(item.getSeason());
-            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount());
+            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount()+1);
             int effNum3 = seasonService.modifySeason(season);
             if (effNum != 1 || effNum2 != 1 || effNum3 != 1) {
                 return 0;
@@ -98,7 +98,7 @@ public class AthleteServiceImpl implements AthleteService {
             int effNum2 = athleteMapper.deleteAthlete(athleteId);
             //将本届运动会的报名人数减一
             Season season = seasonService.getSeasonById(item.getSeason());
-            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount());
+            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount()-1);
             int effNum3 = seasonService.modifySeason(season);
             if (effNum <= 0 || effNum2 <= 0 || effNum3 <= 0) {
                 return 0;
