@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
  * @author AShuo
  * @since 2021-09-07
  */
-@Api(tags = "用户接口")
+@Api(tags = "运动会接口")
 @RestController
 @Slf4j
 @RequestMapping("/season")
@@ -37,7 +37,7 @@ public class SeasonController {
     @Autowired
     SeasonService seasonService;
 
-    @ApiOperation("查询用户")
+    @ApiOperation("查询运动会")
     @GetMapping("/querySeason")
     @RequiresAuthentication
     public Object querySeason(QueryInfo queryInfo, Season season) {
@@ -52,7 +52,7 @@ public class SeasonController {
     }
 
 
-    @ApiOperation("添加用户")
+    @ApiOperation("添加运动会")
     @PostMapping("/addSeason")
     @RequiresRoles(value = {"1"})
     public Object addSeason(@RequestBody Season season) {
@@ -62,8 +62,9 @@ public class SeasonController {
         }
 
         Page<Season> page = new Page(1, 999999);
-
-        if (seasonService.getSeasonByCondition(page, season) != null) {
+        Season tempSeason=new Season();
+        tempSeason.setSeasonName(season.getSeasonName());
+        if (seasonService.getSeasonByCondition(page, tempSeason) != null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，届时名称已存在");
         }
         //设置创建时间
@@ -82,7 +83,7 @@ public class SeasonController {
     }
 
 
-    @ApiOperation("删除用户")
+    @ApiOperation("删除运动会")
     @DeleteMapping("/deleteSeason")
     @RequiresRoles(value = {"1"})
     public Object deleteSeason(Integer seasonId) {
@@ -93,7 +94,7 @@ public class SeasonController {
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
-    @ApiOperation("获取团体信息")
+    @ApiOperation("获取运动会届时信息")
     @GetMapping("/getSeason")
     @RequiresRoles(value = {"1"})
     public Object getSeason(Season seasonCondition) {
@@ -105,7 +106,7 @@ public class SeasonController {
     }
 
 
-    @ApiOperation("修改用户")
+    @ApiOperation("修改运动会")
     @PutMapping("/editSeason")
     @RequiresRoles(value = {"1"})
     public Object editSeason(@RequestBody Season season) {

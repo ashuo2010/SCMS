@@ -69,8 +69,10 @@ public class LogAopController {
             tempMethodName.append("运动员");
         } else if (methodName.contains("Score")) {
             tempMethodName.append("分数");
-        } else {
+        } else if  (methodName.contains("Ranking")) {
             tempMethodName.append("排名");
+        }else if  (methodName.contains("Season")) {
+            tempMethodName.append("届时");
         }
 
         if (methodName.contains("add")) {

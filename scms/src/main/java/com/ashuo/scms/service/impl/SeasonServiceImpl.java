@@ -29,6 +29,9 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season> impleme
             return null;
         }
         IPage<Season> seasonList = seasonMapper.querySeasonBySeasonCondition(page, season);
+        if (seasonList.getRecords().size()==0){
+            return null;
+        }
         return seasonList;
     }
 
