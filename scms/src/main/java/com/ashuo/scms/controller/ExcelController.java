@@ -7,10 +7,7 @@ import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.dto.ExcelPersonRankingDto;
 import com.ashuo.scms.dto.ExcelTeamRankingDto;
 import com.ashuo.scms.dto.ExcelUserDto;
-import com.ashuo.scms.entity.Athlete;
-import com.ashuo.scms.entity.Ranking;
-import com.ashuo.scms.entity.Team;
-import com.ashuo.scms.entity.User;
+import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.*;
 import com.ashuo.scms.util.DateFormatterUtil;
 import com.ashuo.scms.util.ModelExcelListener;
@@ -222,7 +219,7 @@ public class ExcelController {
 
         //获取数据
         Page<AthleteScoreDto> page = new Page<AthleteScoreDto>(1, 999999);
-        IPage<AthleteScoreDto> dtoList = scoreService.getAthleteScoreDto(page, 0, null);
+        IPage<AthleteScoreDto> dtoList = scoreService.getAthleteScoreDto(page,  new Score());
         List<AthleteScoreDto> athleteScoreDtoList = dtoList.getRecords();
 
         //设置内容表格格式

@@ -93,6 +93,9 @@
             <if test="athlete.item!=null and athlete.item.itemName!=null">AND i.item_name LIKE
                 '%${athlete.item.itemName}%'
             </if>
+            <if test="athlete.item!=null and athlete.item.season!=null and athlete.item.season.seasonId!=null">AND
+                se.season_id=#{athlete.item.season.seasonId}
+            </if>
             <if test="athlete.status==1">AND a.status=1</if>
             <if test="athlete.status==2">AND a.status=0</if>
         </where>

@@ -21,7 +21,7 @@ public interface ScoreService {
 
     IPage<Score> getScoreByTeamId(Page<Score> page, int teamId);
 
-    IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, int itemId, String nickname);
+    IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, Score score);
 
 
     List<Score> getScoreByItemIdLimit(int itemId, String condition);

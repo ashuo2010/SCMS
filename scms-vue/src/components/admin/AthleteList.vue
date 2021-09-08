@@ -29,6 +29,24 @@
           </el-input>
         </el-col>
 
+        <div style="float: left">
+          <el-col>
+            <el-select
+              v-model="selectSeasonId"
+              filterable
+              placeholder="请选择运动会"
+              @change="querySelectedOptions"
+            >
+              <el-option
+                v-for="item in allSeasonOptions"
+                :key="item.seasonId"
+                :label="item.seasonName"
+                :value="item.seasonId"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </div>
         <!-- 选择项目 -->
         <div style="float: left">
           <el-col>
@@ -40,9 +58,9 @@
             >
               <el-option
                 v-for="item in itemList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.itemId"
+                :label="item.itemName"
+                :value="item.itemId"
               >
               </el-option>
             </el-select>
@@ -113,15 +131,15 @@ export default {
       athleteList: [],
 
       //项目列表
-      itemList: [
-        {
-          value: 0,
-          label: "所有项目",
-        },
-      ],
-
+      itemList: [],
       //选择的项目
-      selectItemId: 0,
+      selectItemId: "",
+
+      //所有运动会届时列表
+      allSeasonOptions:[],
+      //选择的届时
+      selectSeasonId:"",
+
       currentUser: "",
 
       systemStatus: true,
@@ -150,6 +168,7 @@ export default {
   created() {
     this.page();
     this.getItems();
+    this.getSeasons();
     this.currentUser = JSON.parse(localStorage.getItem("user"));
   },
   methods: {
@@ -160,16 +179,32 @@ export default {
         .then((res) => {
           let data = res.data.data;
           _this.athleteList = data.records;
-          console.log(this.athleteList);
           _this.queryInfo.currentPage = data.current;
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
         });
-      console.log(_this.systemStatus);
       axios.post("/syslog/getSystemStatus").then((res) => {
         _this.systemStatus = res.data.data;
-        console.log(_this.systemStatus);
       });
+    },
+
+
+ //获取运动会届时
+    async getSeasons() {
+      const _this = this;
+      axios
+        .get(
+          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data.records;
+        data.push( {
+          seasonId: "",
+          seasonName: "所有运动会",
+        })
+        _this.allSeasonOptions=data;
+     
+        });
     },
 
     //获取项目列表
@@ -179,39 +214,35 @@ export default {
         .get("/item/queryItem?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
           let data = res.data.data.records;
-          data.forEach((item, index) => {
-            _this.itemList.push({
-              value: item.itemId,
-              label: item.itemName + " (" + item.itemSex + ") ",
-            });
-          });
-
-          console.log(_this.itemList);
+                    data.push( {
+          itemId: 0,
+          itemName: "所有项目",
+        })
+          _this.itemList=data;
         });
     },
 
-    //根据下拉框进行搜索
-    async querySelectedOptions() {
+     async querySelectedOptions() {
       const _this = this;
       axios
         .get(
-          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.itemId=" +
-            _this.selectItemId
+          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&score.season.seasonId="+_this.selectSeasonId
+          +"&item.itemId=" +_this.selectItemId
         )
         .then((res) => {
           let data = res.data.data;
           _this.athleteList = data.records;
-          console.log(this.athleteList);
           _this.queryInfo.currentPage = data.current;
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
         });
-      console.log(_this.systemStatus);
-      axios.post("/syslog/getSystemStatus").then((res) => {
+        axios.post("/syslog/getSystemStatus").then((res) => {
         _this.systemStatus = res.data.data;
-        console.log(_this.systemStatus);
       });
     },
+
+
+
 
     async exportExcel() {
       const _this = this;
@@ -254,7 +285,6 @@ export default {
         return _this.$message.info("已取消");
       }
       axios.post("/syslog/switchSystemStatus").then((res) => {
-        console.log(res.data);
         if (res.data.status != 200) {
           return _this.$message.error("操作失败" + res.data.msg);
         }

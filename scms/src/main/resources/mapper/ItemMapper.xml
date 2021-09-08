@@ -82,7 +82,7 @@
         WHERE item_id = #{itemId}
     </delete>
 
-    <select id="queryItemByItemCondition" resultMap="itemMap">
+    <select id="queryOneItemByItemCondition" resultMap="itemMap">
         <include refid="itemSql"/>
         <where>
             <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
@@ -98,10 +98,19 @@
         </where>
     </select>
 
-    <select id="queryItemByItemName" resultMap="itemMap">
+    <select id="queryItemByItemCondition" resultMap="itemMap">
         <include refid="itemSql"/>
         <where>
-            <if test="itemName!=null">AND item_name LIKE '%${itemName}%'</if>
+            <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
+            <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
+            <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
+            <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
+            <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
+            <if test="item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
+            <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
+            <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
         </where>
     </select>
 </mapper>

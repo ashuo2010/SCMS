@@ -27,6 +27,7 @@
             ></el-button>
           </el-input>
         </el-col>
+   
 
         <!--添加按钮-->
         <el-col :span="4">
@@ -269,6 +270,36 @@ export default {
           _this.queryInfo.pageSize = data.size;
         });
     },
+
+   
+
+
+   /*  async querySelectedOptions() {
+      const _this = this;
+      axios
+         .get(
+          "/season/querySeason?query=&currentPage=1&pageSize=999999999&season.seasonId=" +
+            _this.selectItemId
+        )
+        .then((res) => {
+          let data = res.data.data;
+          _this.season = data.records;
+          _this.season.forEach((item,index) => {
+            if(item.seasonStatus==1){
+              item.seasonStatus="正在举行";
+            }else{
+              item.seasonStatus="已闭幕";
+            }
+
+          }); 
+
+          _this.queryInfo.currentPage = data.current;
+          _this.total = data.total;
+          _this.queryInfo.pageSize = data.size;
+        });
+    }, */
+
+
     handleSizeChange(newSize) {
       const _this = this;
       _this.queryInfo.pageSize = newSize;

@@ -23,18 +23,18 @@ public class ItemServiceImpl implements ItemService {
     ItemMapper itemMapper;
 
     @Override
-    public IPage<Item> getAllItem(Page<Item> page, String itemName) {
-        IPage<Item> itemList = itemMapper.queryItemByItemName(page, itemName);
+    public IPage<Item> getItemByItemCondition(Page<Item> page, Item item) {
+        IPage<Item> itemList = itemMapper.queryItemByItemCondition(page, item);
         return itemList;
     }
 
 
     @Override
-    public Item getItemByCondition(Item itemCondition) {
+    public Item getOneItemByCondition(Item itemCondition) {
         if (itemCondition == null) {
             return null;
         }
-        Item item = itemMapper.queryItemByItemCondition(itemCondition);
+        Item item = itemMapper.queryOneItemByItemCondition(itemCondition);
         return item;
     }
 

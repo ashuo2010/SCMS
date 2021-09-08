@@ -83,14 +83,20 @@ public class ScoreController {
     @ApiOperation("项目下所有运动员的分数")
     @GetMapping("/queryAthleteScore")
     @RequiresAuthentication
-    public Object queryAthleteScore(QueryInfo queryInfo, @RequestParam int itemId) {
+    public Object queryAthleteScore(QueryInfo queryInfo, Score score) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }
+        User user=new User();
+        user.setNickname(queryInfo.getQuery());
+        if (score==null){
+             score=new Score();
+        }
+        score.setUser(user);
         //分页查询
         Page<AthleteScoreDto> page = new Page<AthleteScoreDto>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<AthleteScoreDto> scoreList = scoreService.getAthleteScoreDto(page, itemId, queryInfo.getQuery());
+        IPage<AthleteScoreDto> scoreList = scoreService.getAthleteScoreDto(page, score);
         return ServerResponse.createBySuccess(scoreList);
     }
 
@@ -104,7 +110,7 @@ public class ScoreController {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Score信息为空");
         }
 
-        Item item = itemService.getItemByCondition(score.getItem());
+        Item item = itemService.getOneItemByCondition(score.getItem());
         if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
             return ServerResponse.createByErrorCodeMessage(400, "分数录入失败，该届运动会已结束");
         }
@@ -179,7 +185,7 @@ public class ScoreController {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Score信息为空");
         }
 
-        Item item = itemService.getItemByCondition(score.getItem());
+        Item item = itemService.getOneItemByCondition(score.getItem());
         if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
             return ServerResponse.createByErrorCodeMessage(400, "分数修改失败，该届运动会已结束");
         }

@@ -35,6 +35,6 @@ public interface ScoreMapper {
 
     IPage<Score> queryScoreByTeamId(Page<Score> page, @Param("teamId") int teamId);
 
-    IPage<AthleteScoreDto> queryAthleteScoreDto(Page<AthleteScoreDto> page , @Param("itemId") Integer itemId, @Param("nickname") String nickname);
+    IPage<AthleteScoreDto> queryAthleteScoreDto(Page<AthleteScoreDto> page , @Param("score") Score score);
 
 }

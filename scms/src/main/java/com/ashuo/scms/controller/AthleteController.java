@@ -74,7 +74,7 @@ public class AthleteController {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Athlete信息为空");
         }
 
-        Item item = itemService.getItemByCondition(athlete.getItem());
+        Item item = itemService.getOneItemByCondition(athlete.getItem());
         if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
             return ServerResponse.createByErrorCodeMessage(400, "报名失败，该届运动会已结束");
         }

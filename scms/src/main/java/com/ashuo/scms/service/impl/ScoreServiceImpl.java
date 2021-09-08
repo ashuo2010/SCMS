@@ -43,8 +43,8 @@ public class ScoreServiceImpl implements ScoreService {
     }
 
     @Override
-    public IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, int itemId, String nickname) {
-        IPage<AthleteScoreDto> scoreDtoList = scoreMapper.queryAthleteScoreDto(page, itemId, nickname);
+    public IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, Score score) {
+        IPage<AthleteScoreDto> scoreDtoList = scoreMapper.queryAthleteScoreDto(page, score);
         return scoreDtoList;
     }
 

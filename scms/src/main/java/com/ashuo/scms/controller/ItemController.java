@@ -4,6 +4,7 @@ package com.ashuo.scms.controller;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.Item;
 import com.ashuo.scms.entity.QueryInfo;
+import com.ashuo.scms.entity.Season;
 import com.ashuo.scms.service.ItemService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -37,15 +38,16 @@ public class ItemController {
     @ApiOperation("查询项目")
     @GetMapping("/queryItem")
     @RequiresAuthentication
-    public Object queryItem(QueryInfo queryInfo) {
+    public Object queryItem(QueryInfo queryInfo,Item item) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }
-        //分页查询
-        Page<Item> page = new Page<Item>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Item> itemList = itemService.getAllItem(page, queryInfo.getQuery());
-        return ServerResponse.createBySuccess(itemList);
+        //如果输入框有内容,则根据内容搜索
+        item.setItemName(queryInfo.getQuery());
+        Page<Item> page = new Page(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        IPage<Item> seasonList = itemService.getItemByItemCondition(page, item);
+        return ServerResponse.createBySuccess(seasonList);
     }
 
 
@@ -61,7 +63,7 @@ public class ItemController {
         Item tempItem = new Item();
         tempItem.setItemName(item.getItemName());
         tempItem.setItemSex(item.getItemSex());
-        if (itemService.getItemByCondition(tempItem) != null) {
+        if (itemService.getOneItemByCondition(tempItem) != null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Item已存在");
         }
         //设置创建时间
@@ -101,7 +103,7 @@ public class ItemController {
     @RequiresRoles(value = {"1"})
     public Object getItem(Item itemCondition) {
 
-        Item item = itemService.getItemByCondition(itemCondition);
+        Item item = itemService.getOneItemByCondition(itemCondition);
         if (item != null) {
             return ServerResponse.createBySuccess(item);
         }
@@ -115,7 +117,7 @@ public class ItemController {
         if (item == null || item.getItemName() == null) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item信息为空");
         }
-        if (item.equals(itemService.getItemByCondition(item))) {
+        if (item.equals(itemService.getOneItemByCondition(item))) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item已存在");
         }
 

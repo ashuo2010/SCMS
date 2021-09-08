@@ -13,9 +13,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  * @since 2021-04-01
  */
 public interface ItemService {
-    IPage<Item> getAllItem(Page<Item> page, String itemName);
+    IPage<Item> getItemByItemCondition(Page<Item> page, Item item);
 
-    Item getItemByCondition(Item item);
+    Item getOneItemByCondition(Item item);
 
     int addItem(Item item);
 

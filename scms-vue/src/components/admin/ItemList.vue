@@ -43,7 +43,7 @@
         <el-col :span="10">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入搜索内容"
+            placeholder="请输入搜索项目名称"
             v-model="queryInfo.query"
             clearable
             @keyup.enter.native="page"
@@ -57,7 +57,24 @@
             ></el-button>
           </el-input>
         </el-col>
-
+      <div style="float: left">
+          <el-col>
+            <el-select
+              v-model="selectSeasonId"
+              filterable
+              placeholder="请选择运动会"
+              @change="querySelectedOptions"
+            >
+              <el-option
+                v-for="item in allSeasonOptions"
+                :key="item.seasonId"
+                :label="item.seasonName"
+                :value="item.seasonId"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </div>
         <!--添加按钮-->
         <el-col :span="4">
           <el-button type="primary" @click="addDialogVisible = true"
@@ -146,7 +163,7 @@
         <el-form-item label="运动会项目届时" >
           <el-select v-model="addForm.season.seasonId" filterable placeholder="请选择">
             <el-option
-              v-for="item in seasons"
+              v-for="item in seasonEnableOptions"
               :key="item.seasonId"
               :label="item.seasonName"
               :value="item.seasonId"
@@ -254,7 +271,7 @@
         <el-form-item label="运动会项目届时"  prop="season.seasonName">
           <el-select v-model="editForm.season.seasonId" filterable placeholder="请选择">
             <el-option
-              v-for="item in seasons"
+              v-for="item in seasonEnableOptions"
               :key="item.seasonId"
               :label="item.seasonName"
               :value="item.seasonId"
@@ -351,9 +368,12 @@ export default {
       item: [],
       //记分员
       scorers: [],
-      //届时列表
-      seasons: [],
-
+      //正在举行的届时列表
+      seasonEnableOptions: [],
+      //所有的届时列表
+      allSeasonOptions:[],
+      //选择的season
+      selectSeasonId:"",
       itemDetail: [],
 
       userSex: [
@@ -474,6 +494,7 @@ export default {
           _this.queryInfo.pageSize = data.size;
         });
     },
+    //获取记分员
     async getScorers() {
       const _this = this;
       axios
@@ -485,18 +506,40 @@ export default {
           _this.scorers = data.records;
         });
     },
-
+    //获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
         .get(
-          "/season/querySeason?seasonStatus=1&query=&currentPage=1&pageSize=999999999"
+          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data.records;
+          _this.allSeasonOptions=data;
+          data.forEach((item,index) => {
+            if(item.seasonStatus==1){
+              _this.seasonEnableOptions.push(item);
+            }
+          });
+        });
+    },
+
+    async querySelectedOptions() {
+      const _this = this;
+      axios
+        .get(
+          "/item/queryItem?query=&currentPage=1&pageSize=999999999&season.seasonId="+_this.selectSeasonId
         )
         .then((res) => {
           let data = res.data.data;
-          _this.seasons = data.records;
+          _this.item = data.records;
+          _this.queryInfo.currentPage = data.current;
+          _this.total = data.total;
+          _this.queryInfo.pageSize = data.size;
+
         });
     },
+
 
     async getItemDetail(id) {
       const _this = this;

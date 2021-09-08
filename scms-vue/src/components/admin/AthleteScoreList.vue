@@ -30,19 +30,37 @@
         </el-col>
 
         <div style="float: left">
-          <!--下拉列表选择区域 -->
+          <el-col>
+            <el-select
+              v-model="selectSeasonId"
+              filterable
+              placeholder="请选择运动会"
+              @change="querySelectedOptions"
+            >
+              <el-option
+                v-for="item in allSeasonOptions"
+                :key="item.seasonId"
+                :label="item.seasonName"
+                :value="item.seasonId"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </div>
+
+        <div style="float: left">
           <el-col>
             <el-select
               v-model="selectItemId"
               filterable
-              placeholder="所有项目"
+              placeholder="请选择项目"
               @change="querySelectedOptions"
             >
               <el-option
                 v-for="item in itemList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                :key="item.itemId"
+                :label="item.itemName"
+                :value="item.itemId"
               >
               </el-option>
             </el-select>
@@ -100,15 +118,14 @@ export default {
       //成绩列表
       athleteScoreList: [],
       //项目列表
-      itemList: [
-        {
-          value: 0,
-          label: "所有项目",
-        },
-      ],
+      itemList: [ ],
       //选择的项目
       selectItemId: "",
 
+      //所有运动会届时列表
+      allSeasonOptions:[],
+      //选择的届时
+      selectSeasonId:"",
       queryInfo: {
         currentPage: 1,
         pageSize: 5,
@@ -120,12 +137,13 @@ export default {
   created() {
     this.page();
     this.getItems();
+    this.getSeasons();
   },
   methods: {
     async page() {
       const _this = this;
       axios
-        .get("/score/queryAthleteScore?itemId=0&queryInfo=", {
+        .get("/score/queryAthleteScore?&queryInfo=", {
           params: _this.queryInfo,
         })
         .then((res) => {
@@ -136,20 +154,37 @@ export default {
           _this.queryInfo.pageSize = data.size;
         });
     },
+ //获取运动会届时
+    async getSeasons() {
+      const _this = this;
+      axios
+        .get(
+          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data.records;
+        data.push( {
+          seasonId: "",
+          seasonName: "所有运动会",
+        })
+        _this.allSeasonOptions=data;
+     
+        });
+    },
 
-    //获取记分员
+    //获取项目
     async getItems() {
       const _this = this;
       axios
         .get("/item/queryItem?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
           let data = res.data.data.records;
-          data.forEach((item, index) => {
-            _this.itemList.push({
-              value: item.itemId,
-              label: item.itemName,
-            });
-          });
+          data.push( {
+          itemId: 0,
+          itemName: "所有项目",
+        })
+        _this.itemList=data;
+
         });
     },
 
@@ -158,8 +193,8 @@ export default {
       const _this = this;
       axios
         .get(
-          "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&itemId=" +
-            _this.selectItemId
+          "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
+          +"&item.itemId=" + _this.selectItemId
         )
         .then((res) => {
           let data = res.data.data;

@@ -24,9 +24,9 @@ public interface ItemMapper {
     int deleteItem(int itemId);
 
     //按条件查询Item
-    IPage<Item> queryItemByItemName(Page<Item> page, @Param("itemName") String itemName);
+    IPage<Item> queryItemByItemCondition(Page<Item> page, @Param("item") Item item);
 
     //获取单个Item信息
-    Item queryItemByItemCondition(@Param("item") Item item);
+    Item queryOneItemByItemCondition(@Param("item") Item item);
 
 }

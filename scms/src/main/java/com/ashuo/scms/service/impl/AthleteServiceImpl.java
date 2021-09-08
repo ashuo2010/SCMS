@@ -52,7 +52,7 @@ public class AthleteServiceImpl implements AthleteService {
         } else {
             int effNum = athleteMapper.insertAthlete(athlete);
             //将对应项目报名数量增加一
-            Item item = itemMapper.queryItemByItemCondition(athlete.getItem());
+            Item item = itemMapper.queryOneItemByItemCondition(athlete.getItem());
             item.setAthleteAmount(item.getAthleteAmount() + 1);
             int effNum2 = itemMapper.updateItem(item);
             //将本届运动会的报名人数增加一
@@ -91,7 +91,7 @@ public class AthleteServiceImpl implements AthleteService {
             Page<Athlete> page = new Page<>(1, 1);
             IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(page, athlete);
             athlete = athleteList.getRecords().get(0);
-            Item item = itemMapper.queryItemByItemCondition(athlete.getItem());
+            Item item = itemMapper.queryOneItemByItemCondition(athlete.getItem());
             //将对应项目报名数量减一
             item.setAthleteAmount(item.getAthleteAmount() - 1);
             int effNum = itemMapper.updateItem(item);
