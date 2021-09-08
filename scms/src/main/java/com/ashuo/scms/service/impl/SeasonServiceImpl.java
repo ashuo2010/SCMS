@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author AShuo
@@ -33,6 +33,15 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season> impleme
     }
 
     @Override
+    public Season getSeasonById(Season season){
+        if (season == null||season.getSeasonId()==null||season.getSeasonId()==0) {
+            return null;
+        }
+        return seasonMapper.querySeasonById(season);
+    }
+
+    @Override
+
     public int addSeason(Season season) {
         if (season == null) {
             return 0;

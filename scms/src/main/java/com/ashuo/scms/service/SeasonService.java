@@ -8,15 +8,17 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author AShuo
  * @since 2021-09-07
  */
 public interface SeasonService extends IService<Season> {
-    
+
     IPage<Season> getSeasonByCondition(Page<Season> page, Season season);
+
+    Season getSeasonById(Season season);
 
     int addSeason(Season season);
 

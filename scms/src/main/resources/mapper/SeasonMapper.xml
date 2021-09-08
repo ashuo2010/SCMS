@@ -63,9 +63,17 @@
             <if test="season.seasonBeginTime!=null">AND season_begin_time=#{season.seasonBeginTime},</if>
             <if test="season.seasonEndTime!=null">AND season_end_time=#{season.seasonEndTime},</if>
             <if test="season.seasonStatus!=null">AND season_status=#{season.seasonStatus},</if>
-            <if test="season.seasonAthleteAmount!=null and season.seasonAthleteAmount!=0">AND season_athlete_amount=#{season.seasonAthleteAmount},</if>
+            <if test="season.seasonAthleteAmount!=null and season.seasonAthleteAmount!=0">AND
+                season_athlete_amount=#{season.seasonAthleteAmount},
+            </if>
             <if test="season.createTime!=null">AND create_time=#{season.createTime},</if>
             <if test="season.editTime!=null">AND edit_time=#{season.editTime}</if>
         </where>
     </select>
+
+    <select id="querySeasonById" resultType="com.ashuo.scms.entity.Season">
+        SELECT * FROM season
+        WHERE season_id=#{season.id}
+    </select>
+
 </mapper>

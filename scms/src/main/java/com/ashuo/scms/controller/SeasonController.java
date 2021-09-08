@@ -5,6 +5,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.Season;
+import com.ashuo.scms.entity.Season;
 import com.ashuo.scms.service.SeasonService;
 import com.ashuo.scms.service.UserService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -62,7 +63,9 @@ public class SeasonController {
 
         Page<Season> page = new Page(1, 999999);
 
-        //todo 重复名称判断
+        if (seasonService.getSeasonByCondition(page, season) != null) {
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，届时名称已存在");
+        }
         //设置创建时间
         season.setCreateTime(LocalDateTime.now());
         season.setEditTime(LocalDateTime.now());
@@ -90,15 +93,30 @@ public class SeasonController {
         return ServerResponse.createBySuccessMessage("删除成功");
     }
 
+    @ApiOperation("获取团体信息")
+    @GetMapping("/getSeason")
+    @RequiresRoles(value = {"1"})
+    public Object getSeason(Season seasonCondition) {
+        Season season = seasonService.getSeasonById(seasonCondition);
+        if (season != null) {
+            return ServerResponse.createBySuccess(season);
+        }
+        return ServerResponse.createByErrorMessage("查询不到该Season信息");
+    }
+
 
     @ApiOperation("修改用户")
     @PutMapping("/editSeason")
     @RequiresRoles(value = {"1"})
     public Object editSeason(@RequestBody Season season) {
         if (season == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，Season信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，届时信息为空");
         }
-        //todo 重复名称判断
+
+        Page<Season> page = new Page(1, 999999);
+        if (seasonService.getSeasonByCondition(page, season) != null) {
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，届时名称已存在");
+        }
 
         season.setEditTime(LocalDateTime.now());
         int effNum = 0;
