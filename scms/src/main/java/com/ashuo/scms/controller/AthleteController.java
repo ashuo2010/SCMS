@@ -3,6 +3,7 @@ package com.ashuo.scms.controller;
 
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.Athlete;
+import com.ashuo.scms.entity.Item;
 import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.AthleteService;
@@ -39,6 +40,7 @@ public class AthleteController {
 
     @Autowired
     ItemService itemService;
+
     @ApiOperation("查询运动员")
     @GetMapping("/queryAthlete")
     @RequiresAuthentication
@@ -68,12 +70,17 @@ public class AthleteController {
     @RequiresAuthentication
     public Object addAthlete(@RequestBody Athlete athlete) {
 
-        if (!SyslogController.systemStatus) {
-            return ServerResponse.createByErrorCodeMessage(400, "报名失败，系统已关闭");
-        }
-
         if (athlete == null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Athlete信息为空");
+        }
+
+        Item item = itemService.getItemByCondition(athlete.getItem());
+        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+            return ServerResponse.createByErrorCodeMessage(400, "报名失败，该届运动会已结束");
+        }
+
+        if (!SyslogController.systemStatus) {
+            return ServerResponse.createByErrorCodeMessage(400, "报名失败，系统已关闭");
         }
 
         //通过Athlete,uId和iId判断是否已经报过名了
@@ -96,9 +103,9 @@ public class AthleteController {
         int effNum = 0;
         effNum = athleteService.addAthlete(athlete);
         if (effNum == 0) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败");
+            return ServerResponse.createByErrorCodeMessage(400, "报名失败");
         }
-        return ServerResponse.createBySuccessMessage("添加成功");
+        return ServerResponse.createBySuccessMessage("报名成功");
     }
 
     @ApiOperation("取消报名")
@@ -106,7 +113,13 @@ public class AthleteController {
     @RequiresAuthentication
     @Transactional
     public Object deleteAthlete(Integer athleteId) {
-
+        Page<Athlete> page = new Page(1, 1);
+        Athlete athlete=new Athlete();
+        athlete.setAthleteId(athleteId);
+        Item item = athleteService.getAthleteByCondition(page,athlete).getRecords().get(0).getItem();
+        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+            return ServerResponse.createByErrorCodeMessage(400, "报名失败，该届运动会已结束");
+        }
         if (!SyslogController.systemStatus) {
             return ServerResponse.createByErrorCodeMessage(400, "取消报名失败，系统已关闭");
         }
@@ -115,12 +128,12 @@ public class AthleteController {
         try {
             effNum = athleteService.removeAthlete(athleteId);
         } catch (Exception e) {
-            return ServerResponse.createByErrorCodeMessage(400, "删除失败");
+            return ServerResponse.createByErrorCodeMessage(400, "取消报名失败");
         }
         if (effNum == 0) {
-            return ServerResponse.createByErrorCodeMessage(400, "删除失败");
+            return ServerResponse.createByErrorCodeMessage(400, "取消报名失败");
         }
-        return ServerResponse.createBySuccessMessage("删除成功");
+        return ServerResponse.createBySuccessMessage("取消报名成功");
     }
 
 

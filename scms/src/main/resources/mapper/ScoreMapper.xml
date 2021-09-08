@@ -22,6 +22,11 @@
             <result column="item_sex" property="itemSex"/>
             <result column="item_unit" property="itemUnit"/>
             <result column="athlete_amount" property="athleteAmount"/>
+            <association property="season" javaType="com.ashuo.scms.entity.Season">
+                <id column="se_id" property="seasonId"/>
+                <result column="season_name" property="seasonName"/>
+                <result column="season_status" property="seasonStatus"/>
+            </association>
         </association>
     </resultMap>
     <insert id="insertScore" parameterType="com.ashuo.scms.entity.Score"
@@ -91,6 +96,9 @@
         i.item_sex,
         i.item_unit,
         i.athlete_amount,
+        se.season_id,
+        se.season_name,
+        se.season_status,
         u.user_id,
         u.user_no,
         u.nickname,
@@ -99,8 +107,10 @@
         FROM
         ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
         INNER JOIN `item` i ON s.i_id = i.item_id
+        INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
             <if test="itemId!=0">AND i.item_id = #{itemId}</if>
+            AND se.season_status=1
         </where>
         ORDER BY
         s.score

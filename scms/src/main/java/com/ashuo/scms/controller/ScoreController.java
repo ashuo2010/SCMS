@@ -2,11 +2,9 @@ package com.ashuo.scms.controller;
 
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.AthleteScoreDto;
-import com.ashuo.scms.entity.Athlete;
-import com.ashuo.scms.entity.QueryInfo;
-import com.ashuo.scms.entity.Ranking;
-import com.ashuo.scms.entity.Score;
+import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.AthleteService;
+import com.ashuo.scms.service.ItemService;
 import com.ashuo.scms.service.RankingService;
 import com.ashuo.scms.service.ScoreService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -48,6 +46,8 @@ public class ScoreController {
     @Autowired
     private AthleteService athleteService;
 
+    @Autowired
+    ItemService itemService;
 
     @ApiOperation("查询运动员项目分数")
     @GetMapping("/queryScore")
@@ -104,6 +104,10 @@ public class ScoreController {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Score信息为空");
         }
 
+        Item item = itemService.getItemByCondition(score.getItem());
+        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+            return ServerResponse.createByErrorCodeMessage(400, "分数录入失败，该届运动会已结束");
+        }
             //设置创建、修改时间
             score.setCreateTime(LocalDateTime.now());
             score.setEditTime(LocalDateTime.now());
@@ -175,6 +179,10 @@ public class ScoreController {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Score信息为空");
         }
 
+        Item item = itemService.getItemByCondition(score.getItem());
+        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+            return ServerResponse.createByErrorCodeMessage(400, "分数修改失败，该届运动会已结束");
+        }
             score.setEditTime(LocalDateTime.now());
             //修改分数
             scoreService.modifyScore(score);

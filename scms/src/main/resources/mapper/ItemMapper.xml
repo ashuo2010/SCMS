@@ -3,22 +3,26 @@
 <mapper namespace="com.ashuo.scms.mapper.ItemMapper">
     <sql id="itemSql">
         SELECT i.item_id,
-               i.u_id,
-               i.item_name,
-               i.item_place,
-               i.item_unit,
-               i.item_sex,
-               i.athlete_amount,
-               i.start_time,
-               i.edit_time,
-               i.create_time,
-               i.end_time,
-               u.user_id,
-               u.user_no,
-               u.user_sex,
-               u.nickname
+        i.u_id,
+        i.item_name,
+        i.item_place,
+        i.item_unit,
+        i.item_sex,
+        i.athlete_amount,
+        i.start_time,
+        i.edit_time,
+        i.create_time,
+        i.end_time,
+        se.season_id,
+        se.season_name,
+        se.season_status,
+        u.user_id,
+        u.user_no,
+        u.user_sex,
+        u.nickname
         FROM `item` i
-                 INNER JOIN `user` u ON i.u_id = u.user_id
+        INNER JOIN `season` se ON i.se_id = season.season_id
+        INNER JOIN `user` u ON i.u_id = u.user_id
     </sql>
     <resultMap id="itemMap" type="com.ashuo.scms.entity.Item">
         <id column="item_id" property="itemId"/>
@@ -31,6 +35,11 @@
         <result column="end_time" property="endTime"/>
         <result column="create_time" property="createTime"/>
         <result column="edit_time" property="editTime"/>
+        <association property="season" javaType="com.ashuo.scms.entity.Season">
+            <id column="season_id" property="seasonId"/>
+            <result column="season_name" property="seasonName"/>
+            <result column="season_status" property="seasonStatus"/>
+        </association>
         <association property="user" javaType="com.ashuo.scms.entity.User">
             <id column="user_id" property="userId"/>
             <result column="user_no" property="userNo"/>
@@ -41,16 +50,18 @@
 
     <insert id="insertItem" parameterType="com.ashuo.scms.entity.Item"
             useGeneratedKeys="true" keyColumn="item_id" keyProperty="itemId">
-        INSERT INTO item(u_id, item_name, item_place, item_unit, item_sex, athlete_amount, start_time, end_time,
-                         create_time, edit_time)
-        VALUES (#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{athleteAmount}, #{startTime},
-                #{endTime},
-                #{createTime}, #{editTime})
+        INSERT INTO item(se_id,u_id, item_name, item_place, item_unit, item_sex, athlete_amount, start_time, end_time,
+        create_time, edit_time)
+        VALUES (#{season.seasonId},#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{athleteAmount},
+        #{startTime},
+        #{endTime},
+        #{createTime}, #{editTime})
     </insert>
 
     <update id="updateItem" parameterType="com.ashuo.scms.entity.Item">
         UPDATE item
         <set>
+            <if test="item.season!=null and item.season.seasonId!=0">se_id=#{item.season.seasonId},</if>
             <if test="item.user!=null and item.user.userId!=0">u_id=#{item.user.userId},</if>
             <if test="item.itemName!=null">item_name=#{item.itemName},</if>
             <if test="item.itemPlace!=null">item_place=#{item.itemPlace},</if>
@@ -75,6 +86,7 @@
         <include refid="itemSql"/>
         <where>
             <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.season!=null and item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
             <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
             <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
