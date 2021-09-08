@@ -4,8 +4,9 @@ import Login from '../components/Login'
 import Home from '../components/Home'
 import Welcome from "../components/Welcome";
 import Page401 from "../components/401"
-import UserList from "../components/admin/UserList";
+import SeasonList from "../components/admin/SeasonList";
 import TeamList from "../components/admin/TeamList";
+import UserList from "../components/admin/UserList";
 import ItemList from "../components/admin/ItemList";
 import AthleteList from "../components/admin/AthleteList";
 import ScoreList from "../components/admin/ScoreList";
@@ -40,12 +41,16 @@ const routes = [{
                 component: Page401
             },
             {
-                path: "/user/userlist",
-                component: UserList
+                path: "/season/seasonlist",
+                component: SeasonList
             },
             {
                 path: "/team/teamlist",
                 component: TeamList
+            },
+            {
+                path: "/user/userlist",
+                component: UserList
             },
             {
                 path: "/item/itemlist",
