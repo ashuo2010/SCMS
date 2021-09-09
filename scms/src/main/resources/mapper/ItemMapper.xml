@@ -2,12 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ashuo.scms.mapper.ItemMapper">
     <sql id="itemSql">
-        SELECT i.item_id,
+        SELECT
+        i.item_id,
+        i.parent_id,
         i.u_id,
         i.item_name,
         i.item_place,
         i.item_unit,
         i.item_sex,
+        i.item_multi_athlete,
         i.athlete_amount,
         i.start_time,
         i.edit_time,
@@ -26,10 +29,12 @@
     </sql>
     <resultMap id="itemMap" type="com.ashuo.scms.entity.Item">
         <id column="item_id" property="itemId"/>
+        <result column="parent_id" property="parentId"/>
         <result column="item_name" property="itemName"/>
         <result column="item_place" property="itemPlace"/>
         <result column="item_unit" property="itemUnit"/>
         <result column="item_sex" property="itemSex"/>
+        <result column="item_multi_athlete" property="itemMultiAthlete"/>
         <result column="athlete_amount" property="athleteAmount"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
@@ -50,9 +55,9 @@
 
     <insert id="insertItem" parameterType="com.ashuo.scms.entity.Item"
             useGeneratedKeys="true" keyColumn="item_id" keyProperty="itemId">
-        INSERT INTO item(se_id,u_id, item_name, item_place, item_unit, item_sex, athlete_amount, start_time, end_time,
+        INSERT INTO item(parent_id,se_id,u_id, item_name, item_place, item_unit, item_sex, item_multi_athlete,athlete_amount, start_time, end_time,
         create_time, edit_time)
-        VALUES (#{season.seasonId},#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{athleteAmount},
+        VALUES (#{parentId},#{season.seasonId},#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{itemMultiAthlete},#{athleteAmount},
         #{startTime},
         #{endTime},
         #{createTime}, #{editTime})
@@ -61,12 +66,14 @@
     <update id="updateItem" parameterType="com.ashuo.scms.entity.Item">
         UPDATE item
         <set>
+            <if test="item.parentId!=null">parent_id=#{item.parentId},</if>
             <if test="item.season!=null and item.season.seasonId!=0">se_id=#{item.season.seasonId},</if>
             <if test="item.user!=null and item.user.userId!=0">u_id=#{item.user.userId},</if>
             <if test="item.itemName!=null">item_name=#{item.itemName},</if>
             <if test="item.itemPlace!=null">item_place=#{item.itemPlace},</if>
             <if test="item.itemUnit!=null">item_unit=#{item.itemUnit},</if>
             <if test="item.itemSex!=null">item_sex=#{item.itemSex},</if>
+            <if test="item.itemMultiAthlete!=null">item_multi_athlete=#{item.itemMultiAthlete},</if>
             <if test="item.athleteAmount!=0">athlete_amount=#{item.athleteAmount},</if>
             <if test="item.startTime!=null">start_time=#{item.startTime},</if>
             <if test="item.endTime!=null">end_time=#{item.endTime},</if>
@@ -86,12 +93,14 @@
         <include refid="itemSql"/>
         <where>
             <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.parentId!=null">AND i.parent_id=#{item.parentId}</if>
             <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
             <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
             <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
+            <if test="item.itemMultiAthlete!=null">AND i.item_multi_athlete=#{item.itemMultiAthlete}</if>
             <if test="item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
             <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
             <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
@@ -102,15 +111,47 @@
         <include refid="itemSql"/>
         <where>
             <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.parentId!=null">AND i.parent_id=#{item.parentId}</if>
             <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
-            <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.user!=null and item.user.userId!=null">AND i.u_id=#{item.user.userId}</if>
             <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
+            <if test="item.itemMultiAthlete!=null">AND i.item_multi_athlete=#{item.itemMultiAthlete}</if>
             <if test="item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
             <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
             <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
+            AND i.parent_id IS NOT NULL
         </where>
+    </select>
+
+
+    <select id="queryItemTemplateList" resultMap="itemMap">
+        SELECT
+        item_id,
+        parent_id,
+        item_name,
+        item_unit,
+        item_multi_athlete
+        FROM
+        item
+        WHERE
+        parent_id IS NULL
+    </select>
+
+    <select id="queryItemTemplateDetail" resultMap="itemMap">
+        SELECT
+        item_id,
+        parent_id,
+        item_name,
+        item_unit,
+        item_multi_athlete
+        FROM
+        item
+        WHERE
+        parent_id IS NULL
+        AND
+        item_id=#{item.itemId}
     </select>
 </mapper>

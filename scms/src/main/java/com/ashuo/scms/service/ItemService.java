@@ -4,6 +4,8 @@ import com.ashuo.scms.entity.Item;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务类
@@ -23,5 +25,8 @@ public interface ItemService {
 
     int removeItem(int itemId);
 
+    List<Item> getItemTemplateList();
+
+    Item getItemTemplateDetail(Item item);
 
 }

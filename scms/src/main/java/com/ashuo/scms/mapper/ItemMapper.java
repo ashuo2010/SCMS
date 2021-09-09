@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * <p>
  * Mapper 接口
@@ -28,5 +30,14 @@ public interface ItemMapper {
 
     //获取单个Item信息
     Item queryOneItemByItemCondition(@Param("item") Item item);
+
+    //获取所有item模板
+    List<Item> queryItemTemplateList();
+
+    //获取item模板详情
+    Item queryItemTemplateDetail(@Param("item") Item item);
+
+
+
 
 }

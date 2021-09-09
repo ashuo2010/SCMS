@@ -23,7 +23,7 @@ spring:
 
 jwt:
   secret: f4e2e52034348f86b67cde581c0f9eb5
-  expire: 3600000
+  expire: 36000000
   header: Authorization
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -46,8 +47,8 @@ public class ItemController {
         //如果输入框有内容,则根据内容搜索
         item.setItemName(queryInfo.getQuery());
         Page<Item> page = new Page(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Item> seasonList = itemService.getItemByItemCondition(page, item);
-        return ServerResponse.createBySuccess(seasonList);
+        IPage<Item> itemList = itemService.getItemByItemCondition(page, item);
+        return ServerResponse.createBySuccess(itemList);
     }
 
 
@@ -63,6 +64,11 @@ public class ItemController {
         Item tempItem = new Item();
         tempItem.setItemName(item.getItemName());
         tempItem.setItemSex(item.getItemSex());
+        //如果不是添加模板，则需要加上seasonId来区分是否会和之前届的冲突
+       if (item.getSeason()!=null  && item.getSeason().getSeasonId()!=null && item.getSeason().getSeasonId()!=0){
+           Season season=item.getSeason();
+           tempItem.setSeason(season);
+       }
         if (itemService.getOneItemByCondition(tempItem) != null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Item已存在");
         }
@@ -117,6 +123,16 @@ public class ItemController {
         if (item == null || item.getItemName() == null) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item信息为空");
         }
+
+        //通过Item名称和性别判断是否已存在相同Item
+        Item tempItem = new Item();
+        tempItem.setItemName(item.getItemName());
+        tempItem.setItemSex(item.getItemSex());
+        //如果不是添加模板，则需要加上seasonId来区分是否会和之前届的冲突
+        if (item.getSeason()!=null && item.getSeason().getSeasonId()!=0 && item.getSeason().getSeasonId()!=null){
+            Season season=item.getSeason();
+            tempItem.setSeason(season);
+        }
         if (item.equals(itemService.getOneItemByCondition(item))) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item已存在");
         }
@@ -132,5 +148,24 @@ public class ItemController {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败");
         }
         return ServerResponse.createBySuccessMessage("修改成功");
+    }
+
+    @ApiOperation("查询项目模板")
+    @GetMapping("/queryItemTemplate")
+    @RequiresRoles(value = {"1"})
+    public Object queryItemTemplate() {
+        List<Item> itemList = itemService.getItemTemplateList();
+        return ServerResponse.createBySuccess(itemList);
+    }
+
+    @ApiOperation("获取项目模板详情信息")
+    @GetMapping("/getItemTemplate")
+    @RequiresRoles(value = {"1"})
+    public Object getItemTemplate(Item itemCondition) {
+        Item item = itemService.getItemTemplateDetail(itemCondition);
+        if (item != null) {
+            return ServerResponse.createBySuccess(item);
+        }
+        return ServerResponse.createByErrorMessage("查询不到该Item信息");
     }
 }

@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务实现类
@@ -79,6 +81,21 @@ public class ItemServiceImpl implements ItemService {
                 return effNum;
             }
         }
+    }
+
+    @Override
+    public List<Item> getItemTemplateList() {
+        List<Item> itemList = itemMapper.queryItemTemplateList();
+        return itemList;
+    }
+
+    @Override
+    public Item getItemTemplateDetail(Item itemCondition) {
+        if (itemCondition == null) {
+            return null;
+        }
+        Item item = itemMapper.queryItemTemplateDetail(itemCondition);
+        return item;
     }
 
 }

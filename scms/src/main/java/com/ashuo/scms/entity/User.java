@@ -28,7 +28,7 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "user_id", type = IdType.AUTO)
-    private int userId;
+    private Integer userId;
 
     private String userNo;
 
@@ -40,7 +40,7 @@ public class User implements Serializable {
 
     private String userSex;
 
-    private int userType;
+    private Integer userType;
 
     private Team team;
 

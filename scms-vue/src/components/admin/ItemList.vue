@@ -81,6 +81,18 @@
             >添加项目</el-button
           >
         </el-col>
+         <el-col :span="4">
+          <el-button type="primary" @click="addTemplateDialogVisible = true"
+            >添加项目模板</el-button
+          >
+        </el-col>
+          <el-col :span="4">
+          <el-button type="primary" @click="showEditTemplateDialog(scope.row.itemId)"
+            >修改项目模板</el-button
+          >
+        </el-col>
+
+
       </el-row>
       <!--项目列表 stripe隔行变色-->
       <el-table :data="item" border stripe>
@@ -173,8 +185,18 @@
         </el-form-item>
 
         <el-form-item label="项目名称" >
-          <el-input v-model="addForm.itemName"></el-input>
+          <el-select v-model="addForm.parentId" placeholder="请选择">
+            <el-option
+              v-for="item in itemTemplateOptions"
+              :key="item.itemId"
+              :label="item.itemName"
+              :value="item.itemId"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
+
+
         <el-form-item label="项目性别">
           <el-select v-model="addForm.itemSex" filterable placeholder="请选择">
             <el-option
@@ -200,22 +222,9 @@
         </el-form-item>
 
         <el-form-item label="项目地点">
-          <!-- <el-input v-model="addForm.itemPlace"></el-input> -->
           <el-select v-model="addForm.itemPlace" placeholder="请选择">
             <el-option
               v-for="item in itemPlaceOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="项目分数单位" >
-          <el-select v-model="addForm.itemUnit" placeholder="请选择">
-            <el-option
-              v-for="item in itemUnitOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -279,10 +288,20 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="项目名称" prop="itemName">
-          <el-input v-model="editForm.itemName"></el-input>
+       <el-form-item label="项目名称" >
+          <el-select v-model="editForm.parentId" placeholder="请选择">
+            <el-option
+              v-for="item in itemTemplateOptions"
+              :key="item.itemId"
+              :label="item.itemName"
+              :value="item.itemId"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="项目性别" prop="itemSex">
+
+
+        <el-form-item label="项目性别">
           <el-select v-model="editForm.itemSex" filterable placeholder="请选择">
             <el-option
               v-for="item in userSex"
@@ -293,8 +312,22 @@
             </el-option>
           </el-select>
         </el-form-item>
+
+
+      <el-form-item label="项目记分员" prop="itemName">
+          <el-select v-model="editForm.user.userId" placeholder="请选择">
+            <el-option
+              v-for="item in scorers"
+              :key="item.userId"
+              :label="item.nickname"
+              :value="item.userId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+
         <el-form-item label="项目地点" prop="itemPlace">
-          <!-- <el-input v-model="editForm.itemPlace"></el-input> -->
           <el-select v-model="editForm.itemPlace" placeholder="请选择">
             <el-option
               v-for="item in itemPlaceOptions"
@@ -306,17 +339,6 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="项目地点" prop="itemUnit">
-          <el-select v-model="editForm.itemUnit" placeholder="请选择">
-            <el-option
-              v-for="item in itemUnitOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
 
         <el-form-item label="项目开始时间" prop="startTime">
           <el-date-picker
@@ -338,20 +360,105 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="项目记分员" prop="itemName">
-          <el-select v-model="editForm.user.userId" placeholder="请选择">
+       
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="editItem">确定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--新增项目模板区域-->
+     <el-dialog
+      title="添加项目模板"
+      :visible.sync="addTemplateDialogVisible"
+      width="50%"
+      @close="addDialogClosed"
+    >
+      <el-form
+        :model="addForm"
+        ref="addFormRef"
+        label-width="70px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="项目名称" >
+          <el-input v-model="addForm.itemName"></el-input>
+        </el-form-item>
+
+        <el-form-item label="项目分数单位" >
+          <el-select v-model="addForm.itemUnit" placeholder="请选择">
             <el-option
-              v-for="item in scorers"
-              :key="item.userId"
-              :label="item.nickname"
-              :value="item.userId"
+              v-for="item in itemUnitOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="是否多人组队参赛项目" >
+          <el-select v-model="addForm.itemMultiAthlete" placeholder="请选择">
+            <el-option
+              v-for="item in itemMultiOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addTemplateDialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="addItem">确定</el-button>
+      </span>
+    </el-dialog>
+
+    <!--修改项目模板区域-->
+    <el-dialog
+      title="修改项目"
+      :visible.sync="editTemplateDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
+      <el-form
+        :model="editForm"
+        :rules="FormRules"
+        ref="editFormRef"
+        label-width="70px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="项目模板ID" prop="itemId">
+          <el-input v-model="editForm.itemId" disabled></el-input>
+        </el-form-item>
+         <el-form-item label="项目分数单位" >
+          <el-select v-model="editForm.itemUnit" placeholder="请选择">
+            <el-option
+              v-for="item in itemUnitOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+         <el-form-item label="是否多人组队参赛项目" >
+          <el-select v-model="editForm.itemMultiAthlete" placeholder="请选择">
+            <el-option
+              v-for="item in itemMultiOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             >
             </el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取消</el-button>
+        <el-button @click="editTemplateDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="editItem">确定</el-button>
       </span>
     </el-dialog>
@@ -374,6 +481,9 @@ export default {
       allSeasonOptions:[],
       //选择的season
       selectSeasonId:"",
+      //项目模板，用于新增修改项目
+      itemTemplateOptions:[],
+
       itemDetail: [],
 
       userSex: [
@@ -421,6 +531,17 @@ export default {
         },
       ],
 
+        itemMultiOptions: [
+        {
+          value: "1",
+          label: "是",
+        },
+        {
+          value: "0",
+          label: "否",
+        }
+      ],
+
       queryInfo: {
         currentPage: 1,
         pageSize: 5,
@@ -429,11 +550,13 @@ export default {
       total: 0,
       // 对话框状态
       addDialogVisible: false,
-
+addTemplateDialogVisible:false,
       addForm: {
         itemName: "",
+        parentId:"",
         itemPlace: "",
         itemUnit: "",
+        itemMultiAthlete:"",
         itemSex: "",
         startTime: "",
         endTime: "",
@@ -448,8 +571,8 @@ export default {
       editForm: {
         itemId: "",
         itemName: "",
+        parentId:"",
         itemPlace: "",
-        itemUnit: "",
         itemSex: "",
         athleteAmount: "",
         startTime: "",
@@ -471,7 +594,7 @@ export default {
       },
 
       editDialogVisible: false,
-
+editTemplateDialogVisible:false,
       dialogTableVisible: false,
       dialogFormVisible: false,
     };
@@ -569,6 +692,17 @@ export default {
         _this.editDialogVisible = true;
       });
     },
+ async showEditTemplateDialog(id) {
+      const _this = this;
+      axios.get("/item/getItemTemplate?itemId=" + id).then((res) => {
+        let data = res.data.data;
+        _this.editForm = data;
+        _this.editTemplateDialogVisible = true;
+      });
+    },
+
+
+
     addDialogClosed() {
       const _this = this;
       _this.$refs.addFormRef.resetFields();
@@ -583,14 +717,16 @@ export default {
         if (!valid) return;
         axios.post("/item/addItem", _this.addForm).then((res) => {
           if (res.data.status != 200) {
-            return _this.$message.error("操作失败" + res.data.msg);
+            return _this.$message.error("操作失败" );
           }
           _this.$message.success("操作成功");
           _this.addDialogVisible = false;
+          _this.addTemplateDialogVisible = false;
           _this.page();
         });
       });
     },
+
     async deleteItem(id) {
       const _this = this;
       const confirmResult = await _this
@@ -606,7 +742,6 @@ export default {
       axios.delete("/item/deleteItem?itemId=" + id).then((res) => {
         if (res.status == 200) {
           _this.$message.success("删除成功");
-          _this.addDialogVisible = false;
           _this.page();
         } else {
           _this.$message.error("删除失败");
@@ -624,7 +759,8 @@ export default {
             return _this.$message.error("操作失败");
           }
           _this.$message.success("操作成功");
-          _this.editDialogVisible = false;
+        _this.editDialogVisible=false;
+        _this.editTemplateDialogVisible=false;
           _this.page();
         });
       });

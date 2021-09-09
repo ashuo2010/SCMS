@@ -29,6 +29,8 @@ public class Item implements Serializable {
     @TableId(value = "item_id", type = IdType.AUTO)
     private int itemId;
 
+    private Integer parentId;
+
     private Season season;
 
     private User user;
@@ -40,6 +42,8 @@ public class Item implements Serializable {
     private String itemUnit;
 
     private String itemSex;
+
+    private String itemMultiAthlete;
 
     private int athleteAmount;
 
