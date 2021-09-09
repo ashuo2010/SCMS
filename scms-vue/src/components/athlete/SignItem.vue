@@ -28,6 +28,24 @@
             ></el-button>
           </el-input>
         </el-col>
+        <div style="float: left">
+          <el-col>
+            <el-select
+              v-model="selectSeasonId"
+              filterable
+              placeholder="请选择运动会"
+              @change="querySelectedOptions"
+            >
+              <el-option
+                v-for="item in allSeasonOptions"
+                :key="item.seasonId"
+                :label="item.seasonName"
+                :value="item.seasonId"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </div>
       </el-row>
       <!--项目列表 stripe隔行变色-->
       <el-table :data="item" border stripe>
@@ -94,6 +112,11 @@ export default {
       item: [],
       scorers: [],
       itemDetail: [],
+//所有运动会届时列表
+      allSeasonOptions:[],
+      //选择的届时
+      selectSeasonId:"",
+
       signItemInfo: {
         user: {
           userId: "",
@@ -114,6 +137,7 @@ export default {
   },
   created() {
     this.page();
+     this.getSeasons();
   },
   methods: {
     async page() {
@@ -128,6 +152,46 @@ export default {
           _this.queryInfo.pageSize = data.size;
         });
     },
+
+
+//获取运动会届时
+    async getSeasons() {
+      const _this = this;
+      axios
+        .get(
+          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data.records;
+        data.push( {
+          seasonId: " ",
+          seasonName: "所有运动会",
+        })
+        _this.allSeasonOptions=data;
+     
+        });
+    },
+
+     async querySelectedOptions() {
+      const _this = this;
+      if(_this.selectItemId==""){
+        _this.selectItemId=0;
+      }
+      axios
+        .get(
+          "/item/queryItem?query=&currentPage=1&pageSize=999999999&season.seasonId="+_this.selectSeasonId
+        )
+        .then((res) => {
+          let data = res.data.data;
+          _this.item = data.records;
+          _this.queryInfo.currentPage = data.current;
+          _this.total = data.total;
+          _this.queryInfo.pageSize = data.size;
+        });
+    },
+
+
+
 
     async getItemDetail(id) {
       const _this = this;

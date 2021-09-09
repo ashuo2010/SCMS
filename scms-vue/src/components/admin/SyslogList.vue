@@ -49,7 +49,8 @@
         ></el-table-column>
 
         <el-table-column label="执行操作" prop="method"></el-table-column>
-        <el-table-column label="执行参数" prop="parameter"></el-table-column>
+        <el-table-column label="执行参数" prop="parameter"
+          :show-overflow-tooltip="true"></el-table-column>
       </el-table>
       <!--分页组件-->
       <div>

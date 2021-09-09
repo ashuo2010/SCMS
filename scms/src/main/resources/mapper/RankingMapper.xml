@@ -49,8 +49,15 @@
         FROM
         ranking r
         INNER JOIN `team` t ON r.t_id = t.team_id
+        INNER JOIN `item` i ON r.i_id = i.item_id
+        INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
-            <if test="teamName!=null">AND t.team_name LIKE '%${teamName}%'</if>
+            <if test="ranking.team!=null and ranking.team.teamName!=null">AND t.team_name LIKE
+                '%${ranking.team.teamName}%'
+            </if>
+            <if test="ranking.item!=null and ranking.item.season!=null and ranking.item.season.seasonId!=null">
+                AND se.season_id=#{ranking.item.season.seasonId}
+            </if>
         </where>
         GROUP BY
         r.t_id
@@ -72,13 +79,19 @@
         ranking r
         INNER JOIN `user` u ON r.u_id = u.user_id
         INNER JOIN `team` t ON r.t_id = t.team_id
+        INNER JOIN `item` i ON r.i_id = i.item_id
+        INNER JOIN `season` se ON i.se_id = se.season_id
+
         <where>
             <if test="ranking.user!=null and ranking.user.userId!=0">AND u.user_id=#{ranking.user.userId}</if>
             <if test="ranking.team!=null and ranking.team.teamId!=0">AND t.team_id=#{ranking.team.teamId}</if>
-
             <if test="ranking.user!=null and ranking.user.nickname!=null">AND u.nickname LIKE
                 '%${ranking.user.nickname}%'
             </if>
+            <if test="ranking.item!=null and ranking.item.season!=null and ranking.item.season.seasonId!=null">
+            AND se.season_id=#{ranking.item.season.seasonId}
+        </if>
+
         </where>
         GROUP BY
         r.u_id

@@ -164,7 +164,7 @@ export default {
         .then((res) => {
           let data = res.data.data.records;
         data.push( {
-          seasonId: "",
+          seasonId: 0,
           seasonName: "所有运动会",
         })
         _this.allSeasonOptions=data;
@@ -191,6 +191,12 @@ export default {
     //根据下拉框进行搜索
     async querySelectedOptions() {
       const _this = this;
+      if(_this.selectItemId==""){
+        _this.selectItemId=0;
+      }
+        if(_this.selectSeasonId==0){
+        _this.selectSeasonId="";
+      }
       axios
         .get(
           "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId

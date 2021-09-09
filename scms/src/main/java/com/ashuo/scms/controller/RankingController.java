@@ -4,6 +4,7 @@ package com.ashuo.scms.controller;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.Ranking;
+import com.ashuo.scms.entity.Team;
 import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.RankingService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -40,14 +41,21 @@ public class RankingController {
     @ApiOperation("团体总排名")
     @GetMapping("/queryTeamRanking")
     @RequiresAuthentication
-    public Object queryTeamRanking(QueryInfo queryInfo) {
-
+    public Object queryTeamRanking(QueryInfo queryInfo,Ranking ranking) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
+        }else {
+            Team team=ranking.getTeam();
+            if(team==null){
+                team=new Team();
+            }
+            team.setTeamName(queryInfo.getQuery());
+            ranking.setTeam(team);
         }
+
         //分页查询
         Page<Ranking> page = new Page<Ranking>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Ranking> rankingList = rankingService.getTeamTotalRanking(page, queryInfo.getQuery());
+        IPage<Ranking> rankingList = rankingService.getTeamTotalRanking(page, ranking);
         return ServerResponse.createBySuccess(rankingList);
     }
 

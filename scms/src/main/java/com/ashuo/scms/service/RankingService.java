@@ -15,7 +15,7 @@ import java.util.List;
  * @since 2021-04-05
  */
 public interface RankingService {
-    IPage<Ranking> getTeamTotalRanking(Page<Ranking> page, String rankingName);
+    IPage<Ranking> getTeamTotalRanking(Page<Ranking> page, Ranking ranking);
 
     IPage<Ranking> getUserTotalRanking(Page<Ranking> page, Ranking ranking);
 

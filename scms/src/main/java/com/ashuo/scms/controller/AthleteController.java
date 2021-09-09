@@ -45,7 +45,6 @@ public class AthleteController {
     @GetMapping("/queryAthlete")
     @RequiresAuthentication
     public Object queryAthlete(QueryInfo queryInfo, Athlete athlete) {
-        //athlete.status传0查询所有(默认为0)，传1查询已记分，传2查询未记分
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         } else {

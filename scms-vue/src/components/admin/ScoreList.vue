@@ -29,6 +29,24 @@
           </el-input>
         </el-col>
 
+<div style="float: left">
+          <el-col>
+            <el-select
+              v-model="selectSeasonId"
+              filterable
+              placeholder="请选择运动会"
+              @change="querySelectedOptions"
+            >
+              <el-option
+                v-for="item in allSeasonOptions"
+                :key="item.seasonId"
+                :label="item.seasonName"
+                :value="item.seasonId"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </div>
         <div style="float: left">
           <!-- 下拉列表选择区域 -->
           <el-col>
@@ -324,6 +342,10 @@ export default {
       //记分员
       scorers: "",
       currentUser: "",
+      //所有运动会届时列表
+      allSeasonOptions:[],
+      //选择的届时
+      selectSeasonId:"",
       status: [
         {
           value: "2",
@@ -378,6 +400,7 @@ export default {
     this.currentUser = JSON.parse(localStorage.getItem("user"));
     this.page();
     this.getScorers();
+     this.getSeasons();
   },
   methods: {
     async page() {
@@ -412,25 +435,50 @@ export default {
         });
     },
 
-    //根据下拉框进行搜索
-    async querySelectedOptions() {
+//获取运动会届时
+    async getSeasons() {
       const _this = this;
-      let getStr =
-        "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&";
-      if (_this.athlete.item.user.userId != "") {
-        getStr += "item.user.userId=" + _this.athlete.item.user.userId + "&";
-      }
-      if (_this.athlete.status != "") {
-        getStr += "status=" + _this.athlete.status + "&";
-      }
-      axios.get(getStr).then((res) => {
-        let data = res.data.data;
-        _this.athleteList = data.records;
-        _this.queryInfo.currentPage = data.current;
-        _this.total = data.total;
-        _this.queryInfo.pageSize = data.size;
-      });
+      axios
+        .get(
+          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
+        )
+        .then((res) => {
+          let data = res.data.data.records;
+        data.push( {
+          seasonId: " ",
+          seasonName: "所有运动会",
+        })
+        _this.allSeasonOptions=data;
+     
+        });
     },
+
+     async querySelectedOptions() {
+      const _this = this;
+      if(_this.selectItemId==""){
+        _this.selectItemId=0;
+      }
+       if(_this.athlete.item.user.userId==""){
+        _this.athlete.item.user.userId=0;
+      }
+       if(_this.athlete.status==""){
+        _this.athlete.status=0;
+      }
+      axios
+        .get(
+          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
+          + "&item.user.userId=" + _this.athlete.item.user.userId+"&status=" + _this.athlete.status
+        )
+        .then((res) => {
+          let data = res.data.data;
+          _this.athleteList = data.records;
+          _this.queryInfo.currentPage = data.current;
+          _this.total = data.total;
+          _this.queryInfo.pageSize = data.size;
+        });
+    },
+
+    
 
     //添加分数
     async addScore() {

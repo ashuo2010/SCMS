@@ -199,7 +199,7 @@ export default {
         .then((res) => {
           let data = res.data.data.records;
         data.push( {
-          seasonId: "",
+          seasonId: " ",
           seasonName: "所有运动会",
         })
         _this.allSeasonOptions=data;
@@ -224,9 +224,12 @@ export default {
 
      async querySelectedOptions() {
       const _this = this;
+      if(_this.selectItemId==""){
+        _this.selectItemId=0;
+      }
       axios
         .get(
-          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&score.season.seasonId="+_this.selectSeasonId
+          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
           +"&item.itemId=" +_this.selectItemId
         )
         .then((res) => {
@@ -236,6 +239,10 @@ export default {
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
         });
+
+        if(_this.selectItemId==0){
+        _this.selectItemId="";
+      }
         axios.post("/syslog/getSystemStatus").then((res) => {
         _this.systemStatus = res.data.data;
       });

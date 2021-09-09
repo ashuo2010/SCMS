@@ -25,8 +25,8 @@ public class RankingServiceImpl implements RankingService {
 
     //团体总分排名
     @Override
-    public IPage<Ranking> getTeamTotalRanking(Page<Ranking> page, String rankingName) {
-        IPage<Ranking> rankingList = rankingMapper.queryTeamTotalRanking(page, rankingName);
+    public IPage<Ranking> getTeamTotalRanking(Page<Ranking> page, Ranking ranking) {
+        IPage<Ranking> rankingList = rankingMapper.queryTeamTotalRanking(page, ranking);
         return rankingList;
     }
 
