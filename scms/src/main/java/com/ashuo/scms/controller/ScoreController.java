@@ -206,10 +206,6 @@ public class ScoreController {
                         recordService.modifyRecord(r);
                     });
 
-//                    for (Record r:recordList) {
-//                        r.setRecordStatus("0");
-//                        recordService.modifyRecord(r);
-//                    }
                 }
                 //保存录入的分数记录
                 recordService.addRecord(record);
