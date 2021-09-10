@@ -4,6 +4,7 @@
     <resultMap id="scoreMap" type="com.ashuo.scms.entity.Score">
         <id column="score_id" property="scoreId"/>
         <result column="score" property="score"/>
+        <result column="is_break_record" property="isBreakRecord"/>
         <result column="create_time" property="createTime"/>
         <result column="edit_time" property="editTime"/>
         <association property="user" javaType="com.ashuo.scms.entity.User">
@@ -31,14 +32,15 @@
     </resultMap>
     <insert id="insertScore" parameterType="com.ashuo.scms.entity.Score"
             useGeneratedKeys="true" keyColumn="score_id" keyProperty="scoreId">
-        INSERT INTO score(i_id, u_id, score, create_time, edit_time)
-        VALUES (#{item.itemId}, #{user.userId}, #{score}, #{createTime}, #{editTime})
+        INSERT INTO score(i_id, u_id, score,is_break_record, create_time, edit_time)
+        VALUES (#{item.itemId}, #{user.userId}, #{score},#{isBreakRecord}, #{createTime}, #{editTime})
     </insert>
 
     <update id="updateScore" parameterType="com.ashuo.scms.entity.Score">
         UPDATE score
         <set>
             <if test="score!=null and score!=0">score=#{score},</if>
+            <if test="is_break_record!=null">is_break_record=#{isBreakRecord},</if>
             <if test="createTime!=null">create_time=#{createTime},</if>
             <if test="editTime!=null">edit_time=#{editTime}</if>
         </set>
@@ -56,6 +58,7 @@
         SELECT
         s.score_id,
         s.score,
+        s.is_break_record,
         s.edit_time,
         i.item_id,
         i.item_name,
@@ -90,6 +93,7 @@
         SELECT
         s.score_id,
         s.score,
+        s.is_break_record,
         s.edit_time,
         i.item_id,
         i.item_name,
@@ -122,6 +126,7 @@
     <select id="queryOneScoreByScoreId" resultMap="scoreMap">
         SELECT s.score_id,
                s.score,
+               s.is_break_record,
                s.edit_time,
                i.item_id,
                i.item_name,
@@ -141,6 +146,7 @@
     <select id="queryScoreByTeamId" resultMap="scoreMap">
         SELECT s.score_id,
                s.score,
+               s.is_break_record,
                s.edit_time,
                i.item_id,
                i.item_name,
@@ -173,6 +179,7 @@
         i.item_place,
         u2.nickname AS scorer,
         s.score,
+        s.is_break_record,
         s.edit_time
         FROM
         `athlete` a

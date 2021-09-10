@@ -1,5 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ashuo.scms.mapper.RecordMapper">
+    <resultMap id="recordMap" type="com.ashuo.scms.entity.Record">
+        <id column="record_id" property="recordId"/>
+        <result column="record_score" property="recordScore"/>
+        <result column="record_status" property="recordStatus"/>
+        <result column="create_time" property="createTime"/>
+        <result column="editTime" property="editTime"/>
+        <association property="item" javaType="com.ashuo.scms.entity.Item">
+            <id column="item_id" property="itemId"/>
+            <result column="item_name" property="itemName"/>
+            <result column="item_sex" property="itemSex"/>
+            <association property="season" javaType="com.ashuo.scms.entity.Season">
+                <id column="se_id" property="seasonId"/>
+                <result column="season_name" property="seasonName"/>
+            </association>
+        </association>
+
+        <association property="user" javaType="com.ashuo.scms.entity.User">
+            <id column="user_id" property="userId"/>
+            <result column="nickname" property="nickname"/>
+            <association property="team" javaType="com.ashuo.scms.entity.Team">
+                <result column="team_id" property="teamId"/>
+                <result column="team_name" property="teamName"/>
+            </association>
+        </association>
+    </resultMap>
+
+
+    <insert id="insertRecord" parameterType="com.ashuo.scms.entity.Record"
+            useGeneratedKeys="true" keyColumn="record_id" keyProperty="recordId">
+        INSERT INTO record( i_id,u_id,record_score, record_status, create_time,edit_time)
+        VALUES ( #{item.itemId},#{user.userId},#{recordScore},#{recordStatus},#{createTime},#{editTime})
+    </insert>
+
+    <select id="queryRecordByRecordCondition" resultMap="recordMap">
+        SELECT
+        r.record_id,
+        r.record_score,
+        r.record_status,
+        r.create_time,
+        r.edit_time,
+        i.item_id,
+        i.item_name,
+        i.item_sex,
+        se.season_id,
+        se.season_name,
+        u.user_id,
+        u.nickname,
+        t.team_id,
+        t.team_name
+        FROM
+        `record` r
+        INNER JOIN `user` u ON r.u_id = u.user_id
+        INNER JOIN `team` t ON t.team_id = u.t_id
+        INNER JOIN `item` i ON r.i_id = i.item_id
+        INNER JOIN `season` se ON i.se_id = se.season_id
+        <where>
+            <if test="record.recordId!=null and record.recordId!=0">AND r.record_id=#{record.recordId}</if>
+            <if test="record.recordStatus!=null">AND r.record_status=#{record.recordStatus}</if>
+            <if test="record.item!=null and record.item.parentId!=null and record.item.parentId!=0">AND
+                i.parent_id=#{record.item.parentId}
+            </if>
+            <if test="record.user!=null and record.user.nickname!=null">AND u.nickname LIKE
+                '%${record.user.nickname}%'
+            </if>
+            <if test="record.item!=null and record.item.itemName!=null">AND i.item_name LIKE
+                '%${record.item.itemName}%'
+            </if>
+        </where>
+        ORDER BY
+        i.item_id
+        DESC
+    </select>
+
+
+    <update id="updateRecord" parameterType="com.ashuo.scms.entity.Record">
+        UPDATE record
+        SET record_status=#{recordStatus}
+        where record_id=#{recordId}
+    </update>
+
+
+    <delete id="deleteRecord">
+        DELETE
+        FROM record
+        WHERE record_id = #{recordId}
+    </delete>
 
 </mapper>
