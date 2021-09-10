@@ -17,11 +17,11 @@ public class ExcelTeamRankingDto implements Serializable {
     @ExcelProperty(value = "班级名称", index = 0)
     private String teamName;
     @ExcelProperty(value = "班级总得分", index = 1)
-    private int score;
+    private Integer score;
     @ExcelProperty(value = "排名", index = 2)
-    private int rank;
+    private Integer rank;
 
-    public ExcelTeamRankingDto(String teamName, int score, int rank) {
+    public ExcelTeamRankingDto(String teamName, Integer score, Integer rank) {
         this.teamName = teamName;
         this.score = score;
         this.rank = rank;

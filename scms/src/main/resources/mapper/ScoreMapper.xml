@@ -38,7 +38,7 @@
     <update id="updateScore" parameterType="com.ashuo.scms.entity.Score">
         UPDATE score
         <set>
-            <if test="score!=0">score=#{score},</if>
+            <if test="score!=null and score!=0">score=#{score},</if>
             <if test="createTime!=null">create_time=#{createTime},</if>
             <if test="editTime!=null">edit_time=#{editTime}</if>
         </set>
@@ -74,12 +74,12 @@
         LEFT JOIN `ranking` r ON s.u_id = r.u_id
         AND s.i_id = r.i_id
         <where>
-            <if test="score.user!=null and score.user.userId!=0">AND u.user_id
+            <if test="score.user!=null and score.user.userId!=null and score.user.userId!=0">AND u.user_id
                 = #{score.user.userId}
             </if>
             <if test="score.user!=null and score.user.nickname!=null">AND u.nickname LIKE '%${score.user.nickname}%'
             </if>
-            <if test="score.item!=null and score.item.itemId!=0">AND i.item_id = #{score.item.itemId}</if>
+            <if test="score.item!=null and score.item.itemId!=null and score.item.itemId!=0">AND i.item_id = #{score.item.itemId}</if>
         </where>
         ORDER BY
         score
@@ -109,7 +109,7 @@
         INNER JOIN `item` i ON s.i_id = i.item_id
         INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
-            <if test="itemId!=0">AND i.item_id = #{itemId}</if>
+            <if test="itemId!=null and itemId!=0">AND i.item_id = #{itemId}</if>
             AND se.season_status=1
         </where>
         ORDER BY
@@ -183,9 +183,9 @@
         INNER JOIN `user` u2 ON i.u_id = u2.user_id
         LEFT JOIN `score` s ON s.i_id = a.i_id AND s.u_id=a.u_id
         <where>
-            <if test="score.item!=null and score.item.itemId!=0">AND i.item_id = #{score.item.itemId}</if>
+            <if test="score.item!=null and score.item.itemId!=null and score.item.itemId!=0">AND i.item_id = #{score.item.itemId}</if>
             <if test="score.user!=null and score.user.nickname!=null">AND u.nickname LIKE '%${score.user.nickname}%' </if>
-            <if test="score.item!=null and score.item.season!=null and score.item.season.seasonId!=null">
+            <if test="score.item!=null and score.item.season!=null and score.item.season.seasonId!=null and score.item.season.seasonId!=0">
                 AND se.season_id=#{score.item.season.seasonId}
             </if>
             AND s.score !=0

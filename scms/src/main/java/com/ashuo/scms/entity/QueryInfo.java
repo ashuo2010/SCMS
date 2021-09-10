@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class QueryInfo {
     private String query;
-    private int currentPage;
-    private int pageSize;
+    private Integer currentPage;
+    private Integer pageSize;
 }

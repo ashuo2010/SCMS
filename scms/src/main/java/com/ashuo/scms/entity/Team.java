@@ -26,7 +26,7 @@ public class Team implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "team_id", type = IdType.AUTO)
-    private int teamId;
+    private Integer teamId;
 
     private String teamName;
 

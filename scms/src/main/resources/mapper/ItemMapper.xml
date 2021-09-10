@@ -66,15 +66,15 @@
     <update id="updateItem" parameterType="com.ashuo.scms.entity.Item">
         UPDATE item
         <set>
-            <if test="item.parentId!=null">parent_id=#{item.parentId},</if>
-            <if test="item.season!=null and item.season.seasonId!=0">se_id=#{item.season.seasonId},</if>
-            <if test="item.user!=null and item.user.userId!=0">u_id=#{item.user.userId},</if>
+            <if test="item.parentId!=null and item.parentId!=0">parent_id=#{item.parentId},</if>
+            <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">se_id=#{item.season.seasonId},</if>
+            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">u_id=#{item.user.userId},</if>
             <if test="item.itemName!=null">item_name=#{item.itemName},</if>
             <if test="item.itemPlace!=null">item_place=#{item.itemPlace},</if>
             <if test="item.itemUnit!=null">item_unit=#{item.itemUnit},</if>
             <if test="item.itemSex!=null">item_sex=#{item.itemSex},</if>
-            <if test="item.itemAmount!=null">item_amount=#{item.itemAmount},</if>
-            <if test="item.athleteAmount!=0">athlete_amount=#{item.athleteAmount},</if>
+            <if test="item.itemAmount!=null and item.itemAmount!=0">item_amount=#{item.itemAmount},</if>
+            <if test="item.athleteAmount!=null">athlete_amount=#{item.athleteAmount},</if>
             <if test="item.startTime!=null">start_time=#{item.startTime},</if>
             <if test="item.endTime!=null">end_time=#{item.endTime},</if>
             <if test="item.createTime!=null">create_time=#{item.createTime},</if>
@@ -93,15 +93,15 @@
         <include refid="itemSql"/>
         <where>
             <if test="item.itemId!=null and item.itemId!=0">AND i.item_id=#{item.itemId}</if>
-            <if test="item.parentId!=null">AND i.parent_id=#{item.parentId}</if>
-            <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
-            <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.parentId!=null and item.parentId!=0">AND i.parent_id=#{item.parentId}</if>
+            <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
+            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
             <if test="item.itemName!=null">AND i.item_name =#{{item.itemName}</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
             <if test="item.itemAmount!=null and item.itemAmount!=0">AND i.item_amount=#{item.itemAmount}</if>
-            <if test="item.athleteAmount!=null and item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
+            <if test="item.athleteAmount!=null ">AND i.athlete_amount=#{item.athleteAmount}</if>
             <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
             <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
             AND i.parent_id IS NOT NULL
@@ -119,8 +119,8 @@
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
-            <if test="item.itemAmount!=null">AND i.item_amount=#{item.itemAmount}</if>
-            <if test="item.athleteAmount!=null and item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
+            <if test="item.itemAmount!=null and item.itemAmount!=0">AND i.item_amount=#{item.itemAmount}</if>
+            <if test="item.athleteAmount!=null ">AND i.athlete_amount=#{item.athleteAmount}</if>
             <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
             <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
             AND i.parent_id IS NOT NULL
@@ -153,7 +153,7 @@
        <where>
            <if test="item.itemName!=null">AND item_name LIKE '%${item.itemName}%'</if>
            <if test="item.itemId!=null and item.itemId!=0 ">AND item_id=#{item.itemId}</if>
-           <if test="item.parentId!=null">AND item_id=#{item.parentId}</if>
+           <if test="item.parentId!=null and item.parentId!=0">AND item_id=#{item.parentId}</if>
            AND parent_id IS NULL
        </where>
     </select>

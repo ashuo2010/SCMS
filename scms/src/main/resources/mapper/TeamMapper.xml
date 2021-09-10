@@ -5,12 +5,12 @@
     <insert id="insertTeam" parameterType="com.ashuo.scms.entity.Team"
             useGeneratedKeys="true" keyColumn="team_id" keyProperty="teamId">
         INSERT INTO team(
-        <if test="teamId!=0">
+        <if test="teamId!=null and teamId!=0">
             team_id,
         </if>
         team_name, create_time, edit_time)
         VALUES (
-        <if test="teamId!=0">
+        <if test="teamId!=null teamId!=0">
             #{teamId},
         </if>
         #{teamName}, #{createTime}, #{editTime})
@@ -43,7 +43,7 @@
     <select id="queryTeamByTeamCondition" resultType="com.ashuo.scms.entity.Team">
         SELECT * FROM team
         <where>
-            <if test="team!=null and team.teamId!=0">AND team_id=#{team.teamId}</if>
+            <if test="team!=null and team.teamId!=null and team.teamId!=0">AND team_id=#{team.teamId}</if>
             <if test="team!=null and team.teamName!=null">AND team_name LIKE '%${team.teamName}%'</if>
         </where>
     </select>

@@ -26,7 +26,7 @@ public class Ranking implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "ranking_id", type = IdType.AUTO)
-    private int rankingId;
+    private Integer rankingId;
 
     private Item item;
 
@@ -34,7 +34,7 @@ public class Ranking implements Serializable {
 
     private Team team;
 
-    private int rank;
+    private Integer rank;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime editTime;

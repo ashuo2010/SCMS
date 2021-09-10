@@ -26,13 +26,13 @@ public class Athlete implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "athlete_id", type = IdType.AUTO)
-    private int athleteId;
+    private Integer athleteId;
 
     private User user;
 
     private Item item;
 
-    private int status;
+    private Integer status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime signTime;

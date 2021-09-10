@@ -64,13 +64,13 @@
         FROM
         season
         <where>
-            <if test="season!=null and season.seasonId!=null">AND season_id=#{season.seasonId}</if>
+            <if test="season!=null and season.seasonId!=null and season.seasonId!=0">AND season_id=#{season.seasonId}</if>
             <if test="season.seasonName!=null">AND season_name=#{season.seasonName}</if>
             <if test="season.seasonTopicDesc!=null">AND season_topic_desc=#{season.seasonTopicDesc}</if>
             <if test="season.seasonBeginTime!=null">AND season_begin_time=#{season.seasonBeginTime}</if>
             <if test="season.seasonEndTime!=null">AND season_end_time=#{season.seasonEndTime}</if>
             <if test="season.seasonStatus!=null">AND season_status=#{season.seasonStatus}</if>
-            <if test="season.seasonAthleteAmount!=null and season.seasonAthleteAmount!=0">AND
+            <if test="season.seasonAthleteAmount!=null">AND
                 season_athlete_amount=#{season.seasonAthleteAmount}
             </if>
             <if test="season.createTime!=null">AND create_time=#{season.createTime}</if>

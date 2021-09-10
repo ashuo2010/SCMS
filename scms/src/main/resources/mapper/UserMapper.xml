@@ -22,13 +22,13 @@
     <insert id="insertUser" parameterType="com.ashuo.scms.entity.User"
             useGeneratedKeys="true" keyColumn="user_id" keyProperty="userId">
         INSERT INTO user(
-        <if test="userId!=0">
+        <if test="userId!=null and userId!=0">
             user_id,
         </if>
         user_no, nickname, username, password,user_sex, user_type, t_id, phone,
         create_time, edit_time)
         VALUES (
-        <if test="userId!=0">
+        <if test="userId!=null and userId!=0">
             #{userId},
         </if>
         #{userNo}, #{nickname}, #{username},#{password}, #{userSex}, #{userType}, #{team.teamId}, #{phone},
@@ -50,8 +50,8 @@
             <if test="user.username!=null">username=#{user.username},</if>
             <if test="user.password!=null and user.password!=''">password=#{user.password},</if>
             <if test="user.userSex!=null">user_sex=#{user.userSex},</if>
-            <if test="user.userType!=0">user_type=#{user.userType},</if>
-            <if test="user.team!=null and user.team.teamId!=0">t_id=#{user.team.teamId},</if>
+            <if test="user.userType!=null and user.userType!=0">user_type=#{user.userType},</if>
+            <if test="user.team!=null and user.team.teamId!=null and user.team.teamId!=0">t_id=#{user.team.teamId},</if>
             <if test="user.phone!=null">phone=#{user.phone},</if>
             <if test="user.createTime!=null">create_time=#{user.createTime},</if>
             <if test="user.editTime!=null">edit_time=#{user.editTime},</if>
@@ -77,14 +77,14 @@
         `user` u
         LEFT JOIN `team` t ON u.t_id = t.team_id
         <where>
-            <if test="user.userId!=null and user.userId!=0">AND u.user_id = #{user.userId}</if>
+            <if test="user.userId!=null and user.userId!=null and user.userId!=0">AND u.user_id = #{user.userId}</if>
             <if test="user.userNo!=null">AND u.user_no = #{user.userNo}</if>
-            <if test="user.userType!=null and user.userType!=0">AND u.user_type = #{user.userType}</if>
+            <if test="user.userType!=null and user.userType!=null and user.userType!=0">AND u.user_type = #{user.userType}</if>
             <if test="user.userNo!=null">AND u.user_no = #{user.userNo}</if>
             <if test="user.username!=null">AND u.username = #{user.username}</if>
             <if test="user.password!=null">AND u.password = #{user.password}</if>
             <if test="user.nickname!=null">AND u.nickname LIKE '%${user.nickname}%'</if>
-            <if test="user.team!=null and user.team.team_id!=0">AND t.team_id = #{user.team.teamId}</if>
+            <if test="user.team!=null and user.team.team_id!=null and user.team.team_id!=0">AND t.team_id = #{user.team.teamId}</if>
             <if test="user.team!=null and user.team.teamName!=null">AND t.team_name LIKE '%${user.team.teamName}%'</if>
         </where>
     </select>

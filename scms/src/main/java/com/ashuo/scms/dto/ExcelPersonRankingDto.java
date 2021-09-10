@@ -22,9 +22,9 @@ public class ExcelPersonRankingDto implements Serializable {
     @ExcelProperty(value = "性别", index = 0)
     private String userSex;
     @ExcelProperty(value = "个人总分数", index = 0)
-    private int rank;
+    private Integer rank;
 
-    public ExcelPersonRankingDto(String teamName, String userNo, String userName, String userSex, int rank) {
+    public ExcelPersonRankingDto(String teamName, String userNo, String userName, String userSex, Integer rank) {
         this.teamName = teamName;
         this.userNo = userNo;
         this.userName = userName;
