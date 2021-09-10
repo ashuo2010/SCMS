@@ -10,7 +10,7 @@
         i.item_place,
         i.item_unit,
         i.item_sex,
-        i.item_multi_athlete,
+        i.item_amount,
         i.athlete_amount,
         i.start_time,
         i.edit_time,
@@ -34,7 +34,7 @@
         <result column="item_place" property="itemPlace"/>
         <result column="item_unit" property="itemUnit"/>
         <result column="item_sex" property="itemSex"/>
-        <result column="item_multi_athlete" property="itemMultiAthlete"/>
+        <result column="item_amount" property="itemAmount"/>
         <result column="athlete_amount" property="athleteAmount"/>
         <result column="start_time" property="startTime"/>
         <result column="end_time" property="endTime"/>
@@ -55,9 +55,9 @@
 
     <insert id="insertItem" parameterType="com.ashuo.scms.entity.Item"
             useGeneratedKeys="true" keyColumn="item_id" keyProperty="itemId">
-        INSERT INTO item(parent_id,se_id,u_id, item_name, item_place, item_unit, item_sex, item_multi_athlete,athlete_amount, start_time, end_time,
+        INSERT INTO item(parent_id,se_id,u_id, item_name, item_place, item_unit, item_sex, item_amount,athlete_amount, start_time, end_time,
         create_time, edit_time)
-        VALUES (#{parentId},#{season.seasonId},#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{itemMultiAthlete},#{athleteAmount},
+        VALUES (#{parentId},#{season.seasonId},#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{itemAmount},#{athleteAmount},
         #{startTime},
         #{endTime},
         #{createTime}, #{editTime})
@@ -73,7 +73,7 @@
             <if test="item.itemPlace!=null">item_place=#{item.itemPlace},</if>
             <if test="item.itemUnit!=null">item_unit=#{item.itemUnit},</if>
             <if test="item.itemSex!=null">item_sex=#{item.itemSex},</if>
-            <if test="item.itemMultiAthlete!=null">item_multi_athlete=#{item.itemMultiAthlete},</if>
+            <if test="item.itemAmount!=null">item_amount=#{item.itemAmount},</if>
             <if test="item.athleteAmount!=0">athlete_amount=#{item.athleteAmount},</if>
             <if test="item.startTime!=null">start_time=#{item.startTime},</if>
             <if test="item.endTime!=null">end_time=#{item.endTime},</if>
@@ -92,34 +92,35 @@
     <select id="queryOneItemByItemCondition" resultMap="itemMap">
         <include refid="itemSql"/>
         <where>
-            <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.itemId!=null and item.itemId!=0">AND i.item_id=#{item.itemId}</if>
             <if test="item.parentId!=null">AND i.parent_id=#{item.parentId}</if>
             <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
             <if test="item.user!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
-            <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
+            <if test="item.itemName!=null">AND i.item_name =#{{item.itemName}</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
-            <if test="item.itemMultiAthlete!=null">AND i.item_multi_athlete=#{item.itemMultiAthlete}</if>
-            <if test="item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
+            <if test="item.itemAmount!=null and item.itemAmount!=0">AND i.item_amount=#{item.itemAmount}</if>
+            <if test="item.athleteAmount!=null and item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
             <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
             <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
+            AND i.parent_id IS NOT NULL
         </where>
     </select>
 
     <select id="queryItemByItemCondition" resultMap="itemMap">
         <include refid="itemSql"/>
         <where>
-            <if test="item.itemId!=0">AND i.item_id=#{item.itemId}</if>
-            <if test="item.parentId!=null">AND i.parent_id=#{item.parentId}</if>
-            <if test="item.season!=null and item.season.seasonId!=null">AND i.se_id=#{item.season.seasonId}</if>
-            <if test="item.user!=null and item.user.userId!=null">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.itemId!=null and item.itemId!=0">AND i.item_id=#{item.itemId}</if>
+            <if test="item.parentId!=null and item.parentId!=0">AND i.parent_id=#{item.parentId}</if>
+            <if test="item.season!=null and item.season.seasonId!=null and  item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
+            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
             <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>
-            <if test="item.itemMultiAthlete!=null">AND i.item_multi_athlete=#{item.itemMultiAthlete}</if>
-            <if test="item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
+            <if test="item.itemAmount!=null">AND i.item_amount=#{item.itemAmount}</if>
+            <if test="item.athleteAmount!=null and item.athleteAmount!=0">AND i.athlete_amount=#{item.athleteAmount}</if>
             <if test="item.startTime!=null">AND i.start_time=#{item.startTime}</if>
             <if test="item.endTime!=null">AND i.end_time=#{item.endTime}</if>
             AND i.parent_id IS NOT NULL
@@ -133,7 +134,7 @@
         parent_id,
         item_name,
         item_unit,
-        item_multi_athlete
+        item_amount
         FROM
         item
         WHERE
@@ -146,12 +147,14 @@
         parent_id,
         item_name,
         item_unit,
-        item_multi_athlete
+        item_amount
         FROM
         item
-        WHERE
-        parent_id IS NULL
-        AND
-        item_id=#{item.itemId}
+       <where>
+           <if test="item.itemName!=null">AND item_name LIKE '%${item.itemName}%'</if>
+           <if test="item.itemId!=null and item.itemId!=0 ">AND item_id=#{item.itemId}</if>
+           <if test="item.parentId!=null">AND item_id=#{item.parentId}</if>
+           AND parent_id IS NULL
+       </where>
     </select>
 </mapper>

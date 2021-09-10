@@ -26,15 +26,12 @@ axios.interceptors.request.use(
 
 // 响应数据处理
 axios.interceptors.response.use(function (response) {
-    console.log("请求成功")
-    console.log(response.data)
     if (response.data.status == 401) {
       window.location.href = "/401"
     }
     return response;
   },
   function (error) {
-    console.log("请求失败")
     if (response.data.status == 401) {
       window.location.href = "/401"
     }

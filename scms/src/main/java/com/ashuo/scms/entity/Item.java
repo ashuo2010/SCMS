@@ -27,7 +27,7 @@ public class Item implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @TableId(value = "item_id", type = IdType.AUTO)
-    private int itemId;
+    private Integer itemId;
 
     private Integer parentId;
 
@@ -43,9 +43,9 @@ public class Item implements Serializable {
 
     private String itemSex;
 
-    private String itemMultiAthlete;
+    private Integer itemAmount;
 
-    private int athleteAmount;
+    private Integer athleteAmount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime startTime;

@@ -81,16 +81,13 @@
             >添加项目</el-button
           >
         </el-col>
-         <el-col :span="4">
-          <el-button type="primary" @click="addTemplateDialogVisible = true"
-            >添加项目模板</el-button
+
+        <el-col :span="4">
+          <el-button type="primary" @click="TemplateListDialogVisible = true"
+            >项目模板</el-button
           >
         </el-col>
-          <el-col :span="4">
-          <el-button type="primary" @click="showEditTemplateDialog(scope.row.itemId)"
-            >修改项目模板</el-button
-          >
-        </el-col>
+
 
 
       </el-row>
@@ -140,7 +137,7 @@
               type="danger"
               icon="el-icon-delete"
               size="mini"
-              @click="deleteItem(scope.row.itemId)"
+              @click="deleteItem(scope.row.itemId,'deleteItem')"
             ></el-button>
           </template>
         </el-table-column>
@@ -382,7 +379,7 @@
         class="demo-ruleForm"
       >
         <el-form-item label="项目名称" >
-          <el-input v-model="addForm.itemName"></el-input>
+          <el-input v-model="addForm.itemName" placeholder="请输入项目名称"></el-input>
         </el-form-item>
 
         <el-form-item label="项目分数单位" >
@@ -397,16 +394,8 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="是否多人组队参赛项目" >
-          <el-select v-model="addForm.itemMultiAthlete" placeholder="请选择">
-            <el-option
-              v-for="item in itemMultiOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item label="项目人数" >
+           <el-input v-model="addForm.itemAmount" placeholder="请输入项目人数"></el-input>
         </el-form-item>
 
       </el-form>
@@ -416,51 +405,47 @@
       </span>
     </el-dialog>
 
-    <!--修改项目模板区域-->
-    <el-dialog
-      title="修改项目"
-      :visible.sync="editTemplateDialogVisible"
-      width="50%"
-      @close="editDialogClosed"
-    >
-      <el-form
-        :model="editForm"
-        :rules="FormRules"
-        ref="editFormRef"
-        label-width="70px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="项目模板ID" prop="itemId">
-          <el-input v-model="editForm.itemId" disabled></el-input>
-        </el-form-item>
-         <el-form-item label="项目分数单位" >
-          <el-select v-model="editForm.itemUnit" placeholder="请选择">
-            <el-option
-              v-for="item in itemUnitOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
+  
 
-         <el-form-item label="是否多人组队参赛项目" >
-          <el-select v-model="editForm.itemMultiAthlete" placeholder="请选择">
-            <el-option
-              v-for="item in itemMultiOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editTemplateDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="editItem">确定</el-button>
-      </span>
+      <!--项目模板列表区域-->
+    <el-dialog
+      title="项目模板列表"
+      :visible.sync="TemplateListDialogVisible"
+      width="50%">
+     <el-row :gutter="25">
+        <el-col :span="10">
+          <el-button type="primary" @click="addTemplateDialogVisible = true" size="mini"
+            >添加项目模板</el-button
+          >
+        </el-col></el-row>
+  <el-table :data="itemTemplateOptions" border stripe>
+        <!--索引列-->
+
+        <el-table-column type="index"></el-table-column>
+        <el-table-column label="项目模板名称" prop="itemName"></el-table-column>
+        <el-table-column label="项目模板分数单位" prop="itemUnit"></el-table-column>
+        <el-table-column label="项目模板人数" prop="itemAmount"></el-table-column>
+        
+
+        <el-table-column label="操作" prop="state">
+          <template slot-scope="scope">
+            <!--修改-->
+            <!-- <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="showEditTemplateDialog(scope.row.itemId)"
+            ></el-button> -->
+            <!--删除-->
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="deleteItem(scope.row.itemId,'deleteItemTemplate')"
+            ></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
   </div>
 </template>
@@ -531,16 +516,6 @@ export default {
         },
       ],
 
-        itemMultiOptions: [
-        {
-          value: "1",
-          label: "是",
-        },
-        {
-          value: "0",
-          label: "否",
-        }
-      ],
 
       queryInfo: {
         currentPage: 1,
@@ -550,13 +525,14 @@ export default {
       total: 0,
       // 对话框状态
       addDialogVisible: false,
-addTemplateDialogVisible:false,
+    addTemplateDialogVisible:false,
+    TemplateListDialogVisible:false,
       addForm: {
         itemName: "",
         parentId:"",
         itemPlace: "",
         itemUnit: "",
-        itemMultiAthlete:"",
+        itemAmount:"",
         itemSex: "",
         startTime: "",
         endTime: "",
@@ -574,6 +550,7 @@ addTemplateDialogVisible:false,
         parentId:"",
         itemPlace: "",
         itemSex: "",
+        itemAmount:"",
         athleteAmount: "",
         startTime: "",
         endTime: "",
@@ -594,7 +571,6 @@ addTemplateDialogVisible:false,
       },
 
       editDialogVisible: false,
-editTemplateDialogVisible:false,
       dialogTableVisible: false,
       dialogFormVisible: false,
     };
@@ -616,6 +592,7 @@ editTemplateDialogVisible:false,
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
         });
+        this.getTemplateOptions();
     },
     //获取记分员
     async getScorers() {
@@ -629,6 +606,18 @@ editTemplateDialogVisible:false,
           _this.scorers = data.records;
         });
     },
+//获取所有项目模板
+     async getTemplateOptions() {
+      const _this = this;
+      axios
+        .get(
+          "/item/queryItemTemplate"
+        )
+        .then((res) => {
+          _this.itemTemplateOptions = res.data.data;
+        });
+    },
+    
     //获取运动会届时
     async getSeasons() {
       const _this = this;
@@ -692,14 +681,6 @@ editTemplateDialogVisible:false,
         _this.editDialogVisible = true;
       });
     },
- async showEditTemplateDialog(id) {
-      const _this = this;
-      axios.get("/item/getItemTemplate?itemId=" + id).then((res) => {
-        let data = res.data.data;
-        _this.editForm = data;
-        _this.editTemplateDialogVisible = true;
-      });
-    },
 
 
 
@@ -717,7 +698,7 @@ editTemplateDialogVisible:false,
         if (!valid) return;
         axios.post("/item/addItem", _this.addForm).then((res) => {
           if (res.data.status != 200) {
-            return _this.$message.error("操作失败" );
+            return _this.$message.error(res.data.msg );
           }
           _this.$message.success("操作成功");
           _this.addDialogVisible = false;
@@ -727,7 +708,7 @@ editTemplateDialogVisible:false,
       });
     },
 
-    async deleteItem(id) {
+    async deleteItem(id,urlStr) {
       const _this = this;
       const confirmResult = await _this
         .$confirm("此操作将永久删除项目，是否继续？", "提示", {
@@ -739,8 +720,8 @@ editTemplateDialogVisible:false,
       if (confirmResult !== "confirm") {
         return _this.$message.info("已取消删除");
       }
-      axios.delete("/item/deleteItem?itemId=" + id).then((res) => {
-        if (res.status == 200) {
+      axios.delete("/item/"+urlStr+"?itemId=" + id).then((res) => {
+        if (res.data.status == 200) {
           _this.$message.success("删除成功");
           _this.page();
         } else {
@@ -760,7 +741,6 @@ editTemplateDialogVisible:false,
           }
           _this.$message.success("操作成功");
         _this.editDialogVisible=false;
-        _this.editTemplateDialogVisible=false;
           _this.page();
         });
       });

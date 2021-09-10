@@ -39,7 +39,7 @@ public class ItemController {
     @ApiOperation("查询项目")
     @GetMapping("/queryItem")
     @RequiresAuthentication
-    public Object queryItem(QueryInfo queryInfo,Item item) {
+    public Object queryItem(QueryInfo queryInfo, Item item) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
@@ -58,19 +58,26 @@ public class ItemController {
     public Object addItem(@RequestBody Item item) {
 
         if (item == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，Item信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，项目信息为空");
         }
-        //通过Item名称和性别判断是否已存在相同Item
+        //通过seasonId、parentId和性别判断是否已存在相同Item
         Item tempItem = new Item();
-        tempItem.setItemName(item.getItemName());
+        tempItem.setParentId(item.getParentId());
         tempItem.setItemSex(item.getItemSex());
-        //如果不是添加模板，则需要加上seasonId来区分是否会和之前届的冲突
-       if (item.getSeason()!=null  && item.getSeason().getSeasonId()!=null && item.getSeason().getSeasonId()!=0){
-           Season season=item.getSeason();
-           tempItem.setSeason(season);
-       }
+        if (item.getSeason() != null && item.getSeason().getSeasonId() != null && item.getSeason().getSeasonId() != 0) {
+            Season season = item.getSeason();
+            tempItem.setSeason(season);
+        }
         if (itemService.getOneItemByCondition(tempItem) != null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，Item已存在");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，改项目已存在");
+        }
+        Item itemTemplate = itemService.getItemTemplateDetail(item);
+
+        //根据模板设置item名称等信息
+        if (itemTemplate != null) {
+            item.setItemName(itemTemplate.getItemName());
+            item.setItemUnit(itemTemplate.getItemUnit());
+            item.setItemAmount(itemTemplate.getItemAmount());
         }
         //设置创建时间
         item.setCreateTime(LocalDateTime.now());
@@ -129,11 +136,11 @@ public class ItemController {
         tempItem.setItemName(item.getItemName());
         tempItem.setItemSex(item.getItemSex());
         //如果不是添加模板，则需要加上seasonId来区分是否会和之前届的冲突
-        if (item.getSeason()!=null && item.getSeason().getSeasonId()!=0 && item.getSeason().getSeasonId()!=null){
-            Season season=item.getSeason();
+        if (item.getSeason() != null && item.getSeason().getSeasonId() != null&& item.getSeason().getSeasonId() != 0 ) {
+            Season season = item.getSeason();
             tempItem.setSeason(season);
         }
-        if (item.equals(itemService.getOneItemByCondition(item))) {
+        if (item.equals(itemService.getOneItemByCondition(tempItem))) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item已存在");
         }
 
@@ -167,5 +174,26 @@ public class ItemController {
             return ServerResponse.createBySuccess(item);
         }
         return ServerResponse.createByErrorMessage("查询不到该Item信息");
+    }
+    @ApiOperation("删除项目模板")
+    @DeleteMapping("/deleteItemTemplate")
+    @RequiresRoles(value = {"1"})
+    public ServerResponse deleteItemTemplate(Item item) {
+        Item tempItem=new Item();
+        tempItem.setParentId(item.getItemId());
+        IPage<Item> itemList = itemService.getItemByItemCondition(new Page(1, 9999), tempItem);
+        if (itemList!=null && itemList.getRecords()!=null&&itemList.getRecords().size()!=0){
+            return ServerResponse.createByErrorCodeMessage(400, "删除失败,该模板下有已举行的项目");
+        }
+        int effNum = 0;
+        try {
+            effNum = itemService.removeItem(item.getItemId());
+        } catch (Exception e) {
+            return ServerResponse.createByErrorCodeMessage(400, "删除失败");
+        }
+        if (effNum == 0) {
+            return ServerResponse.createByErrorCodeMessage(400, "删除失败");
+        }
+        return ServerResponse.createBySuccessMessage("删除成功");
     }
 }
