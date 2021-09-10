@@ -80,7 +80,7 @@ export default {
       userRole: ["", "管理员", "记分员", "运动员"],
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
