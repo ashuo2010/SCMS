@@ -167,6 +167,9 @@ public class ScoreController {
         if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
             return ServerResponse.createByErrorCodeMessage(400, "分数修改失败，该届运动会已结束");
         }
+        //分数纪录处理
+        scoreRecordHandle(score);
+        //设置修改时间
         score.setEditTime(LocalDateTime.now());
         //修改分数
         scoreService.modifyScore(score);
