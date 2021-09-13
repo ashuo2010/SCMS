@@ -96,7 +96,7 @@
             <if test="item.parentId!=null and item.parentId!=0">AND i.parent_id=#{item.parentId}</if>
             <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
             <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
-            <if test="item.itemName!=null">AND i.item_name =#{{item.itemName}</if>
+            <if test="item.itemName!=null">AND i.item_name =#{item.itemName}</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
             <if test="item.itemSex!=null">AND i.item_sex=#{item.itemSex}</if>

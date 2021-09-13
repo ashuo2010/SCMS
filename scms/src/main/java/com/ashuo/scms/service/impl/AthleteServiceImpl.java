@@ -88,10 +88,10 @@ public class AthleteServiceImpl implements AthleteService {
         } else {
             Athlete athlete = new Athlete();
             athlete.setAthleteId(athleteId);
-            Page<Athlete> page = new Page<>(1, 1);
-            IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(page, athlete);
+            IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(new Page<Athlete>(1, 1), athlete);
             athlete = athleteList.getRecords().get(0);
-            Item item = itemMapper.queryOneItemByItemCondition(athlete.getItem());
+            Item temp =(athlete.getItem());
+            Item item = itemMapper.queryOneItemByItemCondition(temp);
             //将对应项目报名数量减一
             item.setAthleteAmount(item.getAthleteAmount() - 1);
             int effNum = itemMapper.updateItem(item);

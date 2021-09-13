@@ -2,6 +2,8 @@ package com.ashuo.scms.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
@@ -32,7 +34,7 @@ public class Record implements Serializable {
 
     private User user;
 
-    private Integer recordScore;
+    private BigDecimal recordScore;
 
     private String recordStatus;
 

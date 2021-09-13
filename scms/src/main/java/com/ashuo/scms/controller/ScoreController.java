@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,7 +160,7 @@ public class ScoreController {
     @PutMapping("/editScore")
     @RequiresRoles(value = {"2"})
     public Object editScore(@RequestBody Score score) {
-        if (score == null || score.getScore() == 0) {
+        if (score == null || score.getScore().compareTo(BigDecimal.ZERO)==0) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Score信息为空");
         }
 
@@ -199,10 +200,13 @@ public class ScoreController {
             //获取该项目之前记录
             Record itemRecord = recordList.get(0);
             //如果分数破纪录或持平记录
-            if (score.getScore() >= itemRecord.getRecordScore()) {
+//            if (score.getScore() >= itemRecord.getRecordScore()) {
+            if (score.getScore().compareTo(itemRecord.getRecordScore())>=0) {
 
                 //如果分数破纪录，如果和记录持平则直接添加
-                if (score.getScore() > itemRecord.getRecordScore()) {
+//                if (score.getScore() > itemRecord.getRecordScore()) {
+                if (score.getScore().compareTo(itemRecord.getRecordScore())==1 ) {
+
                     //使之前记录失效
                     recordList.stream().forEach(r -> {
                         r.setRecordStatus("0");

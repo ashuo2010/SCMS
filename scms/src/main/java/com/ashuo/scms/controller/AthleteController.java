@@ -8,6 +8,7 @@ import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.AthleteService;
 import com.ashuo.scms.service.ItemService;
+import com.ashuo.scms.service.UserService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -20,6 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -40,6 +46,9 @@ public class AthleteController {
 
     @Autowired
     ItemService itemService;
+
+    @Autowired
+    UserService userService;
 
     @ApiOperation("查询运动员")
     @GetMapping("/queryAthlete")
@@ -67,7 +76,7 @@ public class AthleteController {
     @ApiOperation("运动员报名")
     @PostMapping("/addAthlete")
     @RequiresAuthentication
-    public Object addAthlete(@RequestBody Athlete athlete) {
+    public Object addAthlete(@RequestBody Athlete athlete) throws Exception {
 
         if (athlete == null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，Athlete信息为空");
@@ -88,12 +97,38 @@ public class AthleteController {
             return ServerResponse.createByErrorCodeMessage(400, "报名失败，你已经报名过该项目了");
         }
 
-        //判断用户是否已经报过超过3个项目
-        Athlete tempAthlete = new Athlete();
-        tempAthlete.setUser(athlete.getUser());
-        if (athleteService.getAthleteByCondition(page, tempAthlete).getRecords().size() >= 3) {
-            return ServerResponse.createByErrorCodeMessage(400, "报名失败，你已经报名超过3门项目了");
+        //如果是单人参赛项目，判断用户是否已经报过超过3个项目
+        if (item.getItemAmount()==1){
+            Athlete tempAthlete = new Athlete();
+            tempAthlete.setUser(athlete.getUser());
+            if (athleteService.getAthleteByCondition(new Page<>(1, 999999999), tempAthlete).getRecords().size() >= 3) {
+                return ServerResponse.createByErrorCodeMessage(400, "报名失败，你已经报名超过3门项目了");
+            }
+        }else if(item.getItemAmount()>1) {
+            //如果是多人参赛项目,查询该项目的ids,判断报名的运动员中是否已经加入了其他队伍
+            Athlete tempAthlete = new Athlete();
+            tempAthlete.setItem(item);
+            List<Athlete> athleteList = athleteService.getAthleteByCondition(new Page<>(1, 999999999), tempAthlete).getRecords();
+            String[] userIds = athlete.getUserIds().split(",");
+            for (String uId : userIds) {
+                //lambda表达式，如果有匹配的，collectList就不会为空
+                 List<Athlete> collectList = athleteList.stream().filter(a -> Arrays.stream(a.getUserIds().split(",")).anyMatch(athleteUserId -> athleteUserId.equals(uId))).collect(Collectors.toList());
+
+                //如果列表不为空，表示至少有一个运动员已经报名过该项目
+                if (collectList!=null&&collectList.size()>0){
+                    Class<User> userClass=User.class;
+                    User user = userClass.newInstance();
+                    user.setUserId(Integer.valueOf(uId));
+                    user= userService.getUserByCondition(new Page<>(1,1),user).getRecords().get(0);
+                    return ServerResponse.createByErrorCodeMessage(400, "报名失败，"+user.getNickname()+"已经报名过该项目了");
+                }
+            }
+
+
+        }else {
+            return ServerResponse.createByErrorCodeMessage(400, "项目参赛人数设置为0，无法报名");
         }
+
 
         //设置报名时间
         athlete.setSignTime(LocalDateTime.now());

@@ -30,6 +30,8 @@ public class Athlete implements Serializable {
 
     private User user;
 
+    private String userIds;
+
     private Item item;
 
     private Integer status;
