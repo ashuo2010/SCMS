@@ -19,16 +19,11 @@ public interface AthleteMapper {
     //增加Athlete
     int insertAthlete(Athlete athlete);
 
-    //按条件查询Athlete
-    Athlete queryAthleteByItemUserAndTeam(Athlete athlete);
-
     //按条件查询Athlete列表
     IPage<Athlete> queryAthleteByAthleteCondition(Page<Athlete> page, Athlete athlete);
 
     int updateAthlete(Athlete athlete);
 
     int deleteAthlete(int athleteId);
-
-    List<AthleteScoreDto> queryAllPersonScore();
 
 }

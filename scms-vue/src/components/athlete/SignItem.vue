@@ -158,23 +158,7 @@ export default {
   data() {
     return {
 
-        // options: [{
-        //   value: '选项1',
-        //   label: '黄金糕'
-        // }, {
-        //   value: '选项2',
-        //   label: '双皮奶'
-        // }, {
-        //   value: '选项3',
-        //   label: '蚵仔煎'
-        // }, {
-        //   value: '选项4',
-        //   label: '龙须面'
-        // }, {
-        //   value: '选项5',
-        //   label: '北京烤鸭'
-        // }],
-        // value: '',
+      
       userList:[],
       // selectUids:[],
 
@@ -195,6 +179,7 @@ export default {
 
       addAthletesItemForm:{
           item: { itemId: "" },
+          user: {userId: "",},
           userIds:"",
       },
         //select远程搜索加载中
@@ -298,7 +283,6 @@ export default {
         _this.addAthletesItemForm.itemSex=row.itemSex;
         _this.addAthletesItemForm.itemPlace=row.itemPlace;
         
-        console.log(_this.addAthletesItemForm)
         _this.dialogTableVisible=true;
         return;
       }
@@ -325,7 +309,6 @@ export default {
           return _this.$message.error("报名失败" + res.data.msg);
         }
         _this.$message.success("报名成功");
-        _this.addDialogVisible = false;
         _this.page();
       });
     },
@@ -344,13 +327,14 @@ export default {
         return _this.$message.info("已取消报名");
       }
       _this.addAthletesItemForm.userIds=_this.addAthletesItemForm.userIds.toString();
-
+      _this.addAthletesItemForm.user.userId = JSON.parse( localStorage.getItem("user")).userId;
       axios.post("/athlete/addAthlete", _this.addAthletesItemForm).then((res) => {
         if (res.data.status != 200) {
+        _this.addAthletesItemForm.userIds =[];
           return _this.$message.error(res.data.msg);
         }
         _this.$message.success("报名成功");
-        _this.addDialogVisible = false;
+        _this.dialogTableVisible = false;
         _this.page();
       });
     },
@@ -365,8 +349,11 @@ export default {
       axios
         .get("/user/queryUser?currentPage=1&pageSize=999999999&query="+queryName)
         .then((res) => {
-          let data = res.data.data;
-          _this.userList = data.records;
+          let data = res.data.data.records;
+          data.forEach((item,index) => {
+            item.nickname=item.nickname+"      "+item.team.teamName;
+          });
+          _this.userList =data ;
           this.loading = false;
         });
     },

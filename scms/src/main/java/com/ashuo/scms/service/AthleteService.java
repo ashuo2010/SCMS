@@ -16,7 +16,6 @@ import java.util.List;
  * @since 2021-04-05
  */
 public interface AthleteService {
-//    IPage<Athlete> getAllAthlete(Page<Athlete> page, String athleteName);
 
     IPage<Athlete> getAthleteByCondition(Page<Athlete> page, Athlete athlete);
 
@@ -26,6 +25,5 @@ public interface AthleteService {
 
     int removeAthlete(int athleteId);
 
-    List<AthleteScoreDto> getAllPersonScore();
 
 }

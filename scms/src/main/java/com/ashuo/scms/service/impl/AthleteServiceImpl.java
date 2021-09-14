@@ -108,8 +108,5 @@ public class AthleteServiceImpl implements AthleteService {
         }
     }
 
-    @Override
-    public List<AthleteScoreDto> getAllPersonScore() {
-        return athleteMapper.queryAllPersonScore();
-    }
+
 }

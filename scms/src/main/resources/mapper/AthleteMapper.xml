@@ -4,7 +4,7 @@
     <resultMap id="athleteMap" type="com.ashuo.scms.entity.Athlete">
         <id column="athlete_id" property="athleteId"/>
         <result column="user_ids" property="userIds"/>
-        <result column="status" property="status"/>
+        <result column="score_status" property="scoreStatus"/>
         <result column="sign_time" property="signTime"/>
         <association property="user" javaType="com.ashuo.scms.entity.User">
             <id column="user_id" property="userId"/>
@@ -48,15 +48,15 @@
 
     <insert id="insertAthlete" parameterType="com.ashuo.scms.entity.Athlete"
             useGeneratedKeys="true" keyColumn="athlete_id" keyProperty="athleteId">
-        INSERT INTO athlete(u_id,user_ids, i_id, status, sign_time)
-        VALUES (#{user.userId},#{userIds}, #{item.itemId}, #{status}, #{signTime})
+        INSERT INTO athlete(u_id,user_ids, i_id, score_status, sign_time)
+        VALUES (#{user.userId},#{userIds}, #{item.itemId}, #{scoreStatus}, #{signTime})
     </insert>
 
     <select id="queryAthleteByAthleteCondition" resultMap="athleteMap">
         SELECT
         a.athlete_id,
         a.user_ids,
-        a.`status`,
+        a.`score_status`,
         a.sign_time,
         i.item_id,
         i.u_id,
@@ -84,8 +84,9 @@
         INNER JOIN `user` u2 ON i.u_id = u2.user_id
         <where>
             <if test="athlete.athleteId!=null and athlete.athleteId!=0">AND a.athlete_id=#{athlete.athleteId}</if>
-            <if test="athlete.userIds!=null and athlete.userIds!=''">AND a.user_ids=#{athlete.userIds}</if>
             <if test="athlete.user!=null and athlete.user.userId!=null and athlete.user.userId!=0">AND u.user_id=#{athlete.user.userId}</if>
+
+            <if test="athlete.userIds!=null and athlete.userIds!=''">OR a.user_ids LIKE '%${athlete.userIds}%'</if>
             <if test="athlete.user!=null and athlete.user.nickname!=null">AND u.nickname LIKE
                 '%${athlete.user.nickname}%'
             </if>
@@ -99,55 +100,17 @@
             <if test="athlete.item!=null and athlete.item.season!=null and athlete.item.season.seasonId!=null and athlete.item.season.seasonId!=0">AND
                 se.season_id=#{athlete.item.season.seasonId}
             </if>
-            <if test="athlete.status!=null and athlete.status==1">AND a.status=1</if>
-            <if test="athlete.status!=null and athlete.status==2">AND a.status=0</if>
+            <if test="athlete.scoreStatus!=null">AND a.score_status=#{athlete.scoreStatus}</if>
         </where>
         ORDER BY
         i.item_id
         DESC
     </select>
 
-    <select id="queryAthleteByItemUserAndTeam" resultMap="athleteMap">
-        SELECT a.athlete_id,
-        a.user_ids,
-        a.status,
-        a.sign_time,
-        i.item_id,
-        i.item_name,
-        i.item_place,
-        i.item_unit,
-        i.start_time,
-        i.end_time,
-        u.user_id,
-        u.user_no,
-        u.nickname,
-        u.user_sex
-        FROM ( `athlete` a INNER JOIN `user` u ON a.u_id = u.user_id )
-        INNER JOIN `item` i ON a.i_id = i.item_id
-        WHERE a.u_id = #{user.userId}
-        AND a.i_id = #{item.itemId}
-    </select>
-
-    <select id="queryAllPersonScore" resultMap="personScore">
-        SELECT t.team_name,
-        u.user_no,
-        u.nickname,
-        u.user_sex,
-        i.item_name,
-        s.score
-        FROM `athlete` a
-        INNER JOIN `user` u ON a.u_id = u.user_id
-        INNER JOIN `team` t ON t.team_id = u.t_id
-        INNER JOIN `item` i ON a.i_id = i.item_id
-        LEFT JOIN `score` s ON s.i_id = a.i_id
-        AND s.u_id = i.u_id
-        ORDER BY i.item_name,
-        score
-    </select>
     <update id="updateAthlete" parameterType="com.ashuo.scms.entity.Athlete">
         UPDATE athlete
         <set>
-            <if test="status!=null">status=#{status},</if>
+            <if test="scoreStatus!=null">score_status=#{scoreStatus},</if>
             <if test="userIds!=null">user_ids=#{userIds},</if>
         </set>
         <where>

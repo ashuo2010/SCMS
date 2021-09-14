@@ -34,7 +34,7 @@ public class Athlete implements Serializable {
 
     private Item item;
 
-    private Integer status;
+    private Integer scoreStatus;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime signTime;

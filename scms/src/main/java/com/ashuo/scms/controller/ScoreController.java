@@ -127,7 +127,7 @@ public class ScoreController {
             Athlete athlete = new Athlete();
             athlete.setItem(score.getItem());
             athlete.setUser(score.getUser());
-            athlete.setStatus(1);
+            athlete.setScoreStatus(1);
             athleteService.modifyAthlete(athlete);
 
             //分数排名处理

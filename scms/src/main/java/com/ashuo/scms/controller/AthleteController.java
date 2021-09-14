@@ -67,7 +67,28 @@ public class AthleteController {
 
         //分页查询
         Page<Athlete> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Athlete> athleteList = athleteService.getAthleteByCondition(page, athlete);
+        //加上查询多人项目
+        athlete.setUserIds(athlete.getUser().getUserId().toString());
+        IPage<Athlete>  athleteList = athleteService.getAthleteByCondition(page, athlete);
+        for (Athlete a: athleteList.getRecords()){
+            //如果是多人项目，拼接名字多个运动员名字
+            if (a.getUserIds()!=null){
+                String[] userIds = a.getUserIds().split(",");
+                List<User> userList =new ArrayList<>();
+                for (String uId: userIds){
+                    User tempUser =new User();
+                    tempUser.setUserId(Integer.valueOf(uId));
+                    userList.addAll(userService.getUserByCondition(new Page<>(1, 999999999), tempUser).getRecords());
+                }
+                String userNickname="";
+                for (User u:userList){
+                    userNickname+=u.getNickname()+",";
+                }
+                //删除最后一个逗号
+                userNickname=userNickname.substring(0,userNickname.length()-1);
+                a.getUser().setNickname(userNickname);
+            }
+        }
         return ServerResponse.createBySuccess(athleteList);
     }
 
@@ -110,6 +131,11 @@ public class AthleteController {
             tempAthlete.setItem(item);
             List<Athlete> athleteList = athleteService.getAthleteByCondition(new Page<>(1, 999999999), tempAthlete).getRecords();
             String[] userIds = athlete.getUserIds().split(",");
+            if (userIds.length<item.getItemAmount()){
+                return ServerResponse.createByErrorCodeMessage(400, "报名失败，报名该项目的人数不够");
+            }else if (userIds.length>item.getItemAmount()){
+                return ServerResponse.createByErrorCodeMessage(400, "报名失败，报名该项目的人数超出限制");
+            }
             for (String uId : userIds) {
                 //lambda表达式，如果有匹配的，collectList就不会为空
                  List<Athlete> collectList = athleteList.stream().filter(a -> Arrays.stream(a.getUserIds().split(",")).anyMatch(athleteUserId -> athleteUserId.equals(uId))).collect(Collectors.toList());
@@ -123,17 +149,13 @@ public class AthleteController {
                     return ServerResponse.createByErrorCodeMessage(400, "报名失败，"+user.getNickname()+"已经报名过该项目了");
                 }
             }
-
-
         }else {
             return ServerResponse.createByErrorCodeMessage(400, "项目参赛人数设置为0，无法报名");
         }
 
-
         //设置报名时间
         athlete.setSignTime(LocalDateTime.now());
         //设置记分状态，为0表示尚未记分
-        athlete.setStatus(0);
         int effNum = 0;
         effNum = athleteService.addAthlete(athlete);
         if (effNum == 0) {
