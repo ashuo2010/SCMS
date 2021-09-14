@@ -66,13 +66,13 @@
             </el-select>
             &nbsp;
             <el-select
-              v-model="athlete.status"
+              v-model="athlete.scoreStatus"
               filterable
               placeholder="是否录入成绩"
               @change="querySelectedOptions"
             >
               <el-option
-                v-for="item in status"
+                v-for="item in statusOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -114,7 +114,7 @@
               <!--录入分数-->
               <el-button
                 style="margin-left: 10px"
-                v-show="scope.row.status == 0"
+                v-show="scope.row.scoreStatus == 0"
                 :disabled="scope.row.item.user.userId != currentUser.userId"
                 type="primary"
                 icon="el-icon-edit"
@@ -131,7 +131,7 @@
 
               <!--查看分数-->
               <el-button
-                v-show="scope.row.status == 1"
+                v-show="scope.row.scoreStatus == 1"
                 type="info"
                 icon="el-icon-tickets"
                 size="mini"
@@ -145,7 +145,7 @@
 
               <!--修改分数-->
               <el-button
-                v-show="scope.row.status == 1"
+                v-show="scope.row.scoreStatus == 1"
                 :disabled="scope.row.item.user.userId != currentUser.userId"
                 type="primary"
                 icon="el-icon-edit"
@@ -346,9 +346,9 @@ export default {
       allSeasonOptions:[],
       //选择的届时
       selectSeasonId:"",
-      status: [
+      statusOptions: [
         {
-          value: "2",
+          value: "0",
           label: "未录入成绩",
         },
         {
@@ -356,7 +356,7 @@ export default {
           label: "已录入成绩",
         },
         {
-          value: "0",
+          value: "",
           label: "所有成绩",
         },
       ],
@@ -368,7 +368,7 @@ export default {
           },
         },
 
-        status: "",
+        scoreStatus: "",
       },
 
       score: {
@@ -455,7 +455,7 @@ export default {
 
      async querySelectedOptions() {
       const _this = this;
-      if(_this.selectItemId==""){
+     /*  if(_this.selectItemId==""){
         _this.selectItemId=0;
       }
        if(_this.athlete.item.user.userId==""){
@@ -463,11 +463,11 @@ export default {
       }
        if(_this.athlete.status==""){
         _this.athlete.status=0;
-      }
+      } */
       axios
         .get(
           "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
-          + "&item.user.userId=" + _this.athlete.item.user.userId+"&status=" + _this.athlete.status
+          + "&item.user.userId=" + _this.athlete.item.user.userId+"&scoreStatus=" + _this.athlete.scoreStatus
         )
         .then((res) => {
           let data = res.data.data;

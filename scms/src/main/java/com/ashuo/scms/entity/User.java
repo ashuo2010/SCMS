@@ -30,6 +30,8 @@ public class User implements Serializable {
     @TableId(value = "user_id", type = IdType.AUTO)
     private Integer userId;
 
+    private Team team;
+
     private String userNo;
 
     private String nickname;
@@ -42,7 +44,6 @@ public class User implements Serializable {
 
     private Integer userType;
 
-    private Team team;
 
     private String phone;
 

@@ -29,9 +29,9 @@ public class Score implements Serializable {
     @TableId(value = "score_id", type = IdType.AUTO)
     private Integer scoreId;
 
-    private Item item;
+    private Athlete athlete;
 
-    private User user;
+    private Ranking ranking;
 
     private BigDecimal score;
 

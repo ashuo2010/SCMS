@@ -28,11 +28,7 @@ public class Ranking implements Serializable {
     @TableId(value = "ranking_id", type = IdType.AUTO)
     private Integer rankingId;
 
-    private Item item;
-
-    private User user;
-
-    private Team team;
+    private Athlete athlete;
 
     private Integer rank;
 

@@ -62,6 +62,7 @@
             <el-button
               type="danger"
               size="mini"
+              :disabled="scope.row.userIds!=null"
               @click="deleteAthlete(scope.row.athleteId)"
               >取消报名</el-button
             >

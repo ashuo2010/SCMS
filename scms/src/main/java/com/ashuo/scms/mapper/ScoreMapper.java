@@ -23,18 +23,19 @@ public interface ScoreMapper {
     //修改Score
     int updateScore(Score score);
 
-    //删除Score
-    int deleteScore(int scoreId);
-
     //按条件查询Score
     IPage<Score> queryScoreByScoreCondition(Page<Score> page, @Param("score") Score score);
 
+    //查询分数排名并限制数量
     List<Score> queryScoreByItemIdLimit(@Param("itemId") Integer itemId,@Param("condition") String condition);
 
+    //获取单个Score
     Score queryOneScoreByScoreId(@Param("scoreId") Integer scoreId);
 
+    //查询一个团队下的所有运动员的Score
     IPage<Score> queryScoreByTeamId(Page<Score> page, @Param("teamId") int teamId);
 
+    //查询返回Dto对象
     IPage<AthleteScoreDto> queryAthleteScoreDto(Page<AthleteScoreDto> page , @Param("score") Score score);
 
 }

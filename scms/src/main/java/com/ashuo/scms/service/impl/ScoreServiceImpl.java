@@ -96,17 +96,5 @@ public class ScoreServiceImpl implements ScoreService {
         }
     }
 
-    @Override
-    public int removeScore(int scoreId) {
-        if (scoreId == 0) {
-            return 0;
-        } else {
-            int effNum = scoreMapper.deleteScore(scoreId);
-            if (effNum != 1) {
-                return 0;
-            } else {
-                return effNum;
-            }
-        }
-    }
+
 }

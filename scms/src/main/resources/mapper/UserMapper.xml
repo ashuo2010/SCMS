@@ -75,7 +75,7 @@
         t.team_name
         FROM
         `user` u
-        LEFT JOIN `team` t ON u.t_id = t.team_id
+        INNER JOIN `team` t ON u.t_id = t.team_id
         <where>
             <if test="user.userId!=null and user.userId!=null and user.userId!=0">AND u.user_id = #{user.userId}</if>
             <if test="user.userNo!=null">AND u.user_no = #{user.userNo}</if>

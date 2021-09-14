@@ -30,9 +30,7 @@ public class Record implements Serializable {
     @TableId(value = "record_id", type = IdType.AUTO)
     private Integer recordId;
 
-    private Item item;
-
-    private User user;
+    private Athlete athlete;
 
     private BigDecimal recordScore;
 

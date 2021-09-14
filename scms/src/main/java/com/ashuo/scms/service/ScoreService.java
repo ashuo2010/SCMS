@@ -32,6 +32,5 @@ public interface ScoreService {
 
     int modifyScore(Score score);
 
-    int removeScore(int scoreId);
 
 }

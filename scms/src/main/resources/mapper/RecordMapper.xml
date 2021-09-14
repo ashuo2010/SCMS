@@ -7,22 +7,25 @@
         <result column="record_status" property="recordStatus"/>
         <result column="create_time" property="createTime"/>
         <result column="editTime" property="editTime"/>
-        <association property="item" javaType="com.ashuo.scms.entity.Item">
-            <id column="item_id" property="itemId"/>
-            <result column="item_name" property="itemName"/>
-            <result column="item_sex" property="itemSex"/>
-            <association property="season" javaType="com.ashuo.scms.entity.Season">
-                <id column="se_id" property="seasonId"/>
-                <result column="season_name" property="seasonName"/>
-            </association>
-        </association>
 
-        <association property="user" javaType="com.ashuo.scms.entity.User">
-            <id column="user_id" property="userId"/>
-            <result column="nickname" property="nickname"/>
-            <association property="team" javaType="com.ashuo.scms.entity.Team">
-                <result column="team_id" property="teamId"/>
-                <result column="team_name" property="teamName"/>
+        <association property="athlete" javaType="com.ashuo.scms.entity.Athlete">
+            <id column="athlete_id" property="athleteId"/>
+            <association property="item" javaType="com.ashuo.scms.entity.Item">
+                <id column="item_id" property="itemId"/>
+                <result column="item_name" property="itemName"/>
+                <result column="item_sex" property="itemSex"/>
+                <association property="season" javaType="com.ashuo.scms.entity.Season">
+                    <id column="se_id" property="seasonId"/>
+                    <result column="season_name" property="seasonName"/>
+                </association>
+            </association>
+            <association property="user" javaType="com.ashuo.scms.entity.User">
+                <id column="user_id" property="userId"/>
+                <result column="nickname" property="nickname"/>
+                <association property="team" javaType="com.ashuo.scms.entity.Team">
+                    <result column="team_id" property="teamId"/>
+                    <result column="team_name" property="teamName"/>
+                </association>
             </association>
         </association>
     </resultMap>
@@ -30,8 +33,8 @@
 
     <insert id="insertRecord" parameterType="com.ashuo.scms.entity.Record"
             useGeneratedKeys="true" keyColumn="record_id" keyProperty="recordId">
-        INSERT INTO record( i_id,u_id,record_score, record_status, create_time,edit_time)
-        VALUES ( #{item.itemId},#{user.userId},#{recordScore},#{recordStatus},#{createTime},#{editTime})
+        INSERT INTO record( a_id,record_score, record_status, create_time,edit_time)
+        VALUES (#{athlete.athleteId},#{recordScore},#{recordStatus},#{createTime},#{editTime})
     </insert>
 
     <select id="queryRecordByRecordCondition" resultMap="recordMap">
@@ -44,29 +47,30 @@
         i.item_id,
         i.item_name,
         i.item_sex,
-        se.season_id,
-        se.season_name,
         u.user_id,
         u.nickname,
         t.team_id,
-        t.team_name
+        t.team_name,
+        se.season_id,
+        se.season_name
         FROM
         `record` r
-        INNER JOIN `user` u ON r.u_id = u.user_id
+        INNER JOIN `athlete` a ON r.a_id = a.athlete_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
+        INNER JOIN `user` u ON a.u_id = u.user_id
         INNER JOIN `team` t ON t.team_id = u.t_id
-        INNER JOIN `item` i ON r.i_id = i.item_id
         INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
             <if test="record.recordId!=null and record.recordId!=0">AND r.record_id=#{record.recordId}</if>
             <if test="record.recordStatus!=null">AND r.record_status=#{record.recordStatus}</if>
-            <if test="record.item!=null and record.item.parentId!=null and record.item.parentId!=0">AND
-                i.parent_id=#{record.item.parentId}
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">AND
+                i.parent_id=#{record.athlete.item.parentId}
             </if>
-            <if test="record.user!=null and record.user.nickname!=null">AND u.nickname LIKE
-                '%${record.user.nickname}%'
+            <if test="record.athlete!=null and record.athlete.user!=null and record.athlete.user.nickname!=null">AND u.nickname LIKE
+                '%${record.athlete.user.nickname}%'
             </if>
-            <if test="record.item!=null and record.item.itemName!=null">AND i.item_name LIKE
-                '%${record.item.itemName}%'
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.itemName!=null">AND i.item_name LIKE
+                '%${record.athlete.item.itemName}%'
             </if>
         </where>
         ORDER BY
