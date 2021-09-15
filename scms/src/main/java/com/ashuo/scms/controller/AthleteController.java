@@ -53,7 +53,7 @@ public class AthleteController {
     @ApiOperation("查询运动员")
     @GetMapping("/queryAthlete")
     @RequiresAuthentication
-    public Object queryAthlete(QueryInfo queryInfo, Athlete athlete) {
+    public ServerResponse queryAthlete(QueryInfo queryInfo, Athlete athlete) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         } else {
@@ -102,10 +102,10 @@ public class AthleteController {
     @ApiOperation("运动员报名")
     @PostMapping("/addAthlete")
     @RequiresAuthentication
-    public Object addAthlete(@RequestBody Athlete athlete) throws Exception {
+    public ServerResponse addAthlete(@RequestBody Athlete athlete) throws Exception {
 
         if (athlete == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，Athlete信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，报名信息为空");
         }
 
         Item item = itemService.getOneItemByCondition(athlete.getItem());
@@ -173,7 +173,7 @@ public class AthleteController {
     @DeleteMapping("/deleteAthlete")
     @RequiresAuthentication
     @Transactional
-    public Object deleteAthlete(Integer athleteId) {
+    public ServerResponse deleteAthlete(Integer athleteId) {
         Page<Athlete> page = new Page(1, 1);
         Athlete athlete=new Athlete();
         athlete.setAthleteId(athleteId);

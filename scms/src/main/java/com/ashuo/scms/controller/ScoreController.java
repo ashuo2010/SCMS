@@ -53,7 +53,7 @@ public class ScoreController {
     @ApiOperation("查询运动员项目分数")
     @GetMapping("/queryScore")
     @RequiresAuthentication
-    public Object queryScore(QueryInfo queryInfo, Score score) {
+    public ServerResponse queryScore(QueryInfo queryInfo, Score score) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
@@ -81,9 +81,9 @@ public class ScoreController {
     @ApiOperation("添加分数")
     @PostMapping("/addScore")
     @RequiresRoles(value = {"2"})
-    public Object addScore(@RequestBody Score score) {
+    public ServerResponse addScore(@RequestBody Score score) {
             if (score == null||score.getAthlete()==null) {
-                return ServerResponse.createByErrorCodeMessage(400, "添加失败，Score信息为空");
+                return ServerResponse.createByErrorCodeMessage(400, "添加失败，分数信息为空");
             }
             Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
             if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
@@ -114,7 +114,7 @@ public class ScoreController {
     @ApiOperation("获取分数详情")
     @GetMapping("/getScore")
     @RequiresAuthentication
-    public Object getScore(int scoreId) {
+    public ServerResponse getScore(int scoreId) {
 
         Score score = scoreService.getOneScoreByScoreId(scoreId);
         if (score != null) {
@@ -127,9 +127,9 @@ public class ScoreController {
     @ApiOperation("修改分数")
     @PutMapping("/editScore")
     @RequiresRoles(value = {"2"})
-    public Object editScore(@RequestBody Score score) {
+    public ServerResponse editScore(@RequestBody Score score) {
         if (score == null ||score.getScore()==null|| score.getScore().compareTo(BigDecimal.ZERO)==0||score.getAthlete()==null) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，Score信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，分数信息为空");
         }
 
         Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
@@ -141,7 +141,7 @@ public class ScoreController {
         //设置修改时间
         score.setEditTime(LocalDateTime.now());
         //修改分数
-            scoreService.modifyScore(score);
+        scoreService.modifyScore(score);
 
 
         //分数排名处理
@@ -155,7 +155,7 @@ public class ScoreController {
     @ApiOperation("项目下所有运动员的分数")
     @GetMapping("/queryAthleteScore")
     @RequiresAuthentication
-    public Object queryAthleteScore(QueryInfo queryInfo, Score score) {
+    public ServerResponse queryAthleteScore(QueryInfo queryInfo, Score score) {
         //如果搜索框未输入
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);

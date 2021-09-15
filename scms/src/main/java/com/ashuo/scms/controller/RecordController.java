@@ -36,7 +36,7 @@ public class RecordController {
     @ApiOperation("查询运动员项目记录")
     @GetMapping("/queryRecord")
     @RequiresAuthentication
-    public Object queryRecord(QueryInfo queryInfo, Record record) {
+    public ServerResponse queryRecord(QueryInfo queryInfo, Record record) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }else {

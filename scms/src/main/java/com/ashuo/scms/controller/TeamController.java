@@ -38,7 +38,7 @@ public class TeamController {
     @ApiOperation("查询团体")
     @GetMapping("/queryTeam")
     @RequiresAuthentication
-    public Object queryTeam(QueryInfo queryInfo) {
+    public ServerResponse queryTeam(QueryInfo queryInfo) {
         //分页查询
         Page<Team> page = new Page<Team>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Team> teamList = teamService.getAllTeam(page, queryInfo.getQuery());
@@ -49,14 +49,14 @@ public class TeamController {
     @ApiOperation("添加团体")
     @PostMapping("/addTeam")
     @RequiresRoles(value = {"1"})
-    public Object addTeam(@RequestBody Team team) {
+    public ServerResponse addTeam(@RequestBody Team team) {
 
         if (team == null || team.getTeamName() == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，Team信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，团体信息为空");
         }
 
         if (teamService.getTeamByCondition(team) != null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，Team名称已存在");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，团体名称已存在");
         }
         //设置创建时间
         team.setCreateTime(LocalDateTime.now());
@@ -76,7 +76,7 @@ public class TeamController {
     @ApiOperation("删除团体")
     @DeleteMapping("/deleteTeam")
     @RequiresRoles(value = {"1"})
-    public Object deleteTeam(Integer teamId) {
+    public ServerResponse deleteTeam(Integer teamId) {
         int effNum = 0;
         try {
             effNum = teamService.removeTeam(teamId);
@@ -93,25 +93,25 @@ public class TeamController {
     @ApiOperation("获取团体信息")
     @GetMapping("/getTeam")
     @RequiresRoles(value = {"1"})
-    public Object getTeam(Team teamCondition) {
+    public ServerResponse getTeam(Team teamCondition) {
 
         Team team = teamService.getTeamByCondition(teamCondition);
         if (team != null) {
             return ServerResponse.createBySuccess(team);
         }
-        return ServerResponse.createByErrorMessage("查询不到该Team信息");
+        return ServerResponse.createByErrorMessage("查询不到该团体信息");
     }
 
     @ApiOperation("修改团体")
     @PutMapping("/editTeam")
     @RequiresRoles(value = {"1"})
-    public Object editTeam(@RequestBody Team team) {
+    public ServerResponse editTeam(@RequestBody Team team) {
         if (team == null || team.getTeamName() == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，Team信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，团体信息为空");
         }
 
         if (teamService.getTeamByCondition(team) != null) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，Team名称已存在");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，团体名称已存在");
         }
 
         team.setEditTime(LocalDateTime.now());

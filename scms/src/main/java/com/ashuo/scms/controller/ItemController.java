@@ -39,7 +39,7 @@ public class ItemController {
     @ApiOperation("查询项目")
     @GetMapping("/queryItem")
     @RequiresAuthentication
-    public Object queryItem(QueryInfo queryInfo, Item item) {
+    public ServerResponse queryItem(QueryInfo queryInfo, Item item) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
@@ -55,7 +55,7 @@ public class ItemController {
     @ApiOperation("添加项目")
     @PostMapping("/addItem")
     @RequiresRoles(value = {"1"})
-    public Object addItem(@RequestBody Item item) {
+    public ServerResponse addItem(@RequestBody Item item) {
 
         if (item == null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，项目信息为空");
@@ -97,7 +97,7 @@ public class ItemController {
     @ApiOperation("删除项目")
     @DeleteMapping("/deleteItem")
     @RequiresRoles(value = {"1"})
-    public Object deleteItem(Integer itemId) {
+    public ServerResponse deleteItem(Integer itemId) {
         int effNum = 0;
         try {
             effNum = itemService.removeItem(itemId);
@@ -114,21 +114,21 @@ public class ItemController {
     @ApiOperation("获取项目详情信息")
     @GetMapping("/getItem")
     @RequiresRoles(value = {"1"})
-    public Object getItem(Item itemCondition) {
+    public ServerResponse getItem(Item itemCondition) {
 
         Item item = itemService.getOneItemByCondition(itemCondition);
         if (item != null) {
             return ServerResponse.createBySuccess(item);
         }
-        return ServerResponse.createByErrorMessage("查询不到该Item信息");
+        return ServerResponse.createByErrorMessage("查询不到该项目信息");
     }
 
     @ApiOperation("修改项目")
     @PutMapping("/editItem")
     @RequiresRoles(value = {"1"})
-    public Object editItem(@RequestBody Item item) {
+    public ServerResponse editItem(@RequestBody Item item) {
         if (item == null || item.getItemName() == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，项目信息为空");
         }
 
         //通过Item名称和性别判断是否已存在相同Item
@@ -141,7 +141,7 @@ public class ItemController {
             tempItem.setSeason(season);
         }
         if (item.equals(itemService.getOneItemByCondition(tempItem))) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，Item已存在");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，项目已存在");
         }
 
         item.setEditTime(LocalDateTime.now());
@@ -160,7 +160,7 @@ public class ItemController {
     @ApiOperation("查询项目模板")
     @GetMapping("/queryItemTemplate")
     @RequiresRoles(value = {"1"})
-    public Object queryItemTemplate() {
+    public ServerResponse queryItemTemplate() {
         List<Item> itemList = itemService.getItemTemplateList();
         return ServerResponse.createBySuccess(itemList);
     }
@@ -168,12 +168,12 @@ public class ItemController {
     @ApiOperation("获取项目模板详情信息")
     @GetMapping("/getItemTemplate")
     @RequiresRoles(value = {"1"})
-    public Object getItemTemplate(Item itemCondition) {
+    public ServerResponse getItemTemplate(Item itemCondition) {
         Item item = itemService.getItemTemplateDetail(itemCondition);
         if (item != null) {
             return ServerResponse.createBySuccess(item);
         }
-        return ServerResponse.createByErrorMessage("查询不到该Item信息");
+        return ServerResponse.createByErrorMessage("查询不到该项目信息");
     }
     @ApiOperation("删除项目模板")
     @DeleteMapping("/deleteItemTemplate")

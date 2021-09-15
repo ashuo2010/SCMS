@@ -21,7 +21,7 @@
         <set>
             <if test="teamName!=null">team_name=#{teamName},</if>
             <if test="createTime!=null">create_time=#{createTime},</if>
-            <if test="editTime!=null">edit_time=#{editTime}</if>
+            <if test="editTime!=null">edit_time=#{editTime},</if>
         </set>
         WHERE team_id=#{teamId}
     </update>

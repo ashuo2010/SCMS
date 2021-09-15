@@ -39,7 +39,7 @@ public class SyslogController {
     @ApiOperation("查询系统操作日志")
     @GetMapping("/querySyslog")
     @RequiresRoles(value = {"1"})
-    public Object querySyslog(QueryInfo queryInfo, Syslog syslog) {
+    public ServerResponse querySyslog(QueryInfo queryInfo, Syslog syslog) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
@@ -76,7 +76,7 @@ public class SyslogController {
     @ApiOperation("清空项目排名分数运动员数据")
     @DeleteMapping("/d")
     @RequiresRoles(value = {"1"})
-    public Object resetRangkingScoreAthlete(Integer itemId) {
+    public ServerResponse resetRangkingScoreAthlete(Integer itemId) {
         int effNum = 0;
         try {
             effNum = syslogService.removeAllRankingScoreAthlete();
@@ -92,7 +92,7 @@ public class SyslogController {
     @ApiOperation("清空系统数据")
     @DeleteMapping("/resetAllData")
     @RequiresRoles(value = {"1"})
-    public Object resetAllData(Integer itemId) {
+    public ServerResponse resetAllData(Integer itemId) {
         int effNum = 0;
         try {
             effNum = syslogService.removeAllData();

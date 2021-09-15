@@ -45,7 +45,7 @@ public class UserController {
 
     @ApiOperation("用户登录")
     @PostMapping("/login")
-    public Object login(@Validated @RequestBody UserDto userDto, HttpServletResponse response) {
+    public ServerResponse login(@Validated @RequestBody UserDto userDto, HttpServletResponse response) {
         if (userDto.getUsername() == null) {
             return ServerResponse.createByErrorMessage("用户名不能为空");
         }
@@ -75,7 +75,7 @@ public class UserController {
     @ApiOperation("用户注销登录")
     //@RequiresAuthentication
     @GetMapping("/logout")
-    public Object logout() {
+    public ServerResponse logout() {
         SecurityUtils.getSubject().logout();
         return ServerResponse.createBySuccess("注销登录成功");
     }
@@ -83,9 +83,9 @@ public class UserController {
     @ApiOperation("修改密码")
     @PutMapping("/changePwd")
     @RequiresAuthentication
-    public Object changePwd(@RequestBody UserDto userDto) {
+    public ServerResponse changePwd(@RequestBody UserDto userDto) {
         if (StringUtils.isEmpty(userDto.getUsername()) || StringUtils.isEmpty(userDto.getPassword()) || StringUtils.isEmpty(userDto.getNewPassword())) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，User信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，用户信息为空");
         }
         User user = new User();
         user.setUsername(userDto.getUsername());
@@ -118,7 +118,7 @@ public class UserController {
     @ApiOperation("查询用户")
     @GetMapping("/queryUser")
     @RequiresAuthentication
-    public Object queryUser(QueryInfo queryInfo, User user) {
+    public ServerResponse queryUser(QueryInfo queryInfo, User user) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }
@@ -133,10 +133,10 @@ public class UserController {
     @ApiOperation("添加用户")
     @PostMapping("/addUser")
     @RequiresRoles(value = {"1"})
-    public Object addUser(@RequestBody User user) {
+    public ServerResponse addUser(@RequestBody User user) {
 
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，User信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，用户信息为空");
         }
 
         Page<User> page = new Page(1, 999999);
@@ -147,7 +147,7 @@ public class UserController {
         IPage<User> userList = userService.getUserByCondition(page, tempUser);
 
         if (userList.getRecords() != null && (userList.getRecords().size() != 0)) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，User已存在");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，用户已存在");
         }
         //密码md5加密
         user.setPassword(SecureUtil.md5(user.getPassword()));
@@ -170,7 +170,7 @@ public class UserController {
     @ApiOperation("删除用户")
     @DeleteMapping("/deleteUser")
     @RequiresRoles(value = {"1"})
-    public Object deleteUser(Integer userId) {
+    public ServerResponse deleteUser(Integer userId) {
         int effNum = userService.removeUser(userId);
         if (effNum <= 0) {
             return ServerResponse.createByErrorCodeMessage(400, "删除失败");
@@ -182,9 +182,9 @@ public class UserController {
     @ApiOperation("修改用户")
     @PutMapping("/editUser")
     @RequiresRoles(value = {"1"})
-    public Object editUser(@RequestBody User user) {
+    public ServerResponse editUser(@RequestBody User user) {
         if (user == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "修改失败，User信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "修改失败，用户信息为空");
         }
         //如果密码不为空,密码MD5加密
         if (!StringUtils.isBlank(user.getPassword())) {

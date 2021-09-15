@@ -78,7 +78,7 @@
             <if test="item.startTime!=null">start_time=#{item.startTime},</if>
             <if test="item.endTime!=null">end_time=#{item.endTime},</if>
             <if test="item.createTime!=null">create_time=#{item.createTime},</if>
-            <if test="item.editTime!=null">edit_time=#{item.editTime}</if>
+            <if test="item.editTime!=null">edit_time=#{item.editTime},</if>
         </set>
         WHERE item_id=#{item.itemId}
     </update>

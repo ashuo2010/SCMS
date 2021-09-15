@@ -46,7 +46,7 @@
             <if test="score!=null and score!=0">score=#{score},</if>
             <if test="isBreakRecord!=null">is_break_record=#{isBreakRecord},</if>
             <if test="createTime!=null">create_time=#{createTime},</if>
-            <if test="editTime!=null">edit_time=#{editTime}</if>
+            <if test="editTime!=null">edit_time=#{editTime},</if>
         </set>
        WHERE score_id=#{scoreId}
     </update>

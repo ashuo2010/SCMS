@@ -38,7 +38,7 @@ public class RankingController {
     @ApiOperation("团体总排名")
     @GetMapping("/queryTeamRanking")
     @RequiresAuthentication
-    public Object queryTeamRanking(QueryInfo queryInfo,Ranking ranking) {
+    public ServerResponse queryTeamRanking(QueryInfo queryInfo,Ranking ranking) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }else {
@@ -61,7 +61,7 @@ public class RankingController {
     @ApiOperation("个人总排名")
     @GetMapping("/queryUserRanking")
     @RequiresAuthentication
-    public Object queryUserRanking(QueryInfo queryInfo,Ranking ranking) {
+    public ServerResponse queryUserRanking(QueryInfo queryInfo,Ranking ranking) {
 
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);

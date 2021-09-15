@@ -40,7 +40,7 @@ public class SeasonController {
     @ApiOperation("查询运动会")
     @GetMapping("/querySeason")
     @RequiresAuthentication
-    public Object querySeason(QueryInfo queryInfo, Season season) {
+    public ServerResponse querySeason(QueryInfo queryInfo, Season season) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }
@@ -55,10 +55,10 @@ public class SeasonController {
     @ApiOperation("添加运动会")
     @PostMapping("/addSeason")
     @RequiresRoles(value = {"1"})
-    public Object addSeason(@RequestBody Season season) {
+    public ServerResponse addSeason(@RequestBody Season season) {
 
         if (season == null) {
-            return ServerResponse.createByErrorCodeMessage(400, "添加失败，Season信息为空");
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，届时信息为空");
         }
 
         Page<Season> page = new Page(1, 999999);
@@ -86,7 +86,7 @@ public class SeasonController {
     @ApiOperation("删除运动会")
     @DeleteMapping("/deleteSeason")
     @RequiresRoles(value = {"1"})
-    public Object deleteSeason(Integer seasonId) {
+    public ServerResponse deleteSeason(Integer seasonId) {
         int effNum = seasonService.removeSeason(seasonId);
         if (effNum <= 0) {
             return ServerResponse.createByErrorCodeMessage(400, "删除失败");
@@ -97,19 +97,19 @@ public class SeasonController {
     @ApiOperation("获取运动会届时信息")
     @GetMapping("/getSeason")
     @RequiresRoles(value = {"1"})
-    public Object getSeason(Season seasonCondition) {
+    public ServerResponse getSeason(Season seasonCondition) {
         Season season = seasonService.getSeasonById(seasonCondition);
         if (season != null) {
             return ServerResponse.createBySuccess(season);
         }
-        return ServerResponse.createByErrorMessage("查询不到该Season信息");
+        return ServerResponse.createByErrorMessage("查询不到该届时信息");
     }
 
 
     @ApiOperation("修改运动会")
     @PutMapping("/editSeason")
     @RequiresRoles(value = {"1"})
-    public Object editSeason(@RequestBody Season season) {
+    public ServerResponse editSeason(@RequestBody Season season) {
         if (season == null) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，届时信息为空");
         }
