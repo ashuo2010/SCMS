@@ -34,7 +34,7 @@ public class Record implements Serializable {
 
     private BigDecimal recordScore;
 
-    private String recordStatus;
+    private Integer recordStatus;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

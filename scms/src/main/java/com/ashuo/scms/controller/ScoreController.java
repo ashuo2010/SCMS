@@ -86,7 +86,7 @@ public class ScoreController {
                 return ServerResponse.createByErrorCodeMessage(400, "添加失败，Score信息为空");
             }
             Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
-            if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+            if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
                 return ServerResponse.createByErrorCodeMessage(400, "分数录入失败，该届运动会已结束");
             }
             //分数纪录处理，因为分数需要加上是否破纪录，所以记录在分数之前处理
@@ -133,7 +133,7 @@ public class ScoreController {
         }
 
         Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
-        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+        if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
             return ServerResponse.createByErrorCodeMessage(400, "分数修改失败，该届运动会已结束");
         }
         //分数纪录处理
@@ -141,11 +141,8 @@ public class ScoreController {
         //设置修改时间
         score.setEditTime(LocalDateTime.now());
         //修改分数
-        try {
             scoreService.modifyScore(score);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         //分数排名处理
         scoreRankingHandle(score);
@@ -182,13 +179,12 @@ public class ScoreController {
         //查询该项目成绩是否破纪录
         Record record = new Record();
         //获取该项目的有效记录列表
-        record.setRecordStatus("1");
+        record.setRecordStatus(1);
         List<Record> recordList = recordService.getRecordByRecordCondition(new Page<Record>(1, 999), record).getRecords();
         //设置分数数据
         record.setAthlete(score.getAthlete());
         record.setRecordScore(score.getScore());
         //记录生效
-        record.setRecordStatus("1");
         record.setCreateTime(LocalDateTime.now());
         record.setEditTime(LocalDateTime.now());
         //如果该项目存在记录
@@ -203,21 +199,21 @@ public class ScoreController {
 
                     //使之前记录失效
                     recordList.stream().forEach(r -> {
-                        r.setRecordStatus("0");
+                        r.setRecordStatus(0);
                         recordService.modifyRecord(r);
                     });
 
                 }
                 //保存录入的分数记录
                 recordService.addRecord(record);
-                score.setIsBreakRecord("1");
+                score.setIsBreakRecord(1);
             } else {
                 //如果没有破纪录或者和记录持平
-                score.setIsBreakRecord("0");
+                score.setIsBreakRecord(0);
             }
         }else {
             recordService.addRecord(record);
-            score.setIsBreakRecord("1");
+            score.setIsBreakRecord(1);
         }
     }
 

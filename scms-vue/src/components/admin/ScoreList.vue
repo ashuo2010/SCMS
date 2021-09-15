@@ -88,6 +88,8 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
+        <el-table-column label="班级" prop="user.team.teamName"></el-table-column>
+
         <el-table-column label="学号" prop="user.userNo"></el-table-column>
         <el-table-column
           label="参数运动员"
@@ -123,8 +125,9 @@
                   addDialogVisible = true;
                   oneAthlete = scope.row;
                   score.score = '';
-                  score.user.userId = scope.row.user.userId;
-                  score.item.itemId = scope.row.item.itemId;
+                  score.athlete.athleteId = scope.row.athleteId;
+                  score.athlete.user.userId = scope.row.user.userId;
+                  score.athlete.item.itemId = scope.row.item.itemId;
                 "
                 >录入分数</el-button
               >
@@ -372,12 +375,15 @@ export default {
       },
 
       score: {
-        item: {
+        athlete:{
+item: {
           itemId: "",
         },
         user: {
           userId: "",
         },
+        },
+        
         score: "",
         minute: "",
         second: "",
@@ -509,9 +515,9 @@ export default {
       const _this = this;
       axios
         .get(
-          "/score/queryScore?currentPage=1&pageSize=999&item.itemId=" +
+          "/score/queryScore?currentPage=1&pageSize=999&athlete.item.itemId=" +
             itemId +
-            "&user.userId=" +
+            "&athlete.user.userId=" +
             userId
         )
         .then((res) => {

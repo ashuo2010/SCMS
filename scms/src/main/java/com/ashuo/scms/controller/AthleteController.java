@@ -109,7 +109,7 @@ public class AthleteController {
         }
 
         Item item = itemService.getOneItemByCondition(athlete.getItem());
-        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+        if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
             return ServerResponse.createByErrorCodeMessage(400, "报名失败，该届运动会已结束");
         }
 
@@ -178,7 +178,7 @@ public class AthleteController {
         Athlete athlete=new Athlete();
         athlete.setAthleteId(athleteId);
         Item item = athleteService.getAthleteByCondition(page,athlete).getRecords().get(0).getItem();
-        if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
+        if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
             return ServerResponse.createByErrorCodeMessage(400, "报名失败，该届运动会已结束");
         }
         if (!SyslogController.systemStatus) {

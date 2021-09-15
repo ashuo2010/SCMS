@@ -77,14 +77,14 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
+        <el-table-column label="运动会" prop="seasonName"></el-table-column>
         <el-table-column label="班级" prop="teamName"></el-table-column>
         <el-table-column label="学号" prop="userNo"></el-table-column>
         <el-table-column label="姓名" prop="nickname"></el-table-column>
         <el-table-column label="性别" prop="userSex"></el-table-column>
         <el-table-column label="参赛项目" prop="itemName"></el-table-column>
-        <el-table-column label="项目地点" prop="itemPlace"></el-table-column>
         <el-table-column label="项目分数" prop="score"></el-table-column>
-        <el-table-column label="项目分数单位" prop="itemUnit"></el-table-column>
+        <el-table-column label="项目是否破纪录" prop="isBreakRecord"></el-table-column>
         <el-table-column label="记分员" prop="scorer"></el-table-column>
         <el-table-column
           label="分数最后修改时间"
@@ -149,6 +149,14 @@ export default {
         .then((res) => {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
+          _this.athleteScoreList.forEach((item,index)=>{
+            if(item.isBreakRecord==1){
+                item.isBreakRecord="是" ;
+            }else{
+                item.isBreakRecord="否" ;
+            }
+          })
+          
           _this.queryInfo.currentPage = data.current;
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
@@ -199,12 +207,19 @@ export default {
       }
       axios
         .get(
-          "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
+          "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
           +"&item.itemId=" + _this.selectItemId
         )
         .then((res) => {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
+           _this.athleteScoreList.forEach((item,index)=>{
+            if(item.isBreakRecord==1){
+                item.isBreakRecord="是" ;
+            }else{
+                item.isBreakRecord="否" ;
+            }
+            });
           _this.queryInfo.currentPage = data.current;
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;

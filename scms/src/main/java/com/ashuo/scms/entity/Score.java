@@ -35,7 +35,7 @@ public class Score implements Serializable {
 
     private BigDecimal score;
 
-    private String isBreakRecord;
+    private Integer isBreakRecord;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;

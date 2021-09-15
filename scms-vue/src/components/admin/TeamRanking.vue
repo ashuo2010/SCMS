@@ -58,7 +58,7 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="班级" prop="team.teamName"></el-table-column>
+        <el-table-column label="班级" prop="athlete.user.team.teamName"></el-table-column>
         <el-table-column label="班级总得分" prop="rank"></el-table-column>
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
@@ -70,7 +70,7 @@
               size="mini"
               @click="
                 dialogTableVisible = true;
-                getRankingDetail(scope.row.team.teamId);
+                getRankingDetail(scope.row.athlete.user.team.teamId);
               "
               >查看详情</el-button
             >
@@ -98,9 +98,9 @@
       width="80%"
     >
       <el-table :data="teamRankingDetail" stripe style="width: 100%">
-        <el-table-column label="班级" prop="team.teamName"></el-table-column>
-        <el-table-column label="运动员" prop="user.nickname"></el-table-column>
-        <el-table-column label="性别" prop="user.userSex"></el-table-column>
+        <el-table-column label="班级" prop="athlete.user.team.teamName"></el-table-column>
+        <el-table-column label="运动员" prop="athlete.user.nickname"></el-table-column>
+        <el-table-column label="性别" prop="athlete.user.userSex"></el-table-column>
         <el-table-column label="个人总得分" prop="rank"></el-table-column>
       </el-table>
     </el-dialog>
@@ -138,9 +138,12 @@ export default {
   },
   methods: {
     async page() {
+       if(this.selectSeasonId==""){
+         return this.$message.info("请先选择运动会");
+      }
       const _this = this;
       axios
-        .get("/ranking/queryTeamRanking?queryInfo=", {
+        .get("/ranking/queryTeamRanking?athlete.item.season.seasonId="+this.selectSeasonId+"queryInfo=", {
           params: _this.queryInfo,
         })
         .then((res) => {
@@ -161,10 +164,10 @@ export default {
         )
         .then((res) => {
           let data = res.data.data.records;
-        data.push( {
-          seasonId: " ",
-          seasonName: "所有运动会",
-        })
+        // data.push( {
+        //   seasonId: " ",
+        //   seasonName: "所有运动会",
+        // })
         _this.allSeasonOptions=data;
      
         });
@@ -177,7 +180,7 @@ export default {
       }
       axios
         .get(
-          "/ranking/queryTeamRanking?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
+          "/ranking/queryTeamRanking?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
         )
         .then((res) => {
           let data = res.data.data;
@@ -192,7 +195,7 @@ export default {
       const _this = this;
       axios
         .get(
-          "/ranking/queryUserRanking?currentPage=1&pageSize=999999999&team.teamId=" +
+          "/ranking/queryUserRanking?currentPage=1&pageSize=999999999&athlete.user.team.teamId=" +
             teamId
         )
         .then((res) => {
