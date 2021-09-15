@@ -10,6 +10,7 @@ import UserList from "../components/admin/UserList";
 import ItemList from "../components/admin/ItemList";
 import AthleteList from "../components/admin/AthleteList";
 import ScoreList from "../components/admin/ScoreList";
+import RecordList from "../components/admin/RecordList";
 import PersonRanking from "../components/admin/PersonRanking";
 import TeamRanking from "../components/admin/TeamRanking";
 import SyslogList from "../components/admin/SyslogList";
@@ -75,6 +76,11 @@ const routes = [{
             {
                 path: "/ranking/teamRanking",
                 component: TeamRanking
+            },
+
+            {
+                path: "/record/recordlist",
+                component: RecordList
             },
 
             {
