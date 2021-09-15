@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author AShuo
  * @since 2021-09-10
  */
-@Api(tags = "项目分数接口")
+@Api(tags = "项目记录接口")
 @Slf4j
 @RestController
 @RequestMapping("/record")
@@ -33,7 +33,7 @@ public class RecordController {
     @Autowired
     RecordService recordService;
     
-    @ApiOperation("查询运动员项目记录")
+    @ApiOperation("查询项目记录列表")
     @GetMapping("/queryRecord")
     @RequiresAuthentication
     public ServerResponse queryRecord(QueryInfo queryInfo, Record record) {
@@ -52,7 +52,6 @@ public class RecordController {
 
         //分页查询
         Page<Record> page = new Page<Record>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-
         IPage<Record> recordList = recordService.getRecordByRecordCondition(page, record);
         return ServerResponse.createBySuccess(recordList);
     }
