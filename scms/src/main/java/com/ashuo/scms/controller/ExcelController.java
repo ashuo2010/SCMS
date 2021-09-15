@@ -93,7 +93,7 @@ public class ExcelController {
         List<ExcelTeamRankingDto> excelTeamRankingDtoList = new ArrayList<>();
         int i = 1;
         for (Ranking r : rankingList) {
-            excelTeamRankingDtoList.add(new ExcelTeamRankingDto(r.getTeam().getTeamName(), r.getRank(), i));
+            excelTeamRankingDtoList.add(new ExcelTeamRankingDto(r.getAthlete().getUser().getTeam().getTeamName(), r.getRank(), i));
             i++;
         }
 
@@ -157,7 +157,7 @@ public class ExcelController {
         List<Ranking> rankingList = pageRankingList.getRecords();
         List<ExcelPersonRankingDto> excelPersonRankingDtoList = new ArrayList<>();
         for (Ranking r : rankingList) {
-            excelPersonRankingDtoList.add(new ExcelPersonRankingDto(r.getTeam().getTeamName(), r.getUser().getUserNo(), r.getUser().getNickname(), r.getUser().getUserSex(), r.getRank()));
+            excelPersonRankingDtoList.add(new ExcelPersonRankingDto(r.getAthlete().getUser().getTeam().getTeamName(), r.getAthlete().getUser().getUserNo(), r.getAthlete().getUser().getNickname(), r.getAthlete().getUser().getUserSex(), r.getRank()));
         }
 
         //设置内容表格格式
@@ -235,21 +235,21 @@ public class ExcelController {
             if (as.getScore() == null) {
                 as.setScore("未计分");
             }
-            dataRow.createCell(0).setCellValue(as.getTeamName());
+            dataRow.createCell(0).setCellValue(as.getSeasonName());
             dataRow.getCell(0).setCellStyle(contentStyle);
-            dataRow.createCell(1).setCellValue(as.getUserNo());
+            dataRow.createCell(1).setCellValue(as.getTeamName());
             dataRow.getCell(1).setCellStyle(contentStyle);
-            dataRow.createCell(2).setCellValue(as.getNickname());
+            dataRow.createCell(2).setCellValue(as.getUserNo());
             dataRow.getCell(2).setCellStyle(contentStyle);
-            dataRow.createCell(3).setCellValue(as.getUserSex());
+            dataRow.createCell(3).setCellValue(as.getNickname());
             dataRow.getCell(3).setCellStyle(contentStyle);
-            dataRow.createCell(4).setCellValue(as.getItemName());
+            dataRow.createCell(4).setCellValue(as.getUserSex());
             dataRow.getCell(4).setCellStyle(contentStyle);
-            dataRow.createCell(5).setCellValue(as.getItemPlace());
+            dataRow.createCell(5).setCellValue(as.getItemName());
             dataRow.getCell(5).setCellStyle(contentStyle);
             dataRow.createCell(6).setCellValue(as.getScore());
             dataRow.getCell(6).setCellStyle(contentStyle);
-            dataRow.createCell(7).setCellValue(as.getItemUnit());
+            dataRow.createCell(7).setCellValue(as.getIsBreakRecord());
             dataRow.getCell(7).setCellStyle(contentStyle);
             dataRow.createCell(8).setCellValue(as.getScorer());
             dataRow.getCell(8).setCellStyle(contentStyle);

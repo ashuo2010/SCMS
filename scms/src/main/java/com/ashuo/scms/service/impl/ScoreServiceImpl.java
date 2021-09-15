@@ -9,6 +9,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,14 +35,7 @@ public class ScoreServiceImpl implements ScoreService {
         return scoreList;
     }
 
-    @Override
-    public IPage<Score> getScoreByTeamId(Page<Score> page, int teamId) {
-        if (teamId == 0) {
-            return null;
-        }
-        IPage<Score> scoreList = scoreMapper.queryScoreByTeamId(page, teamId);
-        return scoreList;
-    }
+
 
     @Override
     public IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, Score score) {
@@ -50,11 +45,11 @@ public class ScoreServiceImpl implements ScoreService {
 
 
     @Override
-    public List<Score> getScoreByItemIdLimit(int itemId, String condition) {
+    public List<Score> getScoreByItemIdLimit(int itemId, String condition,int limitAmount) {
         if (itemId == 0) {
             return null;
         }
-        List<Score> scoreList = scoreMapper.queryScoreByItemIdLimit(itemId, condition);
+        List<Score> scoreList = scoreMapper.queryScoreByItemIdLimit(itemId, condition,limitAmount);
         return scoreList;
     }
 

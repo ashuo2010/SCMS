@@ -107,10 +107,6 @@
         INNER JOIN `user` u ON a.u_id = u.user_id
         INNER JOIN `team` t ON u.t_id = t.team_id
         INNER JOIN `season` se ON i.se_id = se.season_id
-        GROUP BY
-        u.user_id
-        ORDER BY
-        rank DESC
         <where>
             <if test="ranking.athlete!=null and ranking.athlete.user!=null and ranking.athlete.user.userId!=null and ranking.athlete.user.userId!=0">AND u.user_id=#{ranking.athlete.user.userId}</if>
             <if test="ranking.athlete!=null and ranking.athlete.user!=null and ranking.athlete.user.nickname!=null">AND u.nickname LIKE
@@ -121,7 +117,7 @@
             </if>
         </where>
         GROUP BY
-        r.u_id
+        u.user_id
         ORDER BY
         rank
         DESC

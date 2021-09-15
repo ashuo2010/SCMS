@@ -20,6 +20,9 @@ import java.util.Date;
 public class AthleteScoreDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ExcelProperty(value = "运动会")
+    private String seasonName;
+
     @ExcelProperty(value = "班级")
     private String teamName;
 
@@ -35,17 +38,14 @@ public class AthleteScoreDto implements Serializable {
     @ExcelProperty(value = "参赛项目")
     private String itemName;
 
-    @ExcelProperty(value = "参赛项目")
-    private String itemUnit;
+    @ExcelProperty(value = "项目分数")
+    private String score;
 
-    @ExcelProperty(value = "项目地点")
-    private String itemPlace;
+    @ExcelProperty(value = "项目是否破纪录")
+    private String isBreakRecord;
 
     @ExcelProperty(value = "记分员")
     private String scorer;
-
-    @ExcelProperty(value = "项目分数")
-    private String score;
 
     @ExcelProperty(value = "分数最后修改时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

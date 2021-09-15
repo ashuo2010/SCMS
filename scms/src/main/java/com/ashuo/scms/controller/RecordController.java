@@ -2,10 +2,7 @@ package com.ashuo.scms.controller;
 
 
 import com.ashuo.scms.common.lang.ServerResponse;
-import com.ashuo.scms.entity.QueryInfo;
-import com.ashuo.scms.entity.Record;
-import com.ashuo.scms.entity.Score;
-import com.ashuo.scms.entity.User;
+import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.RecordService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -42,13 +39,17 @@ public class RecordController {
     public Object queryRecord(QueryInfo queryInfo, Record record) {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
+        }else {
+            Athlete athlete=new Athlete();
+            User user=new User();
+            user.setNickname(queryInfo.getQuery());
+            if (record==null){
+                record=new Record();
+            }
+            athlete.setUser(user);
+            record.setAthlete(athlete);
         }
-        User user=new User();
-        user.setNickname(queryInfo.getQuery());
-        if (record==null){
-            record=new Record();
-        }
-        record.setUser(user);
+
         //分页查询
         Page<Record> page = new Page<Record>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
 

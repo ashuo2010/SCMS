@@ -52,14 +52,15 @@ public class LogAopController {
         }
 
         sysLog.setExecutionTime(LocalDateTime.now());
-        //获取静态ucurrentUser
         User currentUser = new User();
         int userId = JwtUtil.getUserId(JwtToken.token);
         currentUser.setUserId(userId);
         sysLog.setExecutionUser(currentUser);
 
         StringBuilder tempMethodName = new StringBuilder();
-        if (methodName.contains("Team")) {
+         if  (methodName.contains("Season")) {
+            tempMethodName.append("届时");
+        }else if (methodName.contains("Team")) {
             tempMethodName.append("团体");
         } else if (methodName.contains("User")) {
             tempMethodName.append("用户");
@@ -69,11 +70,12 @@ public class LogAopController {
             tempMethodName.append("运动员");
         } else if (methodName.contains("Score")) {
             tempMethodName.append("分数");
-        } else if  (methodName.contains("Ranking")) {
-            tempMethodName.append("排名");
-        }else if  (methodName.contains("Season")) {
-            tempMethodName.append("届时");
         }
+//        else if  (methodName.contains("Ranking")) {
+//            tempMethodName.append("排名");
+//        }
+//        else if(methodName.contains("Record")) {
+//            tempMethodName.append("记录");
 
         if (methodName.contains("add")) {
             tempMethodName.append("增加");

@@ -32,10 +32,6 @@
                 </association>
             </association>
         </association>
-        <association property="ranking" javaType="com.ashuo.scms.entity.Ranking">
-            <id column="ranking_id" property="rankingId"/>
-            <result column="rank" property="rank"/>
-        </association>
     </resultMap>
 
     <insert id="insertScore" parameterType="com.ashuo.scms.entity.Score"
@@ -48,11 +44,11 @@
         UPDATE score
         <set>
             <if test="score!=null and score!=0">score=#{score},</if>
-            <if test="is_break_record!=null">is_break_record=#{isBreakRecord},</if>
+            <if test="isBreakRecord!=null">is_break_record=#{isBreakRecord},</if>
             <if test="createTime!=null">create_time=#{createTime},</if>
             <if test="editTime!=null">edit_time=#{editTime}</if>
         </set>
-        where i_id=#{athlete.item.itemId} and u_id=#{athlete.user.userId}
+       WHERE score_id=#{scoreId}
     </update>
 
     <delete id="deleteScore">
@@ -76,17 +72,13 @@
         u.nickname,
         u.user_sex,
         t.team_id,
-        t.team_name,
-        r.ranking_id,
-        r.rank
+        t.team_name
         FROM
         `score` s
         INNER JOIN `athlete` a ON s.a_id = a.athlete_id
         INNER JOIN `user` u ON a.u_id = u.user_id
         INNER JOIN `team` t ON u.t_id = t.team_id
         INNER JOIN `item` i ON a.i_id = i.item_id
-        INNER JOIN `ranking` r ON s.r_id = r.ranking_id
-
         <where>
             <if test="score.athlete!=null and score.athlete.user!=null and score.athlete.user.userId!=null and score.athlete.user.userId!=0">AND u.user_id
                 = #{score.athlete.user.userId}
@@ -94,42 +86,33 @@
             <if test="score.athlete!=null and score.athlete.user!=null and score.athlete.user.nickname!=null">AND u.nickname LIKE '%${score.athlete.user.nickname}%'
             </if>
             <if test="score.athlete!=null and score.athlete.item!=null and score.athlete.item.itemId!=null and score.athlete.item.itemId!=0">AND i.item_id = #{score.athlete.item.itemId}</if>
+            <if test="score.athlete!=null and score.athlete.user!=null and score.athlete.user.team!=null and score.athlete.user.team.teamId!=null and score.athlete.user.team.teamId!=0">AND t.team_id
+                = #{score.athlete.user.team.teamId}
+            </if>
         </where>
         ORDER BY
         score
         DESC
     </select>
 
-    <select id="queryScoreByItemIdLimit" parameterType="int" resultMap="scoreMap">
+    <select id="queryScoreByItemIdLimit"  resultMap="scoreMap">
         SELECT
         s.score_id,
         s.score,
-        s.is_break_record,
-        s.edit_time,
-        i.item_id,
-        i.item_name,
-        i.item_sex,
-        i.item_unit,
-        i.athlete_amount,
-        se.season_id,
-        se.season_name,
-        se.season_status,
-        u.user_id,
-        u.user_no,
-        u.nickname,
-        u.user_sex,
-        u.t_id
+        s.a_id,
+        a.athlete_id,
+        i.item_id
         FROM
-        ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
-        INNER JOIN `item` i ON s.i_id = i.item_id
-        INNER JOIN `season` se ON i.se_id = se.season_id
-        <where>
-            <if test="itemId!=null and itemId!=0">AND i.item_id = #{itemId}</if>
-        </where>
+        `score` s
+        INNER JOIN `athlete` a ON s.a_id = a.athlete_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
+        WHERE
+        i.item_id = #{itemId}
         ORDER BY
         s.score
         ${condition}
-        Limit 3
+        Limit
+        ${limitAmount}
     </select>
 
 
@@ -139,81 +122,58 @@
         s.score,
         s.is_break_record,
         s.edit_time,
+        a.athlete_id,
         i.item_id,
         i.item_name,
         i.item_sex,
-        i.item_unit,
-        i.athlete_amount,
         u.user_id,
         u.user_no,
         u.nickname,
         u.user_sex,
-        u.t_id
+        t.team_id,
+        t.team_name
         FROM
         `score` s
-        INNER JOIN `user` u ON s.u_id = u.user_id
-        INNER JOIN `item` i ON s.i_id = i.item_id
+        INNER JOIN `athlete` a ON s.a_id = a.athlete_id
+        INNER JOIN `user` u ON a.u_id = u.user_id
+        INNER JOIN `team` t ON u.t_id = t.team_id
+        INNER JOIN `item` i ON a.i_id = i.item_id
         WHERE
         s.score_id = #{scoreId}
     </select>
 
-    <select id="queryScoreByTeamId" resultMap="scoreMap">
-        SELECT s.score_id,
-               s.score,
-               s.is_break_record,
-               s.edit_time,
-               i.item_id,
-               i.item_name,
-               i.item_sex,
-               i.item_unit,
-               i.athlete_amount,
-               u.user_id,
-               u.user_no,
-               u.nickname,
-               u.user_sex,
-               u.t_id
-        FROM ( `score` s INNER JOIN `user` u ON s.u_id = u.user_id )
-                 INNER JOIN `item` i ON s.i_id = i.item_id
-        WHERE u.user_id IN (
-            SELECT user_id
-            FROM `team`
-                     INNER JOIN `user` ON `team`.team_id = `user`.t_id
-            WHERE `team`.team_id = #{teamId}
-        )
-    </select>
 
     <select id="queryAthleteScoreDto" resultType="com.ashuo.scms.dto.AthleteScoreDto">
         SELECT
+        se.season_name,
         t.team_name,
         u.user_no,
         u.nickname,
         u.user_sex,
         i.item_name,
-        i.item_unit,
-        i.item_place,
-        u2.nickname AS scorer,
         s.score,
         s.is_break_record,
-        s.edit_time
+        s.edit_time,
+        u2.nickname AS scorer
         FROM
-        `athlete` a
+        `score` s
+        INNER JOIN `athlete` a ON s.a_id = a.athlete_id
         INNER JOIN `user` u ON a.u_id = u.user_id
-        INNER JOIN `team` t ON t.team_id = u.t_id
+        INNER JOIN `team` t ON u.t_id = t.team_id
         INNER JOIN `item` i ON a.i_id = i.item_id
         INNER JOIN `season` se ON i.se_id = se.season_id
         INNER JOIN `user` u2 ON i.u_id = u2.user_id
-        INNER JOIN `score` s ON s.i_id = a.i_id AND s.u_id=a.u_id
         <where>
-            <if test="score.item!=null and score.item.itemId!=null and score.item.itemId!=0">AND i.item_id = #{score.item.itemId}</if>
-            <if test="score.user!=null and score.user.nickname!=null">AND u.nickname LIKE '%${score.user.nickname}%' </if>
-            <if test="score.item!=null and score.item.season!=null and score.item.season.seasonId!=null and score.item.season.seasonId!=0">
-                AND se.season_id=#{score.item.season.seasonId}
+            <if test="score.athlete!=null and score.athlete.item!=null and score.athlete.item.itemId!=null and score.athlete.item.itemId!=0">AND i.item_id = #{score.athlete.item.itemId}</if>
+            <if test="score.athlete!=null and score.athlete.user!=null and score.athlete.user.nickname!=null">AND u.nickname LIKE '%${score.athlete.user.nickname}%'
             </if>
-            AND s.score !=0
+            <if test="score.athlete!=null and score.athlete.item!=null and score.athlete.item.season!=null and score.athlete.item.season.seasonId!=null and score.athlete.item.season.seasonId!=0">
+                AND se.season_id=#{score.athlete.item.season.seasonId}
+            </if>
         </where>
         ORDER BY
         i.item_name,
-        score
+        s.score
     </select>
 
 </mapper>

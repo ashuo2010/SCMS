@@ -2,10 +2,7 @@ package com.ashuo.scms.controller;
 
 
 import com.ashuo.scms.common.lang.ServerResponse;
-import com.ashuo.scms.entity.QueryInfo;
-import com.ashuo.scms.entity.Ranking;
-import com.ashuo.scms.entity.Team;
-import com.ashuo.scms.entity.User;
+import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.RankingService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -45,12 +42,13 @@ public class RankingController {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }else {
-            Team team=ranking.getTeam();
-            if(team==null){
-                team=new Team();
-            }
+            Athlete athlete=new Athlete();
+            User user=new User();
+            Team team=ranking.getAthlete().getUser().getTeam();
             team.setTeamName(queryInfo.getQuery());
-            ranking.setTeam(team);
+            user.setTeam(team);
+            athlete.setUser(user);
+            ranking.setAthlete(athlete);
         }
 
         //分页查询
@@ -68,12 +66,11 @@ public class RankingController {
         if (StringUtils.isBlank(queryInfo.getQuery())) {
             queryInfo.setQuery(null);
         }else {
-            User user=ranking.getUser();
-            if(user==null){
-                user=new User();
-            }
+            Athlete athlete=new Athlete();
+            User user=new User();
             user.setNickname(queryInfo.getQuery());
-            ranking.setUser(user);
+            athlete.setUser(user);
+            ranking.setAthlete(athlete);
         }
 
         //分页查询

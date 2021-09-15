@@ -60,61 +60,36 @@ public class ScoreController {
         }
         //分页查询
         Page<Score> page = new Page<Score>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-
         IPage<Score> scoreList = scoreService.getScoreByScoreCondition(page, score);
         return ServerResponse.createBySuccess(scoreList);
     }
 
-    @ApiOperation("查询团体项目分数")
-    @GetMapping("/queryTeamScore")
-    @RequiresAuthentication
-    public Object queryTeamScore(QueryInfo queryInfo, int teamId) {
+//    @ApiOperation("查询团体项目分数")
+//    @GetMapping("/queryTeamScore")
+//    @RequiresAuthentication
+//    public Object queryTeamScore(QueryInfo queryInfo, int teamId) {
+//        if (StringUtils.isBlank(queryInfo.getQuery())) {
+//            queryInfo.setQuery(null);
+//        }
+//        //分页查询
+//        Page<Score> page = new Page<Score>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+//        IPage<Score> scoreList = scoreService.getScoreByScoreCondition(page, teamId);
+//        return ServerResponse.createBySuccess(scoreList);
+//    }
 
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }
-        //分页查询
-        Page<Score> page = new Page<Score>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Score> scoreList = scoreService.getScoreByTeamId(page, teamId);
-        return ServerResponse.createBySuccess(scoreList);
-    }
 
-
-    //用于返回所有运动员的分数，可用于导出Excel
-    @ApiOperation("项目下所有运动员的分数")
-    @GetMapping("/queryAthleteScore")
-    @RequiresAuthentication
-    public Object queryAthleteScore(QueryInfo queryInfo, Score score) {
-
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }
-        User user = new User();
-        user.setNickname(queryInfo.getQuery());
-        if (score == null) {
-            score = new Score();
-        }
-        score.setUser(user);
-        //分页查询
-        Page<AthleteScoreDto> page = new Page<AthleteScoreDto>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<AthleteScoreDto> scoreList = scoreService.getAthleteScoreDto(page, score);
-        return ServerResponse.createBySuccess(scoreList);
-    }
-
-    @Transactional
     @ApiOperation("添加分数")
     @PostMapping("/addScore")
     @RequiresRoles(value = {"2"})
     public Object addScore(@RequestBody Score score) {
-        try {
-            if (score == null) {
+            if (score == null||score.getAthlete()==null) {
                 return ServerResponse.createByErrorCodeMessage(400, "添加失败，Score信息为空");
             }
-            Item item = itemService.getOneItemByCondition(score.getItem());
+            Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
             if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
                 return ServerResponse.createByErrorCodeMessage(400, "分数录入失败，该届运动会已结束");
             }
-            //分数纪录处理
+            //分数纪录处理，因为分数需要加上是否破纪录，所以记录在分数之前处理
             scoreRecordHandle(score);
 
             //设置创建、修改时间
@@ -124,19 +99,13 @@ public class ScoreController {
             scoreService.addScore(score);
 
             //设置1,表示已记分
-            Athlete athlete = new Athlete();
-            athlete.setItem(score.getItem());
-            athlete.setUser(score.getUser());
+            Athlete athlete =score.getAthlete();
             athlete.setScoreStatus(1);
             athleteService.modifyAthlete(athlete);
 
             //分数排名处理
             scoreRankingHandle(score);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage("添加分数失败");
-        }
         return ServerResponse.createBySuccessMessage("添加成功");
 
     }
@@ -155,16 +124,15 @@ public class ScoreController {
     }
 
 
-    @Transactional
     @ApiOperation("修改分数")
     @PutMapping("/editScore")
     @RequiresRoles(value = {"2"})
     public Object editScore(@RequestBody Score score) {
-        if (score == null || score.getScore().compareTo(BigDecimal.ZERO)==0) {
+        if (score == null ||score.getScore()==null|| score.getScore().compareTo(BigDecimal.ZERO)==0||score.getAthlete()==null) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，Score信息为空");
         }
 
-        Item item = itemService.getOneItemByCondition(score.getItem());
+        Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
         if (item != null && item.getSeason() != null && "0".equals(item.getSeason().getSeasonStatus())) {
             return ServerResponse.createByErrorCodeMessage(400, "分数修改失败，该届运动会已结束");
         }
@@ -173,7 +141,11 @@ public class ScoreController {
         //设置修改时间
         score.setEditTime(LocalDateTime.now());
         //修改分数
-        scoreService.modifyScore(score);
+        try {
+            scoreService.modifyScore(score);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //分数排名处理
         scoreRankingHandle(score);
@@ -182,14 +154,38 @@ public class ScoreController {
 
     }
 
+    //用于返回所有运动员的分数，可用于导出Excel
+    @ApiOperation("项目下所有运动员的分数")
+    @GetMapping("/queryAthleteScore")
+    @RequiresAuthentication
+    public Object queryAthleteScore(QueryInfo queryInfo, Score score) {
+        //如果搜索框未输入
+        if (StringUtils.isBlank(queryInfo.getQuery())) {
+            queryInfo.setQuery(null);
+        }else{
+            User user = new User();
+            user.setNickname(queryInfo.getQuery());
+            Athlete athlete=new Athlete();
+            athlete.setUser(user);
+            if (score == null) {
+                score = new Score();
+            }
+            score.setAthlete(athlete);
+        }
+        //分页查询
+        Page<AthleteScoreDto> page = new Page<AthleteScoreDto>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        IPage<AthleteScoreDto> scoreList = scoreService.getAthleteScoreDto(page, score);
+        return ServerResponse.createBySuccess(scoreList);
+    }
+
     private void scoreRecordHandle(Score score) {
         //查询该项目成绩是否破纪录
         Record record = new Record();
-        //根据itemId获取parentId
-        record.setItem(itemService.getOneItemByCondition(score.getItem()));
+        //获取该项目的有效记录列表
+        record.setRecordStatus("1");
         List<Record> recordList = recordService.getRecordByRecordCondition(new Page<Record>(1, 999), record).getRecords();
         //设置分数数据
-        record.setUser(score.getUser());
+        record.setAthlete(score.getAthlete());
         record.setRecordScore(score.getScore());
         //记录生效
         record.setRecordStatus("1");
@@ -200,11 +196,9 @@ public class ScoreController {
             //获取该项目之前记录
             Record itemRecord = recordList.get(0);
             //如果分数破纪录或持平记录
-//            if (score.getScore() >= itemRecord.getRecordScore()) {
             if (score.getScore().compareTo(itemRecord.getRecordScore())>=0) {
 
                 //如果分数破纪录，如果和记录持平则直接添加
-//                if (score.getScore() > itemRecord.getRecordScore()) {
                 if (score.getScore().compareTo(itemRecord.getRecordScore())==1 ) {
 
                     //使之前记录失效
@@ -229,32 +223,37 @@ public class ScoreController {
 
     private void scoreRankingHandle(Score score) {
         //删除原ranking中对应item的排名数据
-        rankingService.removeRanking(score.getItem().getItemId());
+        rankingService.removeRanking(score.getAthlete().getItem().getItemId());
 
         //获取分数单位
         score = scoreService.getOneScoreByScoreId(score.getScoreId());
 
         //获取前三，并重新计算排名
+        int limitAmount=3;
         //判断分数单位，如果单位为秒，则ASC升序排列
         String condition = "DESC";
-        if ("秒".equals(score.getItem().getItemUnit())) {
+        if ("秒".equals(score.getAthlete().getItem().getItemUnit())) {
             condition = "ASC";
         }
-        List<Score> scoreList = scoreService.getScoreByItemIdLimit(score.getItem().getItemId(), condition);
+        List<Score> scoreList = scoreService.getScoreByItemIdLimit(score.getAthlete().getItem().getItemId(), condition,limitAmount);
         //添加到Ranking对象中
         List<Ranking> rankingList = new ArrayList<>();
 
-        int i = 3;
+        Score tempScore =new Score();
+        tempScore.setScore(new BigDecimal("-1"));
+        limitAmount+=1;
         for (Score s : scoreList) {
+            //如果分数不相等
+            if (s.getScore().compareTo(tempScore.getScore())!=0){
+                limitAmount--;
+            }
             Ranking ranking = new Ranking();
-            ranking.setItem(s.getItem());
-            ranking.setUser(s.getUser());
-            ranking.setTeam(s.getUser().getTeam());
+            ranking.setAthlete(s.getAthlete());
             //设置排名得分3、2、1
-            ranking.setRank(i);
+            ranking.setRank(limitAmount);
             ranking.setEditTime(LocalDateTime.now());
             rankingList.add(ranking);
-            i--;
+            tempScore=s;
         }
         rankingService.addRanking(rankingList);
     }

@@ -19,12 +19,11 @@ public interface ScoreService {
 
     IPage<Score> getScoreByScoreCondition(Page<Score> page, Score score);
 
-    IPage<Score> getScoreByTeamId(Page<Score> page, int teamId);
 
     IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, Score score);
 
 
-    List<Score> getScoreByItemIdLimit(int itemId, String condition);
+    List<Score> getScoreByItemIdLimit(int itemId, String condition,int limitAmount);
 
     Score getOneScoreByScoreId(int scoreId);
 

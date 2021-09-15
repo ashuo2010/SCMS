@@ -66,29 +66,34 @@ public class AthleteController {
         }
 
         //分页查询
-        Page<Athlete> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        //加上查询多人项目
-        athlete.setUserIds(athlete.getUser().getUserId().toString());
-        IPage<Athlete>  athleteList = athleteService.getAthleteByCondition(page, athlete);
-        for (Athlete a: athleteList.getRecords()){
-            //如果是多人项目，拼接名字多个运动员名字
-            if (a.getUserIds()!=null){
-                String[] userIds = a.getUserIds().split(",");
-                List<User> userList =new ArrayList<>();
-                for (String uId: userIds){
-                    User tempUser =new User();
-                    tempUser.setUserId(Integer.valueOf(uId));
-                    userList.addAll(userService.getUserByCondition(new Page<>(1, 999999999), tempUser).getRecords());
-                }
-                String userNickname="";
-                for (User u:userList){
-                    userNickname+=u.getNickname()+",";
-                }
-                //删除最后一个逗号
-                userNickname=userNickname.substring(0,userNickname.length()-1);
-                a.getUser().setNickname(userNickname);
+        IPage<Athlete>  athleteList = null;
+            Page<Athlete> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+            if (athlete.getUser()!=null&& athlete.getUser().getUserId()!=null){
+                //加上查询多人项目
+                athlete.setUserIds(athlete.getUser().getUserId().toString());
             }
-        }
+            athleteList = athleteService.getAthleteByCondition(page, athlete);
+            for (Athlete a: athleteList.getRecords()){
+                //如果是多人项目，拼接名字多个运动员名字
+                if (a.getUserIds()!=null){
+                    String[] userIds = a.getUserIds().split(",");
+                    List<User> userList =new ArrayList<>();
+                    for (String uId: userIds){
+                        User tempUser =new User();
+                        tempUser.setUserId(Integer.valueOf(uId));
+                        userList.addAll(userService.getUserByCondition(new Page<>(1, 999999999), tempUser).getRecords());
+                    }
+                    String userNickname="";
+                    for (User u:userList){
+                        userNickname+=u.getNickname()+",";
+                    }
+                    //删除最后一个逗号
+                    userNickname=userNickname.substring(0,userNickname.length()-1);
+                    a.getUser().setNickname(userNickname);
+                }
+                }
+
+
         return ServerResponse.createBySuccess(athleteList);
     }
 
