@@ -61,7 +61,7 @@
         INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
             <if test="record.recordId!=null and record.recordId!=0">AND r.record_id=#{record.recordId}</if>
-            <if test="record.recordStatus!=null and record.recordStatus!=0 ">AND r.record_status=#{record.recordStatus}</if>
+            <if test="record.recordStatus!=null ">AND r.record_status=#{record.recordStatus}</if>
             <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">AND
                 i.parent_id=#{record.athlete.item.parentId}
             </if>
