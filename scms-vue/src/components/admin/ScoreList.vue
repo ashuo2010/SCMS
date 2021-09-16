@@ -359,7 +359,7 @@ export default {
           label: "已录入成绩",
         },
         {
-          value: "",
+          value: "-1",
           label: "所有成绩",
         },
       ],
@@ -445,31 +445,25 @@ item: {
     async getSeasons() {
       const _this = this;
       axios
-        .get(
-          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
-        )
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-          let data = res.data.data.records;
+        let data = res.data.data.records;
         data.push( {
-          seasonId: " ",
+          seasonId: 0,
+          seasonStatus:0,
           seasonName: "所有运动会",
         })
+        data.forEach((item,index)=>{
+            if(item.seasonStatus!=0){
+            _this.selectSeasonId=item.seasonId 
+            }
+          })
         _this.allSeasonOptions=data;
-     
         });
     },
 
      async querySelectedOptions() {
       const _this = this;
-     /*  if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-       if(_this.athlete.item.user.userId==""){
-        _this.athlete.item.user.userId=0;
-      }
-       if(_this.athlete.status==""){
-        _this.athlete.status=0;
-      } */
       axios
         .get(
           "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId

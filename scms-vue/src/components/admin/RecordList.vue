@@ -188,12 +188,12 @@ export default {
     //根据下拉框进行搜索
     async querySelectedOptions() {
       const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-        if(_this.selectSeasonId==0){
-        _this.selectSeasonId="";
-      }
+      // if(_this.selectItemId==""){
+      //   _this.selectItemId=0;
+      // }
+      //   if(_this.selectSeasonId==0){
+      //   _this.selectSeasonId="";
+      // }
       axios
         .get(
           "/record/queryRecord?query=&currentPage=1&pageSize=999999999&recordStatus="+_this.selectRecordStatus

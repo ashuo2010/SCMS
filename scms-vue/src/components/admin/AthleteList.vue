@@ -189,23 +189,27 @@ export default {
     },
 
 
- //获取运动会届时
+//获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
-        .get(
-          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
-        )
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-          let data = res.data.data.records;
+        let data = res.data.data.records;
         data.push( {
-          seasonId: " ",
+          seasonId: 0,
+          seasonStatus:0,
           seasonName: "所有运动会",
         })
+        data.forEach((item,index)=>{
+            if(item.seasonStatus!=0){
+            _this.selectSeasonId=item.seasonId 
+            }
+          })
         _this.allSeasonOptions=data;
-     
         });
     },
+
 
     //获取项目列表
     async getItems() {

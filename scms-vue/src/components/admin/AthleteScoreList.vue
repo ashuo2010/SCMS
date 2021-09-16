@@ -162,23 +162,27 @@ export default {
           _this.queryInfo.pageSize = data.size;
         });
     },
- //获取运动会届时
+//获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
-        .get(
-          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
-        )
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-          let data = res.data.data.records;
+        let data = res.data.data.records;
         data.push( {
           seasonId: 0,
+          seasonStatus:0,
           seasonName: "所有运动会",
         })
+        data.forEach((item,index)=>{
+            if(item.seasonStatus!=0){
+            _this.selectSeasonId=item.seasonId 
+            }
+          })
         _this.allSeasonOptions=data;
-     
         });
     },
+
 
     //获取项目
     async getItems() {
@@ -199,12 +203,12 @@ export default {
     //根据下拉框进行搜索
     async querySelectedOptions() {
       const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-        if(_this.selectSeasonId==0){
-        _this.selectSeasonId="";
-      }
+      // if(_this.selectItemId==""){
+      //   _this.selectItemId=0;
+      // }
+      //   if(_this.selectSeasonId==0){
+      //   _this.selectSeasonId="";
+      // }
       axios
         .get(
           "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId

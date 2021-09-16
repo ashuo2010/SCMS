@@ -7,7 +7,6 @@
         <result column="record_status" property="recordStatus"/>
         <result column="create_time" property="createTime"/>
         <result column="editTime" property="editTime"/>
-
         <association property="athlete" javaType="com.ashuo.scms.entity.Athlete">
             <id column="athlete_id" property="athleteId"/>
             <association property="item" javaType="com.ashuo.scms.entity.Item">

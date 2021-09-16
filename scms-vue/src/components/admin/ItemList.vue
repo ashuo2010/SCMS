@@ -98,7 +98,7 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column label="运动会届时" prop="season.seasonName"></el-table-column>
         <el-table-column label="项目名称" prop="itemName"></el-table-column>
-        <el-table-column label="项目性别" prop="itemSex"></el-table-column>
+        <!-- <el-table-column label="项目性别" prop="itemSex"></el-table-column> -->
         <el-table-column label="项目地点" prop="itemPlace"></el-table-column>
         <el-table-column label="项目分数单位" prop="itemUnit"></el-table-column>
 
@@ -618,21 +618,24 @@ export default {
         });
     },
     
-    //获取运动会届时
+   //获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
-        .get(
-          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
-        )
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-          let data = res.data.data.records;
-          _this.allSeasonOptions=data;
-          data.forEach((item,index) => {
-            if(item.seasonStatus==1){
-              _this.seasonEnableOptions.push(item);
+        let data = res.data.data.records;
+        data.push( {
+          seasonId: 0,
+          seasonStatus:0,
+          seasonName: "所有运动会",
+        })
+        data.forEach((item,index)=>{
+            if(item.seasonStatus!=0){
+            _this.selectSeasonId=item.seasonId 
             }
-          });
+          })
+        _this.allSeasonOptions=data;
         });
     },
 

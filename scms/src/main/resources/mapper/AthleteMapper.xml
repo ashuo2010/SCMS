@@ -100,7 +100,7 @@
             <if test="athlete.item!=null and athlete.item.season!=null and athlete.item.season.seasonId!=null and athlete.item.season.seasonId!=0">AND
                 se.season_id=#{athlete.item.season.seasonId}
             </if>
-            <if test="athlete.scoreStatus!=null">AND a.score_status=#{athlete.scoreStatus}</if>
+            <if test="athlete.scoreStatus!=null and athlete.scoreStatus!=-1">AND a.score_status=#{athlete.scoreStatus}</if>
         </where>
         ORDER BY
         i.item_id
@@ -110,7 +110,7 @@
     <update id="updateAthlete" parameterType="com.ashuo.scms.entity.Athlete">
         UPDATE athlete
         <set>
-            <if test="scoreStatus!=null">score_status=#{scoreStatus},</if>
+            <if test="scoreStatus!=null and athlete.scoreStatus!=-1">score_status=#{scoreStatus},</if>
             <if test="userIds!=null">user_ids=#{userIds},</if>
         </set>
         <where>

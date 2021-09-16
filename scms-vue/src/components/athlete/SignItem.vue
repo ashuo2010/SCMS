@@ -219,20 +219,17 @@ export default {
     async getSeasons() {
       const _this = this;
       axios
-        .get(
-          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
-        )
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-          let data = res.data.data.records;
-        data.push( {
-          seasonId: " ",
-          seasonName: "所有运动会",
-        })
+        let data = res.data.data.records;
+        data.forEach((item,index)=>{
+            if(item.seasonStatus!=0){
+            _this.selectSeasonId=item.seasonId 
+            }
+          })
         _this.allSeasonOptions=data;
-     
         });
     },
-
      async querySelectedOptions() {
       const _this = this;
       if(_this.selectItemId==""){
