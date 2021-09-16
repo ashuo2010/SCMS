@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
  * 服务实现类
  * </p>
  *
- * @author hhy
- * @since 2020-10-31
+ * @author AShuo
+ * @since 2021-04-01
  */
 @Service
 public class MainmenuServiceImpl extends ServiceImpl<MainmenuMapper, Mainmenu> implements MainmenuService {

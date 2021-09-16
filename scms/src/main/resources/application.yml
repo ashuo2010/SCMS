@@ -1,6 +1,5 @@
 server:
   port: 8088
-
 spring:
   swagger2:
     enabled: true
@@ -20,21 +19,14 @@ spring:
     enabled: true
     redis-manager:
       host: localhost:6379
-
 jwt:
   secret: f4e2e52034348f86b67cde581c0f9eb5
   expire: 36000000
   header: Authorization
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-
-  # sql OUT_PRINT
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-#pagehelper:
-#  helperDialect: mysql
-#  reasonable: true
-#  supportMethodsArguments: true
-#  params: count=countSql
+meet:
+  you:
+    year: 2015

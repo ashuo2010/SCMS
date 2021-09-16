@@ -20,6 +20,8 @@ public interface SyslogMapper {
     //按条件查询Score
     Page<Syslog> querySyslogBySyslogCondition(Page<Syslog> page, @Param("syslog") Syslog syslog);
 
+    //删除所有项目记录
+    int deleteAllRecord();
 
     //删除所有项目排名
     int deleteAllRanking();
@@ -41,5 +43,8 @@ public interface SyslogMapper {
 
     //删除所有团队
     int deleteAllTeam();
+
+    //删除所有运动会
+    int deleteAllSeason();
 
 }

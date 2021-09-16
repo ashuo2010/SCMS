@@ -150,6 +150,8 @@ export default {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
           _this.athleteScoreList.forEach((item,index)=>{
+            //分数加上单位
+            item.score+=item.itemUnit
             if(item.isBreakRecord==1){
                 item.isBreakRecord="是" ;
             }else{
@@ -218,6 +220,8 @@ export default {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
            _this.athleteScoreList.forEach((item,index)=>{
+              //分数加上单位
+            item.score+=item.itemUnit
             if(item.isBreakRecord==1){
                 item.isBreakRecord="是" ;
             }else{

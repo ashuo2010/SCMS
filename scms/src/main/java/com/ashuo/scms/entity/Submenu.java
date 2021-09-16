@@ -10,12 +10,9 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 
 /**
- * <p>
  *
- * </p>
- *
- * @author hhy
- * @since 2020-10-31
+ * @author AShuo
+ * @since 2021-04-05
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

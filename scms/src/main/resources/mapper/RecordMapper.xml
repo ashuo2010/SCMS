@@ -88,10 +88,10 @@
     </update>
 
 
-    <delete id="deleteRecord">
-        DELETE
-        FROM record
-        WHERE record_id = #{recordId}
-    </delete>
+<!--    <delete id="deleteRecord">-->
+<!--        DELETE-->
+<!--        FROM record-->
+<!--        WHERE record_id = #{recordId}-->
+<!--    </delete>-->
 
 </mapper>

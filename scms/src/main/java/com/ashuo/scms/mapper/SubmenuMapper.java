@@ -8,8 +8,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * Mapper 接口
  * </p>
  *
- * @author hhy
- * @since 2020-10-31
+ * @author AShuo
+ * @since 2021-04-01
  */
 public interface SubmenuMapper extends BaseMapper<Submenu> {
 

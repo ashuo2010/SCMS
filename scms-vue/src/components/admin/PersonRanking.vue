@@ -205,8 +205,13 @@ export default {
             userId
         )
         .then((res) => {
-          let data = res.data.data;
-          _this.personScoreDetail = data.records;
+          let data = res.data.data.records;
+          data.forEach((i,index)=>{
+              //分数加上单位
+            i.score+=i.athlete.item.itemUnit
+            });
+          
+          _this.personScoreDetail = data;
         });
     },
 

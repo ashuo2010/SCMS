@@ -61,17 +61,17 @@ public class RecordServiceImpl extends ServiceImpl<RecordMapper, Record> impleme
         }
     }
 
-    @Override
-    public int removeRecord(int recordId) {
-        if (recordId == 0) {
-            return 0;
-        } else {
-            int effNum = recordMapper.deleteRecord(recordId);
-            if (effNum != 1) {
-                return 0;
-            } else {
-                return effNum;
-            }
-        }
-    }
+//    @Override
+//    public int removeRecord(int recordId) {
+//        if (recordId == 0) {
+//            return 0;
+//        } else {
+//            int effNum = recordMapper.deleteRecord(recordId);
+//            if (effNum != 1) {
+//                return 0;
+//            } else {
+//                return effNum;
+//            }
+//        }
+//    }
 }

@@ -29,8 +29,8 @@ import java.time.LocalDateTime;
  * 前端控制器
  * </p>
  *
- * @author ashuo
- * @since 2021-03-29
+ * @author AShuo
+ * @since 2021-04-05
  */
 
 @Api(tags = "用户接口")
@@ -38,8 +38,6 @@ import java.time.LocalDateTime;
 @Slf4j
 @RequestMapping("/user")
 public class UserController {
-    public static User currentUser = new User();
-
     @Autowired
     UserService userService;
 

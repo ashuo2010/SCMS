@@ -60,27 +60,29 @@ public class SyslogServiceImpl implements SyslogService {
         }
     }
 
-    @Override
-    @Transactional
-    public int removeAllRankingScoreAthlete() {
-        try {
-            //删除所有排名
-            syslogMapper.deleteAllRanking();
-            //删除所有分数
-            syslogMapper.deleteAllScore();
-            //删除所有参赛运动员
-            syslogMapper.deleteAllAthlete();
-            return 1;
-        } catch (Exception e) {
-            return 0;
-        }
-
-    }
+//    @Override
+//    @Transactional
+//    public int removeAllRankingScoreAthlete() {
+//        try {
+//            //删除所有排名
+//            syslogMapper.deleteAllRanking();
+//            //删除所有分数
+//            syslogMapper.deleteAllScore();
+//            //删除所有参赛运动员
+//            syslogMapper.deleteAllAthlete();
+//            return 1;
+//        } catch (Exception e) {
+//            return 0;
+//        }
+//
+//    }
 
     @Override
     @Transactional
     public int removeAllData() {
         try {
+            //删除所有记录
+            syslogMapper.deleteAllRecord();
             //删除所有排名
             syslogMapper.deleteAllRanking();
             //删除所有分数
@@ -89,12 +91,12 @@ public class SyslogServiceImpl implements SyslogService {
             syslogMapper.deleteAllAthlete();
             //删除所有参赛项目
             syslogMapper.deleteAllItem();
-            //删除所有系统日志
-            syslogMapper.deleteAllSyslog();
             //删除所有用户
             syslogMapper.deleteAllUser();
             //删除所有团队
             syslogMapper.deleteAllTeam();
+            //删除所有运动会
+            syslogMapper.deleteAllSeason();
         } catch (Exception e) {
             return 0;
         }
@@ -121,6 +123,8 @@ public class SyslogServiceImpl implements SyslogService {
             rootUser.setCreateTime(LocalDateTime.now());
             rootUser.setEditTime(LocalDateTime.now());
             userMapper.insertUser(rootUser);
+            //删除所有系统日志
+            syslogMapper.deleteAllSyslog();
             return 1;
         } catch (Exception e) {
             return 0;

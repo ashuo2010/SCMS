@@ -17,7 +17,7 @@ public interface SyslogService {
 
     int addSyslog(Syslog syslog);
 
-    int removeAllRankingScoreAthlete();
+//    int removeAllRankingScoreAthlete();
 
     int removeAllData();
 }

@@ -44,6 +44,12 @@
         execution_time
     </select>
 
+
+    <delete id="deleteAllRecord">
+        DELETE
+        FROM record
+    </delete>
+
     <delete id="deleteAllRanking">
         DELETE
         FROM ranking
@@ -71,6 +77,11 @@
     <delete id="deleteAllTeam">
         DELETE
         FROM team
+    </delete>
+
+    <delete id="deleteAllSeason">
+        DELETE
+        FROM season
     </delete>
 
     <delete id="deleteAllSyslog">
