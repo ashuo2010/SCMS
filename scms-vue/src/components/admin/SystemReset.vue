@@ -79,7 +79,7 @@ export default {
         if (res.status == 200) {
           _this.$message.success("清空成功");
         } else {
-          _this.$message.error("清空失败");
+          _this.$message.error(res.data.msg);
         }
       });
     },
@@ -111,7 +111,7 @@ export default {
         if (res.status == 200) {
           _this.$message.success("清空成功");
         } else {
-          _this.$message.error("清空失败");
+          _this.$message.error(res.data.msg);
         }
       });
     },

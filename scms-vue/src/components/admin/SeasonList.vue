@@ -333,7 +333,7 @@ export default {
         if (!valid) return;
         axios.post("/season/addSeason", _this.addForm).then((res) => {
           if (res.data.status != 200) {
-            return _this.$message.error("操作失败" + res.data.msg);
+            return _this.$message.error(res.data.msg);
           }
           _this.$message.success("操作成功");
           _this.addDialogVisible = false;
@@ -359,7 +359,7 @@ export default {
           _this.addDialogVisible = false;
           _this.page();
         } else {
-          _this.$message.error("删除失败");
+          _this.$message.error(res.data.msg);
         }
       });
     },
@@ -371,7 +371,7 @@ export default {
         }
         axios.put("/season/editSeason", _this.editForm).then((res) => {
           if (res.data.status != 200) {
-            return _this.$message.error("操作失败");
+            return _this.$message.error(res.data.msg);
           }
           _this.$message.success("操作成功");
           _this.editDialogVisible = false;

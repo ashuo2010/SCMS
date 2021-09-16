@@ -103,7 +103,7 @@ export default {
               /*路由跳转*/
               _this.$router.push("/home");
             } else {
-              _this.$message.error("登录失败：" + res.data.msg);
+              _this.$message.error( res.data.msg);
             }
           });
         } else {

@@ -297,7 +297,7 @@ export default {
       }
       axios.post("/syslog/switchSystemStatus").then((res) => {
         if (res.data.status != 200) {
-          return _this.$message.error("操作失败" + res.data.msg);
+          return _this.$message.error(res.data.msg);
         }
         _this.systemStatus = res.data.data;
         return _this.$message.success("操作成功");

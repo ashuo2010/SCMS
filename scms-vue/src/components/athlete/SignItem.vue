@@ -303,7 +303,7 @@ export default {
       _this.signItemInfo.item.itemId = row.itemId;
       axios.post("/athlete/addAthlete", _this.signItemInfo).then((res) => {
         if (res.data.status != 200) {
-          return _this.$message.error("报名失败" + res.data.msg);
+          return _this.$message.error( res.data.msg);
         }
         _this.$message.success("报名成功");
         _this.page();

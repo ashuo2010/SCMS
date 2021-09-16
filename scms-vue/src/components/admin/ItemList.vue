@@ -728,7 +728,7 @@ export default {
           _this.$message.success("删除成功");
           _this.page();
         } else {
-          _this.$message.error("删除失败");
+          _this.$message.error(res.data.msg);
         }
       });
     },
@@ -740,7 +740,7 @@ export default {
         }
         axios.put("/item/editItem", _this.editForm).then((res) => {
           if (res.data.status != 200) {
-            return _this.$message.error("操作失败");
+            return _this.$message.error(res.data.msg);
           }
           _this.$message.success("操作成功");
         _this.editDialogVisible=false;
