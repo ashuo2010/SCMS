@@ -4,6 +4,7 @@ import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.*;
+import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -59,7 +60,7 @@ public class ScoreController {
             queryInfo.setQuery(null);
         }
         //分页查询
-        Page<Score> page = new Page<Score>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        Page<Score> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Score> scoreList = scoreService.getScoreByScoreCondition(page, score);
         return ServerResponse.createBySuccess(scoreList);
     }
@@ -154,21 +155,15 @@ public class ScoreController {
     @GetMapping("/queryAthleteScore")
     @RequiresAuthentication
     public ServerResponse queryAthleteScore(QueryInfo queryInfo, Score score) {
-        //如果搜索框未输入
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }else{
-            User user = new User();
-            user.setNickname(queryInfo.getQuery());
-            Athlete athlete=new Athlete();
-            athlete.setUser(user);
-            if (score == null) {
-                score = new Score();
-            }
-            score.setAthlete(athlete);
-        }
+        Athlete athlete= ObjectUtils.isNull(score.getAthlete())? new Athlete(): score.getAthlete();
+        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
+
+        user.setNickname(queryInfo.getQuery());
+        athlete.setUser(user);
+        score.setAthlete(athlete);
+
         //分页查询
-        Page<AthleteScoreDto> page = new Page<AthleteScoreDto>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        Page<AthleteScoreDto> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<AthleteScoreDto> scoreList = scoreService.getAthleteScoreDto(page, score);
         return ServerResponse.createBySuccess(scoreList);
     }
@@ -178,7 +173,7 @@ public class ScoreController {
         Record record = new Record();
         //获取该项目的有效记录列表
         record.setRecordStatus(1);
-        List<Record> recordList = recordService.getRecordByRecordCondition(new Page<Record>(1, 999), record).getRecords();
+        List<Record> recordList = recordService.getRecordByRecordCondition(new Page<>(1, 999), record).getRecords();
         //设置分数数据
         record.setAthlete(score.getAthlete());
         record.setRecordScore(score.getScore());

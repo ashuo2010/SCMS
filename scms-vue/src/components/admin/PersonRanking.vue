@@ -14,7 +14,7 @@
         <el-col :span="10">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入参赛运动员名称"
+            placeholder="请输入运动员名称"
             v-model="queryInfo.query"
             clearable
             @keyup.enter.native="page"

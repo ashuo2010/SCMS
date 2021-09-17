@@ -35,9 +35,8 @@
     <select id="queryTeamByTeamName" resultType="com.ashuo.scms.entity.Team">
         SELECT * FROM team
         <where>
-            <if test="teamName!=null">AND team_name LIKE '%${teamName}%'</if>
+            <if test="team.teamName!=null">AND team_name LIKE '%${team.teamName}%'</if>
         </where>
-        ORDER BY team_id
     </select>
 
     <select id="queryTeamByTeamCondition" resultType="com.ashuo.scms.entity.Team">

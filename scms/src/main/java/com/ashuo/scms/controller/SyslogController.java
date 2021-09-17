@@ -6,6 +6,7 @@ import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.Syslog;
 import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.SyslogService;
+import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -44,19 +45,12 @@ public class SyslogController {
     @GetMapping("/querySyslog")
     @RequiresRoles(value = {"1"})
     public ServerResponse querySyslog(QueryInfo queryInfo, Syslog syslog) {
+        User user = ObjectUtils.isNull(syslog.getExecutionUser())? new User():syslog.getExecutionUser();
+        user.setNickname(queryInfo.getQuery());
+        syslog.setExecutionUser(user);
 
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }else {
-            User user = syslog.getExecutionUser();
-            if (user == null) {
-                user = new User();
-            }
-            user.setNickname(queryInfo.getQuery());
-            syslog.setExecutionUser(user);
-        }
         //分页查询
-        Page<Syslog> page = new Page<Syslog>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        Page<Syslog> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Syslog> syslogList = syslogService.getAllSyslog(page,syslog);
         return ServerResponse.createBySuccess(syslogList);
     }

@@ -4,6 +4,7 @@ package com.ashuo.scms.controller;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.RecordService;
+import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -37,21 +38,15 @@ public class RecordController {
     @GetMapping("/queryRecord")
     @RequiresAuthentication
     public ServerResponse queryRecord(QueryInfo queryInfo, Record record) {
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }else {
-            Athlete athlete=new Athlete();
-            User user=new User();
-            user.setNickname(queryInfo.getQuery());
-            if (record==null){
-                record=new Record();
-            }
-            athlete.setUser(user);
-            record.setAthlete(athlete);
-        }
+        Athlete athlete= ObjectUtils.isNull(record.getAthlete())? new Athlete(): record.getAthlete();
+        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
+
+        user.setNickname(queryInfo.getQuery());
+        athlete.setUser(user);
+        record.setAthlete(athlete);
 
         //分页查询
-        Page<Record> page = new Page<Record>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        Page<Record> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Record> recordList = recordService.getRecordByRecordCondition(page, record);
         return ServerResponse.createBySuccess(recordList);
     }

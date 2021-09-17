@@ -43,7 +43,7 @@
         <el-col :span="10">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入搜索项目名称"
+            placeholder="请输入项目名称"
             v-model="queryInfo.query"
             clearable
             @keyup.enter.native="page"

@@ -13,7 +13,7 @@
         <el-col :span="10">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入搜索内容"
+            placeholder="请输入运动会名称"
             v-model="queryInfo.query"
             clearable
             @keyup.enter.native="page"

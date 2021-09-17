@@ -4,6 +4,7 @@ package com.ashuo.scms.controller;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.*;
 import com.ashuo.scms.service.RankingService;
+import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -39,20 +40,17 @@ public class RankingController {
     @GetMapping("/queryTeamRanking")
     @RequiresAuthentication
     public ServerResponse queryTeamRanking(QueryInfo queryInfo,Ranking ranking) {
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }else {
-            Athlete athlete=new Athlete();
-            User user=new User();
-            Team team=ranking.getAthlete().getUser().getTeam();
-            team.setTeamName(queryInfo.getQuery());
-            user.setTeam(team);
-            athlete.setUser(user);
-            ranking.setAthlete(athlete);
-        }
+        Athlete athlete= ObjectUtils.isNull(ranking.getAthlete())? new Athlete(): ranking.getAthlete();
+        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
+        Team team =ObjectUtils.isNull(user.getTeam())? new Team():user.getTeam();
+
+        team.setTeamName(queryInfo.getQuery());
+        user.setTeam(team);
+        athlete.setUser(user);
+        ranking.setAthlete(athlete);
 
         //分页查询
-        Page<Ranking> page = new Page<Ranking>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        Page<Ranking> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Ranking> rankingList = rankingService.getTeamTotalRanking(page, ranking);
         return ServerResponse.createBySuccess(rankingList);
     }
@@ -62,19 +60,15 @@ public class RankingController {
     @GetMapping("/queryUserRanking")
     @RequiresAuthentication
     public ServerResponse queryUserRanking(QueryInfo queryInfo,Ranking ranking) {
+        Athlete athlete= ObjectUtils.isNull(ranking.getAthlete())? new Athlete(): ranking.getAthlete();
+        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
 
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }else {
-            Athlete athlete=new Athlete();
-            User user=new User();
-            user.setNickname(queryInfo.getQuery());
-            athlete.setUser(user);
-            ranking.setAthlete(athlete);
-        }
+        user.setNickname(queryInfo.getQuery());
+        athlete.setUser(user);
+        ranking.setAthlete(athlete);
 
         //分页查询
-        Page<Ranking> page = new Page<Ranking>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        Page<Ranking> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Ranking> rankingList = rankingService.getUserTotalRanking(page, ranking);
         return ServerResponse.createBySuccess(rankingList);
     }

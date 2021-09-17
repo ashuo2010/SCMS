@@ -226,7 +226,7 @@ public class ExcelController {
         }
 
         //获取数据
-        Page<AthleteScoreDto> page = new Page<AthleteScoreDto>(1, 999999);
+        Page<AthleteScoreDto> page = new Page<>(1, 999999);
         IPage<AthleteScoreDto> dtoList = scoreService.getAthleteScoreDto(page,  new Score());
         List<AthleteScoreDto> athleteScoreDtoList = dtoList.getRecords();
 
@@ -304,7 +304,7 @@ public class ExcelController {
         }
 
         //获取数据
-        Page<Athlete> page = new Page<Athlete>(1, 999999);
+        Page<Athlete> page = new Page<>(1, 999999);
         IPage<Athlete> dtoList = athleteService.getAthleteByCondition(page, athlete);
         List<Athlete> AthleteList = dtoList.getRecords();
 

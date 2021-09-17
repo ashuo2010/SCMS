@@ -38,10 +38,10 @@ public class TeamController {
     @ApiOperation("查询团体")
     @GetMapping("/queryTeam")
     @RequiresAuthentication
-    public ServerResponse queryTeam(QueryInfo queryInfo) {
-        //分页查询
-        Page<Team> page = new Page<Team>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Team> teamList = teamService.getAllTeam(page, queryInfo.getQuery());
+    public ServerResponse queryTeam(QueryInfo queryInfo,Team team) {
+        team.setTeamName(queryInfo.getQuery());
+        Page<Team> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+        IPage<Team> teamList = teamService.getAllTeam(page, team);
         return ServerResponse.createBySuccess(teamList);
     }
 

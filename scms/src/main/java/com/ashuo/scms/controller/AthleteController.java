@@ -9,6 +9,7 @@ import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.AthleteService;
 import com.ashuo.scms.service.ItemService;
 import com.ashuo.scms.service.UserService;
+import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -54,16 +55,10 @@ public class AthleteController {
     @GetMapping("/queryAthlete")
     @RequiresAuthentication
     public ServerResponse queryAthlete(QueryInfo queryInfo, Athlete athlete) {
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        } else {
-            User user = athlete.getUser();
-            if (user == null) {
-                user = new User();
-            }
+
+            User user = ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
             user.setNickname(queryInfo.getQuery());
             athlete.setUser(user);
-        }
 
         //分页查询
         IPage<Athlete>  athleteList = null;

@@ -5,7 +5,9 @@ import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.Item;
 import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.Season;
+import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.ItemService;
+import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -41,10 +43,6 @@ public class ItemController {
     @RequiresAuthentication
     public ServerResponse queryItem(QueryInfo queryInfo, Item item) {
 
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }
-        //如果输入框有内容,则根据内容搜索
         item.setItemName(queryInfo.getQuery());
         Page<Item> page = new Page(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Item> itemList = itemService.getItemByItemCondition(page, item);

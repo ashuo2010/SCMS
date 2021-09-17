@@ -88,7 +88,7 @@ public class AthleteServiceImpl implements AthleteService {
         } else {
             Athlete athlete = new Athlete();
             athlete.setAthleteId(athleteId);
-            IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(new Page<Athlete>(1, 1), athlete);
+            IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(new Page<>(1, 1), athlete);
             athlete = athleteList.getRecords().get(0);
             Item temp =(athlete.getItem());
             Item item = itemMapper.queryOneItemByItemCondition(temp);

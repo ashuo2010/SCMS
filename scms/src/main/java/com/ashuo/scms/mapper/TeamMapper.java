@@ -24,8 +24,7 @@ public interface TeamMapper {
     int deleteTeam(int teamId);
 
     //按条件查询Team
-    //List<Team> queryTeamByTeamCondition(@Param("teamName") String teamName);
-    IPage<Team> queryTeamByTeamName(Page<Team> page, @Param("teamName") String teamName);
+    IPage<Team> queryTeamByTeamName(Page<Team> page, @Param("team") Team team);
 
 
     Team queryTeamByTeamCondition(@Param("team") Team team);

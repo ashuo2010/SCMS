@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
  */
 
 public interface TeamService {
-    IPage<Team> getAllTeam(Page<Team> page, String teamName);
+    IPage<Team> getAllTeam(Page<Team> page, Team team);
 
     Team getTeamByCondition(Team team);
 

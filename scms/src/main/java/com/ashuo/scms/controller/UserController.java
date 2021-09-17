@@ -117,10 +117,6 @@ public class UserController {
     @GetMapping("/queryUser")
     @RequiresAuthentication
     public ServerResponse queryUser(QueryInfo queryInfo, User user) {
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }
-        //如果输入框有内容,则根据姓名搜索
         user.setNickname(queryInfo.getQuery());
         Page<User> page = new Page(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<User> userList = userService.getUserByCondition(page, user);

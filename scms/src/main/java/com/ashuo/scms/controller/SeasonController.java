@@ -41,10 +41,6 @@ public class SeasonController {
     @GetMapping("/querySeason")
     @RequiresAuthentication
     public ServerResponse querySeason(QueryInfo queryInfo, Season season) {
-        if (StringUtils.isBlank(queryInfo.getQuery())) {
-            queryInfo.setQuery(null);
-        }
-        //如果输入框有内容,则根据姓名搜索
         season.setSeasonName(queryInfo.getQuery());
         Page<Season> page = new Page(queryInfo.getCurrentPage(), queryInfo.getPageSize());
         IPage<Season> seasonList = seasonService.getSeasonByCondition(page, season);

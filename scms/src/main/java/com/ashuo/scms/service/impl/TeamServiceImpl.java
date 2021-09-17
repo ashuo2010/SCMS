@@ -24,8 +24,8 @@ public class TeamServiceImpl implements TeamService {
     TeamMapper teamMapper;
 
     @Override
-    public IPage<Team> getAllTeam(Page<Team> page, String teamName) {
-        IPage<Team> teamList = teamMapper.queryTeamByTeamName(page, teamName);
+    public IPage<Team> getAllTeam(Page<Team> page, Team team) {
+        IPage<Team> teamList = teamMapper.queryTeamByTeamName(page, team);
         return teamList;
     }
 
