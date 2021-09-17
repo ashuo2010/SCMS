@@ -1,4 +1,4 @@
-package com.ashuo.scms;
+package com.ashuo.scms.util;
 
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;

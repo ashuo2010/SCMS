@@ -35,7 +35,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -54,7 +54,7 @@
               v-model="athlete.item.user.userId"
               filterable
               placeholder="记分员"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in scorers"
@@ -69,7 +69,7 @@
               v-model="athlete.scoreStatus"
               filterable
               placeholder="是否录入成绩"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in statusOptions"
@@ -262,7 +262,6 @@
         <el-form-item label="分数" prop="">
           <el-input v-model="scoreDetail.score" disabled></el-input>
         </el-form-item>
-
       </el-form>
     </el-dialog>
 
@@ -387,10 +386,10 @@ export default {
         minute: "",
         second: "",
       },
-      scoreDetail:{},
+      scoreDetail: {},
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -404,24 +403,34 @@ export default {
   },
   created() {
     this.currentUser = JSON.parse(localStorage.getItem("user"));
-    this.page();
     this.getScorers();
     this.getSeasons();
   },
   methods: {
-    async page() {
+   async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
-        .get("/athlete/queryAthlete?queryInfo=", {
-          params: _this.queryInfo,
-        })
-        .then((res) => {
-          let data = res.data.data;
-          _this.athleteList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
+       .get(
+          "/athlete/queryAthlete?item.season.seasonId=" +
+            _this.selectSeasonId +
+            "&item.user.userId=" +
+            _this.athlete.item.user.userId +
+            "&scoreStatus=" +
+            _this.athlete.scoreStatus +
+            "&queryInfo=",
+          { params: _this.queryInfo }
+        )
+      .then((res) => {
+        let data = res.data.data;
+        _this.athleteList = data.records;
+        _this.queryInfo.currentPage = data.current;
+        _this.total = data.total;
+        _this.queryInfo.pageSize = data.size;
+      });
     },
 
     //获取记分员
@@ -462,75 +471,57 @@ export default {
         });
     },
 
-    async querySelectedOptions() {
-      const _this = this;
-      axios
-        .get(
-          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId=" +
-            _this.selectSeasonId +
-            "&item.user.userId=" +
-            _this.athlete.item.user.userId +
-            "&scoreStatus=" +
-            _this.athlete.scoreStatus
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.athleteList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-    },
+    
 
     //添加分数
     async addScore() {
       const _this = this;
       _this.scoreHandle();
-      if(_this.scoreForm.score!==""){
-                axios.post("/score/addScore", _this.scoreForm).then((res) => {
-              if (res.data.status != 200) {
-                return _this.$message.error(res.data.msg);
-              }
-              _this.$message.success("操作成功");
-              _this.addDialogVisible = false;
-              _this.page();
-            });
+      if (_this.scoreForm.score !== "") {
+        axios.post("/score/addScore", _this.scoreForm).then((res) => {
+          if (res.data.status != 200) {
+            return _this.$message.error(res.data.msg);
+          }
+          _this.$message.success("操作成功");
+          _this.addDialogVisible = false;
+          _this.page();
+        });
       }
     },
 
-      //修改分数
+    //修改分数
     async editScore() {
       const _this = this;
       _this.scoreHandle();
-      if(_this.scoreForm.score!==""){
-      axios.put("/score/editScore", _this.scoreForm).then((res) => {
-        if (res.data.status != 200) {
-          return _this.$message.error(res.data.msg);
-        }
-        _this.$message.success("操作成功");
-        _this.EditDialogVisible = false;
-        _this.page();
-      });
+      if (_this.scoreForm.score !== "") {
+        axios.put("/score/editScore", _this.scoreForm).then((res) => {
+          if (res.data.status != 200) {
+            return _this.$message.error(res.data.msg);
+          }
+          _this.$message.success("操作成功");
+          _this.EditDialogVisible = false;
+          _this.page();
+        });
       }
     },
     //分数处理
-    scoreHandle(){
+    scoreHandle() {
       console.log(this.scoreForm);
       if (this.scoreForm.minute != "" && this.scoreForm.second != "") {
         if (
           parseInt(this.scoreForm.minute) > 60 ||
           parseInt(this.scoreForm.second) > 60
         ) {
-          this.scoreForm.score=""
+          this.scoreForm.score = "";
           return this.$message.error("数据错误");
         }
         this.scoreForm.score =
-          parseInt(this.scoreForm.minute * 60) + parseInt(this.scoreForm.second);
-      }else{
-          this.scoreForm.score=""
-          return this.$message.error("请填写分和秒");
+          parseInt(this.scoreForm.minute * 60) +
+          parseInt(this.scoreForm.second);
+      } else {
+        this.scoreForm.score = "";
+        return this.$message.error("请填写分和秒");
       }
-
     },
 
     //查看分数详情
@@ -545,25 +536,23 @@ export default {
         )
         .then((res) => {
           let data = res.data.data;
-          _this.scoreForm = data.records[0]
+          _this.scoreForm = data.records[0];
           _this.scoreDetail = data.records[0];
 
           //分数加上单位
-          if(_this.scoreDetail.athlete.item.itemUnit=="秒"&&_this.scoreDetail.score>60){
+          if (
+            _this.scoreDetail.athlete.item.itemUnit == "秒" &&
+            _this.scoreDetail.score > 60
+          ) {
             //如果分数为秒，且分数大于60秒，转成分钟显示
-          let minute=  parseInt(_this.scoreDetail.score/60);
-          let second=  parseInt( _this.scoreDetail.score%60);
-          _this.scoreDetail.score=minute+"分"+second+"秒";
-          }else{
-            _this.scoreDetail.score+= _this.scoreDetail.athlete.item.itemUnit;
+            let minute = parseInt(_this.scoreDetail.score / 60);
+            let second = parseInt(_this.scoreDetail.score % 60);
+            _this.scoreDetail.score = minute + "分" + second + "秒";
+          } else {
+            _this.scoreDetail.score += _this.scoreDetail.athlete.item.itemUnit;
           }
         });
     },
-
-  
-
-
-
 
     addDialogClosed() {
       const _this = this;

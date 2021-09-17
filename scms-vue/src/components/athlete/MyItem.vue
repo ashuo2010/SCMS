@@ -16,7 +16,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -104,7 +104,7 @@ export default {
 
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -114,17 +114,18 @@ export default {
     };
   },
   created() {
-    this.page();
      this.getSeasons();
-
   },
   methods: {
-    async page() {
+      async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
         .get(
-          "/athlete/queryAthlete?user.userId=" + this.userId + "&queryInfo=",
-          { params: _this.queryInfo }
+          "/athlete/queryAthlete?item.season.seasonId="+_this.selectSeasonId+"&user.userId=" + this.userId+"&queryInfo=",{ params: _this.queryInfo }
         )
         .then((res) => {
           let data = res.data.data;
@@ -153,26 +154,10 @@ export default {
             }
           })
         _this.allSeasonOptions=data;
+    _this.page();
         });
     },
 
-     async querySelectedOptions() {
-      const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-      axios
-        .get(
-          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId+"&user.userId=" + this.userId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.athletelist = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-    },
 
     async deleteAthlete(athleteId) {
       const _this = this;

@@ -35,7 +35,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -54,7 +54,7 @@
               v-model="selectItemId"
               filterable
               placeholder="请选择项目"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in itemList"
@@ -145,7 +145,7 @@ export default {
       systemStatus: true,
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -166,16 +166,21 @@ export default {
     };
   },
   created() {
-    this.page();
     this.getItems();
     this.getSeasons();
     this.currentUser = JSON.parse(localStorage.getItem("user"));
   },
   methods: {
-    async page() {
+    async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
-        .get("/athlete/queryAthlete?queryInfo=", { params: _this.queryInfo })
+        .get(
+          "/athlete/queryAthlete?item.season.seasonId="+_this.selectSeasonId+"&item.itemId=" +_this.selectItemId+"&queryInfo=", { params: _this.queryInfo }
+        )
         .then((res) => {
           let data = res.data.data;
           _this.athleteList = data.records;
@@ -207,6 +212,8 @@ export default {
             }
           })
         _this.allSeasonOptions=data;
+        _this.page();
+
         });
     },
 
@@ -224,32 +231,6 @@ export default {
         })
           _this.itemList=data;
         });
-    },
-
-     async querySelectedOptions() {
-      const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-      axios
-        .get(
-          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
-          +"&item.itemId=" +_this.selectItemId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.athleteList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-
-        if(_this.selectItemId==0){
-        _this.selectItemId="";
-      }
-        axios.post("/syslog/getSystemStatus").then((res) => {
-        _this.systemStatus = res.data.data;
-      });
     },
 
 

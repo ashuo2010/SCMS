@@ -63,7 +63,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -286,7 +286,7 @@
           </el-select>
         </el-form-item>
        <el-form-item label="项目名称" >
-          <el-select v-model="editForm.parentId" placeholder="请选择">
+          <el-select v-model="editForm.parentId" disabled >
             <el-option
               v-for="item in itemTemplateOptions"
               :key="item.itemId"
@@ -429,14 +429,6 @@
 
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
-            <!--修改-->
-            <!-- <el-button
-              type="primary"
-              icon="el-icon-edit"
-              size="mini"
-              @click="showEditTemplateDialog(scope.row.itemId)"
-            ></el-button> -->
-            <!--删除-->
             <el-button
               type="danger"
               icon="el-icon-delete"
@@ -519,7 +511,7 @@ export default {
 
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -576,15 +568,21 @@ export default {
     };
   },
   created() {
-    this.page();
     this.getScorers();
     this.getSeasons();
+        this.getTemplateOptions();
+
+
   },
   methods: {
-    async page() {
+    async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
-        .get("/item/queryItem?queryInfo=", { params: _this.queryInfo })
+         .get("/item/queryItem?season.seasonId="+_this.selectSeasonId+"&queryInfo=", { params: _this.queryInfo })
         .then((res) => {
           let data = res.data.data;
           _this.item = data.records;
@@ -592,7 +590,6 @@ export default {
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
         });
-        this.getTemplateOptions();
     },
     //获取记分员
     async getScorers() {
@@ -619,7 +616,7 @@ export default {
     },
     
    //获取运动会届时
-    async getSeasons() {
+     getSeasons() {
       //获取所有运动会届时
       const _this = this;
       axios
@@ -636,7 +633,9 @@ export default {
             _this.selectSeasonId=item.seasonId 
             }
           })
+
         _this.allSeasonOptions=data;
+        _this.page();
         });
 
       //获取可用运动会届时
@@ -646,22 +645,8 @@ export default {
         let data = res.data.data.records;
         _this.seasonEnableOptions=data;
         });
-    },
 
-    async querySelectedOptions() {
-      const _this = this;
-      axios
-        .get(
-          "/item/queryItem?query=&currentPage=1&pageSize=999999999&season.seasonId="+_this.selectSeasonId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.item = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
 
-        });
     },
 
 

@@ -28,13 +28,13 @@
             ></el-button>
           </el-input>
         </el-col>
-<div style="float: left">
+        <div style="float: left">
           <el-col>
             <el-select
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -58,7 +58,10 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="班级" prop="athlete.user.team.teamName"></el-table-column>
+        <el-table-column
+          label="班级"
+          prop="athlete.user.team.teamName"
+        ></el-table-column>
         <el-table-column label="班级总得分" prop="rank"></el-table-column>
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
@@ -98,9 +101,18 @@
       width="80%"
     >
       <el-table :data="teamRankingDetail" stripe style="width: 100%">
-        <el-table-column label="班级" prop="athlete.user.team.teamName"></el-table-column>
-        <el-table-column label="运动员" prop="athlete.user.nickname"></el-table-column>
-        <el-table-column label="性别" prop="athlete.user.userSex"></el-table-column>
+        <el-table-column
+          label="班级"
+          prop="athlete.user.team.teamName"
+        ></el-table-column>
+        <el-table-column
+          label="运动员"
+          prop="athlete.user.nickname"
+        ></el-table-column>
+        <el-table-column
+          label="性别"
+          prop="athlete.user.userSex"
+        ></el-table-column>
         <el-table-column label="个人总得分" prop="rank"></el-table-column>
       </el-table>
     </el-dialog>
@@ -117,13 +129,13 @@ export default {
       rankingList: [],
       scorers: [],
       teamRankingDetail: [],
-  //所有运动会届时列表
-      allSeasonOptions:[],
+      //所有运动会届时列表
+      allSeasonOptions: [],
       //选择的届时
-      selectSeasonId:"",
+      selectSeasonId: "",
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -133,19 +145,28 @@ export default {
     };
   },
   created() {
-    this.page();
-     this.getSeasons();
+    this.getSeasons();
   },
   methods: {
-    async page() {
-       if(this.selectSeasonId==""){
-         return this.$message.info("请先选择运动会");
+    async page(isSelect) {
+      if (this.selectSeasonId == "") {
+        return this.$message.info("请先选择运动会");
       }
+      if (isSelect === true) {
+        this.queryInfo.currentPage = 1;
+        this.queryInfo.pageSize = 10;
+      }
+
       const _this = this;
       axios
-        .get("/ranking/queryTeamRanking?athlete.item.season.seasonId="+this.selectSeasonId+"queryInfo=", {
-          params: _this.queryInfo,
-        })
+        .get(
+          "/ranking/queryTeamRanking?athlete.item.season.seasonId=" +
+            this.selectSeasonId +
+            "queryInfo=",
+          {
+            params: _this.queryInfo,
+          }
+        )
         .then((res) => {
           let data = res.data.data;
           _this.rankingList = data.records;
@@ -155,39 +176,15 @@ export default {
         });
     },
 
-//获取运动会届时
+    //获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
-        .get(
-          "/season/querySeason?query=&currentPage=1&pageSize=999999999"
-        )
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
           let data = res.data.data.records;
-        // data.push( {
-        //   seasonId: " ",
-        //   seasonName: "所有运动会",
-        // })
-        _this.allSeasonOptions=data;
-     
-        });
-    },
-
-     async querySelectedOptions() {
-      const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-      axios
-        .get(
-          "/ranking/queryTeamRanking?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.rankingList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
+          _this.allSeasonOptions = data;
+          _this.page();
         });
     },
 

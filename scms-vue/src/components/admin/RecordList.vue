@@ -29,13 +29,33 @@
           </el-input>
         </el-col>
 
+
+      <div style="float: left">
+          <el-col>
+            <el-select
+              v-model="selectRecordStatus"
+              filterable
+              placeholder="请选择记录状态"
+              @change="page(true)"
+            >
+              <el-option
+                v-for="item in recordStatusList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              >
+              </el-option>
+            </el-select>
+          </el-col>
+        </div>
+
         <div style="float: left">
           <el-col>
             <el-select
               v-model="selectItemId"
               filterable
               placeholder="请选择项目"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in itemList"
@@ -48,24 +68,7 @@
           </el-col>
         </div>
         
-        <div style="float: left">
-          <el-col>
-            <el-select
-              v-model="selectRecordStatus"
-              filterable
-              placeholder="请选择记录状态"
-              @change="querySelectedOptions"
-            >
-              <el-option
-                v-for="item in recordStatusList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
-          </el-col>
-        </div>
+      
 
 
         <el-col :span="4">
@@ -130,27 +133,27 @@ export default {
         },
       ],
       //选择的状态
-      selectRecordStatus:"",
+      selectRecordStatus:"1",
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
     };
   },
   created() {
-    this.page();
     this.getItems();
-    this.getSeasons();
   },
   methods: {
-    async page() {
+    async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
-        .get("/record/queryRecord?&queryInfo=", {
-          params: _this.queryInfo,
-        })
+        .get("/record/queryRecord?recordStatus="+_this.selectRecordStatus+"&athlete.item.itemId=" + _this.selectItemId+"&queryInfo=", { params: _this.queryInfo })
         .then((res) => {
           let data = res.data.data;
           _this.recordList = data.records;
@@ -161,7 +164,6 @@ export default {
                 item.recordStatus="否" ;
             }
           })
-          
           _this.queryInfo.currentPage = data.current;
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
@@ -181,39 +183,10 @@ export default {
           itemName: "所有项目",
         })
         _this.itemList=data;
-
+        _this.page();
         });
     },
 
-    //根据下拉框进行搜索
-    async querySelectedOptions() {
-      const _this = this;
-      // if(_this.selectItemId==""){
-      //   _this.selectItemId=0;
-      // }
-      //   if(_this.selectSeasonId==0){
-      //   _this.selectSeasonId="";
-      // }
-      axios
-        .get(
-          "/record/queryRecord?query=&currentPage=1&pageSize=999999999&recordStatus="+_this.selectRecordStatus
-          +"&athlete.item.itemId=" + _this.selectItemId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.recordList = data.records;
-          _this.recordList.forEach((item,index)=>{
-            if(item.recordStatus==1){
-                item.recordStatus="是" ;
-            }else{
-                item.recordStatus="否" ;
-            }
-          })
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-    },
 
     async exportExcel() {
       const _this = this;

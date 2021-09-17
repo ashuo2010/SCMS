@@ -140,7 +140,7 @@ export default {
       team: [],
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,

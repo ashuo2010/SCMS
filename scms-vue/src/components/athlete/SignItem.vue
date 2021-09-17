@@ -34,7 +34,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -187,7 +187,7 @@ export default {
       
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -197,14 +197,17 @@ export default {
     };
   },
   created() {
-    this.page();
      this.getSeasons();
   },
   methods: {
-    async page() {
+       async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
-        .get("/item/queryItem?queryInfo=", { params: _this.queryInfo })
+         .get( "/item/queryItem?season.seasonId="+_this.selectSeasonId+"&queryInfo=", { params: _this.queryInfo })
         .then((res) => {
           let data = res.data.data;
           _this.itemList = data.records;
@@ -228,25 +231,11 @@ export default {
             }
           })
         _this.allSeasonOptions=data;
+        _this.page();
+
         });
     },
-     async querySelectedOptions() {
-      const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-      axios
-        .get(
-          "/item/queryItem?query=&currentPage=1&pageSize=999999999&season.seasonId="+_this.selectSeasonId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.itemList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-    },
+    
 
 
 

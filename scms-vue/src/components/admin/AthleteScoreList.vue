@@ -35,7 +35,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -54,7 +54,7 @@
               v-model="selectItemId"
               filterable
               placeholder="请选择项目"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in itemList"
@@ -128,24 +128,26 @@ export default {
       selectSeasonId:"",
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
     };
   },
   created() {
-    this.page();
     this.getItems();
     this.getSeasons();
   },
   methods: {
-    async page() {
+   async page(isSelect) {
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
+      }
       const _this = this;
       axios
-        .get("/score/queryAthleteScore?&queryInfo=", {
-          params: _this.queryInfo,
-        })
+       .get("/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
+          +"&item.itemId=" + _this.selectItemId+"&queryInfo=", {params: _this.queryInfo})
         .then((res) => {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
@@ -182,6 +184,8 @@ export default {
             }
           })
         _this.allSeasonOptions=data;
+        _this.page();
+
         });
     },
 
@@ -202,37 +206,6 @@ export default {
         });
     },
 
-    //根据下拉框进行搜索
-    async querySelectedOptions() {
-      const _this = this;
-      // if(_this.selectItemId==""){
-      //   _this.selectItemId=0;
-      // }
-      //   if(_this.selectSeasonId==0){
-      //   _this.selectSeasonId="";
-      // }
-      axios
-        .get(
-          "/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
-          +"&item.itemId=" + _this.selectItemId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.athleteScoreList = data.records;
-           _this.athleteScoreList.forEach((item,index)=>{
-              //分数加上单位
-            item.score+=item.itemUnit
-            if(item.isBreakRecord==1){
-                item.isBreakRecord="是" ;
-            }else{
-                item.isBreakRecord="否" ;
-            }
-            });
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-    },
 
     async exportExcel() {
       const _this = this;

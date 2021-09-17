@@ -35,7 +35,7 @@
               v-model="selectSeasonId"
               filterable
               placeholder="请选择运动会"
-              @change="querySelectedOptions"
+              @change="page(true)"
             >
               <el-option
                 v-for="item in allSeasonOptions"
@@ -128,7 +128,7 @@ export default {
       selectSeasonId:"",
       queryInfo: {
         currentPage: 1,
-        pageSize: 5,
+        pageSize: 10,
         query: "",
       },
       total: 0,
@@ -138,13 +138,16 @@ export default {
     };
   },
   created() {
-    this.page();
     this.getSeasons();
   },
   methods: {
-    async page() {
+    async page(isSelect) {
       if(this.selectSeasonId==""){
          return this.$message.info("请先选择运动会");
+      }
+      if(isSelect===true){
+        this.queryInfo.currentPage=1;
+        this.queryInfo.pageSize = 10;
       }
       const _this = this;
       axios
@@ -169,32 +172,13 @@ export default {
         )
         .then((res) => {
           let data = res.data.data.records;
-        // data.push( {
-        //   seasonId: " ",
-        //   seasonName: "所有运动会",
-        // })
+       
         _this.allSeasonOptions=data;
+        _this.page();
      
         });
     },
 
-     async querySelectedOptions() {
-      const _this = this;
-      if(_this.selectItemId==""){
-        _this.selectItemId=0;
-      }
-      axios
-        .get(
-          "/ranking/queryUserRanking?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.rankingList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
-    },
 
 
     async getRankingDetail(userId) {
