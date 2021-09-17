@@ -150,6 +150,7 @@ export default {
         .then((res) => {
           _this.$store.commit("REMOVE_INFO");
           _this.$router.push("/login");
+          _this.savePathState("/")
         });
     },
 

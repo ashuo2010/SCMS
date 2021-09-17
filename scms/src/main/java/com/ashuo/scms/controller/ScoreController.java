@@ -81,6 +81,7 @@ public class ScoreController {
     @ApiOperation("添加分数")
     @PostMapping("/addScore")
     @RequiresRoles(value = {"2"})
+    @Transactional
     public ServerResponse addScore(@RequestBody Score score) {
             if (score == null||score.getAthlete()==null) {
                 return ServerResponse.createByErrorCodeMessage(400, "添加失败，分数信息为空");
@@ -105,7 +106,6 @@ public class ScoreController {
 
             //分数排名处理
             scoreRankingHandle(score);
-
         return ServerResponse.createBySuccessMessage("添加成功");
 
     }
@@ -127,6 +127,7 @@ public class ScoreController {
     @ApiOperation("修改分数")
     @PutMapping("/editScore")
     @RequiresRoles(value = {"2"})
+    @Transactional
     public ServerResponse editScore(@RequestBody Score score) {
         if (score == null ||score.getScore()==null|| score.getScore().compareTo(BigDecimal.ZERO)==0||score.getAthlete()==null) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，分数信息为空");
@@ -142,11 +143,8 @@ public class ScoreController {
         score.setEditTime(LocalDateTime.now());
         //修改分数
         scoreService.modifyScore(score);
-
-
         //分数排名处理
         scoreRankingHandle(score);
-
         return ServerResponse.createBySuccessMessage("修改成功");
 
     }

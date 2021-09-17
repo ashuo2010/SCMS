@@ -78,6 +78,8 @@ export default {
       axios.delete("/syslog/resetAllData?comfirmPassword="+this.comfirmPassword).then((res) => {
         if (res.data.status == 200) {
           _this.$message.success("清空成功");
+      _this.DialogVisible=false;
+
         } else {
           _this.$message.error(res.data.msg);
       this.comfirmPassword="";

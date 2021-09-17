@@ -16,6 +16,7 @@ import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -95,17 +96,13 @@ public class SyslogController {
     @ApiOperation("清空系统数据")
     @DeleteMapping("/resetAllData")
     @RequiresRoles(value = {"1"})
+    @Transactional
     public ServerResponse resetAllData(String comfirmPassword) {
         if (!comfirmPassword.equals(meetYouYear)){
             return ServerResponse.createByErrorCodeMessage(400, "密码输入错误");
         }
-        int effNum = 0;
-        try {
-            effNum = syslogService.removeAllData();
-        } catch (Exception e) {
-            return ServerResponse.createByErrorCodeMessage(400, "清空失败");
-        }
-        if (effNum == 0) {
+        boolean status = syslogService.removeAllData();
+        if (!status) {
             return ServerResponse.createByErrorCodeMessage(400, "清空失败");
         }
         return ServerResponse.createBySuccessMessage("清空成功");

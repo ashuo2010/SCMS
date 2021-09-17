@@ -79,8 +79,7 @@ public class SyslogServiceImpl implements SyslogService {
 
     @Override
     @Transactional
-    public int removeAllData() {
-        try {
+    public boolean removeAllData() {
             //删除所有记录
             syslogMapper.deleteAllRecord();
             //删除所有排名
@@ -91,18 +90,16 @@ public class SyslogServiceImpl implements SyslogService {
             syslogMapper.deleteAllAthlete();
             //删除所有参赛项目
             syslogMapper.deleteAllItem();
+            //删除所有系统日志
+            syslogMapper.deleteAllSyslog();
             //删除所有用户
             syslogMapper.deleteAllUser();
             //删除所有团队
             syslogMapper.deleteAllTeam();
             //删除所有运动会
             syslogMapper.deleteAllSeason();
-        } catch (Exception e) {
-            return 0;
-        }
 
-        //添加root用户,清空数据后用于登录系统
-        try {
+            //添加root用户,清空数据后用于登录系统
             Team rootTeam = new Team();
             rootTeam.setTeamId(1);
             rootTeam.setTeamName("超级管理员");
@@ -125,11 +122,7 @@ public class SyslogServiceImpl implements SyslogService {
             userMapper.insertUser(rootUser);
             //删除所有系统日志
             syslogMapper.deleteAllSyslog();
-            return 1;
-        } catch (Exception e) {
-            return 0;
-        }
-
+            return true;
     }
 
     //字符串去除null

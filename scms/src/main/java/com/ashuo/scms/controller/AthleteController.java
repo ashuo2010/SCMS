@@ -160,9 +160,9 @@ public class AthleteController {
 
         //设置报名时间
         athlete.setSignTime(LocalDateTime.now());
-        //设置记分状态，为0表示尚未记分
-        int effNum = 0;
-        effNum = athleteService.addAthlete(athlete);
+        //设置记分状态，为0表示尚未记分\
+        athlete.setScoreStatus(0);
+        int effNum =athleteService.addAthlete(athlete);
         if (effNum == 0) {
             return ServerResponse.createByErrorCodeMessage(400, "报名失败");
         }
@@ -185,12 +185,7 @@ public class AthleteController {
             return ServerResponse.createByErrorCodeMessage(400, "取消报名失败，系统已关闭");
         }
 
-        int effNum = 0;
-        try {
-            effNum = athleteService.removeAthlete(athleteId);
-        } catch (Exception e) {
-            return ServerResponse.createByErrorCodeMessage(400, "取消报名失败");
-        }
+        int effNum = athleteService.removeAthlete(athleteId);
         if (effNum == 0) {
             return ServerResponse.createByErrorCodeMessage(400, "取消报名失败");
         }

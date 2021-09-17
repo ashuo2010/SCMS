@@ -10,7 +10,7 @@
         </if>
         team_name, create_time, edit_time)
         VALUES (
-        <if test="teamId!=null teamId!=0">
+        <if test="teamId!=null and teamId!=0">
             #{teamId},
         </if>
         #{teamName}, #{createTime}, #{editTime})
