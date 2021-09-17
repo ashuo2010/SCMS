@@ -67,6 +67,8 @@ public class SeasonController {
         if (seasonService.getSeasonByCondition(page, tempSeason) != null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，届时名称已存在");
         }
+        //初始化参赛人数
+        season.setSeasonAthleteAmount(0);
         //设置创建时间
         season.setCreateTime(LocalDateTime.now());
         season.setEditTime(LocalDateTime.now());

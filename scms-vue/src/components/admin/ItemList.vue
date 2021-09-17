@@ -83,7 +83,7 @@
         </el-col>
 
         <el-col :span="4">
-          <el-button type="primary" @click="TemplateListDialogVisible = true"
+          <el-button type="primary" @click="templateListDialogVisible = true"
             >项目模板</el-button
           >
         </el-col>
@@ -410,7 +410,7 @@
       <!--项目模板列表区域-->
     <el-dialog
       title="项目模板列表"
-      :visible.sync="TemplateListDialogVisible"
+      :visible.sync="templateListDialogVisible"
       width="50%">
      <el-row :gutter="25">
         <el-col :span="10">
@@ -511,7 +511,7 @@ export default {
           label: "个",
         },
         {
-          value: "分数",
+          value: "分",
           label: "分数",
         },
       ],
@@ -526,7 +526,7 @@ export default {
       // 对话框状态
       addDialogVisible: false,
     addTemplateDialogVisible:false,
-    TemplateListDialogVisible:false,
+    templateListDialogVisible:false,
       addForm: {
         itemName: "",
         parentId:"",
@@ -620,6 +620,7 @@ export default {
     
    //获取运动会届时
     async getSeasons() {
+      //获取所有运动会届时
       const _this = this;
       axios
         .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
@@ -636,6 +637,14 @@ export default {
             }
           })
         _this.allSeasonOptions=data;
+        });
+
+      //获取可用运动会届时
+        axios
+        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999&seasonStatus=1")
+        .then((res) => {
+        let data = res.data.data.records;
+        _this.seasonEnableOptions=data;
         });
     },
 
@@ -706,6 +715,7 @@ export default {
           _this.$message.success("操作成功");
           _this.addDialogVisible = false;
           _this.addTemplateDialogVisible = false;
+          _this.templateListDialogVisible=false
           _this.page();
         });
       });

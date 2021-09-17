@@ -73,11 +73,14 @@ public class ItemController {
         }
         Item itemTemplate = itemService.getItemTemplateDetail(item);
 
+        //设置报名人数
+        item.setAthleteAmount(0);
         //根据模板设置item名称等信息
         if (itemTemplate != null) {
             item.setItemName(itemTemplate.getItemName());
             item.setItemUnit(itemTemplate.getItemUnit());
             item.setItemAmount(itemTemplate.getItemAmount());
+            item.setAthleteAmount(null);
         }
         //设置创建时间
         item.setCreateTime(LocalDateTime.now());

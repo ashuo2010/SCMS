@@ -29,7 +29,7 @@
           </el-input>
         </el-col>
 
-<div style="float: left">
+        <div style="float: left">
           <el-col>
             <el-select
               v-model="selectSeasonId"
@@ -88,7 +88,10 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
-        <el-table-column label="班级" prop="user.team.teamName"></el-table-column>
+        <el-table-column
+          label="班级"
+          prop="user.team.teamName"
+        ></el-table-column>
 
         <el-table-column label="学号" prop="user.userNo"></el-table-column>
         <el-table-column
@@ -124,10 +127,10 @@
                 @click="
                   addDialogVisible = true;
                   oneAthlete = scope.row;
-                  score.score = '';
-                  score.athlete.athleteId = scope.row.athleteId;
-                  score.athlete.user.userId = scope.row.user.userId;
-                  score.athlete.item.itemId = scope.row.item.itemId;
+                  scoreForm.score = '';
+                  scoreForm.athlete.athleteId = scope.row.athleteId;
+                  scoreForm.athlete.user.userId = scope.row.user.userId;
+                  scoreForm.athlete.item.itemId = scope.row.item.itemId;
                 "
                 >录入分数</el-button
               >
@@ -203,7 +206,7 @@
           prop=""
           v-show="oneAthlete.item.itemUnit != '秒'"
         >
-          <el-input v-model="score.score"></el-input>
+          <el-input v-model="scoreForm.score"></el-input>
         </el-form-item>
         <el-form-item
           label="分数单位"
@@ -220,11 +223,11 @@
         >
           <div class="myInput">
             <div style="display: inline-block; width: 50px">
-              <el-input v-model="score.minute"></el-input>
+              <el-input v-model="scoreForm.minute"></el-input>
             </div>
             <span>分</span>
             <div style="display: inline-block; width: 50px">
-              <el-input v-model="score.second"></el-input>
+              <el-input v-model="scoreForm.second"></el-input>
             </div>
             <span>秒</span>
           </div>
@@ -257,12 +260,9 @@
         </el-form-item>
 
         <el-form-item label="分数" prop="">
-          <el-input v-model="score.score" disabled></el-input>
+          <el-input v-model="scoreDetail.score" disabled></el-input>
         </el-form-item>
 
-        <el-form-item label="分数单位" prop="">
-          <el-input v-model="oneAthlete.item.itemUnit" disabled></el-input>
-        </el-form-item>
       </el-form>
     </el-dialog>
 
@@ -291,7 +291,7 @@
           prop=""
           v-show="oneAthlete.item.itemUnit != '秒'"
         >
-          <el-input v-model="score.score"></el-input>
+          <el-input v-model="scoreForm.score"></el-input>
         </el-form-item>
         <el-form-item
           label="分数单位"
@@ -308,11 +308,11 @@
         >
           <div class="myInput">
             <div style="display: inline-block; width: 50px">
-              <el-input v-model="score.minute"></el-input>
+              <el-input v-model="scoreForm.minute"></el-input>
             </div>
             <span>分</span>
             <div style="display: inline-block; width: 50px">
-              <el-input v-model="score.second"></el-input>
+              <el-input v-model="scoreForm.second"></el-input>
             </div>
             <span>秒</span>
           </div>
@@ -346,9 +346,9 @@ export default {
       scorers: "",
       currentUser: "",
       //所有运动会届时列表
-      allSeasonOptions:[],
+      allSeasonOptions: [],
       //选择的届时
-      selectSeasonId:"",
+      selectSeasonId: "",
       statusOptions: [
         {
           value: "0",
@@ -374,20 +374,20 @@ export default {
         scoreStatus: "",
       },
 
-      score: {
-        athlete:{
-item: {
-          itemId: "",
+      scoreForm: {
+        athlete: {
+          item: {
+            itemId: "",
+          },
+          user: {
+            userId: "",
+          },
         },
-        user: {
-          userId: "",
-        },
-        },
-        
         score: "",
         minute: "",
         second: "",
       },
+      scoreDetail:{},
       queryInfo: {
         currentPage: 1,
         pageSize: 5,
@@ -406,7 +406,7 @@ item: {
     this.currentUser = JSON.parse(localStorage.getItem("user"));
     this.page();
     this.getScorers();
-     this.getSeasons();
+    this.getSeasons();
   },
   methods: {
     async page() {
@@ -441,33 +441,37 @@ item: {
         });
     },
 
-//获取运动会届时
+    //获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
         .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-        let data = res.data.data.records;
-        data.push( {
-          seasonId: 0,
-          seasonStatus:0,
-          seasonName: "所有运动会",
-        })
-        data.forEach((item,index)=>{
-            if(item.seasonStatus!=0){
-            _this.selectSeasonId=item.seasonId 
+          let data = res.data.data.records;
+          data.push({
+            seasonId: 0,
+            seasonStatus: 0,
+            seasonName: "所有运动会",
+          });
+          data.forEach((item, index) => {
+            if (item.seasonStatus != 0) {
+              _this.selectSeasonId = item.seasonId;
             }
-          })
-        _this.allSeasonOptions=data;
+          });
+          _this.allSeasonOptions = data;
         });
     },
 
-     async querySelectedOptions() {
+    async querySelectedOptions() {
       const _this = this;
       axios
         .get(
-          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId="+_this.selectSeasonId
-          + "&item.user.userId=" + _this.athlete.item.user.userId+"&scoreStatus=" + _this.athlete.scoreStatus
+          "/athlete/queryAthlete?query=&currentPage=1&pageSize=999999999&item.season.seasonId=" +
+            _this.selectSeasonId +
+            "&item.user.userId=" +
+            _this.athlete.item.user.userId +
+            "&scoreStatus=" +
+            _this.athlete.scoreStatus
         )
         .then((res) => {
           let data = res.data.data;
@@ -478,32 +482,57 @@ item: {
         });
     },
 
-    
-
     //添加分数
     async addScore() {
       const _this = this;
-
-      if (_this.score.minute != "" || _this.score.second != "") {
-        if (
-          parseInt(_this.score.minute) > 60 ||
-          parseInt(_this.score.second) > 60
-        ) {
-          return _this.$message.error("数据错误");
-        }
-        _this.score.score =
-          parseInt(_this.score.minute * 60) + parseInt(_this.score.second);
+      _this.scoreHandle();
+      if(_this.scoreForm.score!==""){
+                axios.post("/score/addScore", _this.scoreForm).then((res) => {
+              if (res.data.status != 200) {
+                return _this.$message.error(res.data.msg);
+              }
+              _this.$message.success("操作成功");
+              _this.addDialogVisible = false;
+              _this.page();
+            });
       }
+    },
 
-      axios.post("/score/addScore", _this.score).then((res) => {
+      //修改分数
+    async editScore() {
+      const _this = this;
+      _this.scoreHandle();
+      if(_this.scoreForm.score!==""){
+      axios.put("/score/editScore", _this.scoreForm).then((res) => {
         if (res.data.status != 200) {
-          return _this.$message.error( res.data.msg);
+          return _this.$message.error(res.data.msg);
         }
         _this.$message.success("操作成功");
-        _this.addDialogVisible = false;
+        _this.EditDialogVisible = false;
         _this.page();
       });
+      }
     },
+    //分数处理
+    scoreHandle(){
+      console.log(this.scoreForm);
+      if (this.scoreForm.minute != "" && this.scoreForm.second != "") {
+        if (
+          parseInt(this.scoreForm.minute) > 60 ||
+          parseInt(this.scoreForm.second) > 60
+        ) {
+          this.scoreForm.score=""
+          return this.$message.error("数据错误");
+        }
+        this.scoreForm.score =
+          parseInt(this.scoreForm.minute * 60) + parseInt(this.scoreForm.second);
+      }else{
+          this.scoreForm.score=""
+          return this.$message.error("请填写分和秒");
+      }
+
+    },
+
     //查看分数详情
     async showScoreDetail(userId, itemId) {
       const _this = this;
@@ -516,32 +545,25 @@ item: {
         )
         .then((res) => {
           let data = res.data.data;
-          _this.score = data.records[0];
+          _this.scoreForm = data.records[0]
+          _this.scoreDetail = data.records[0];
+
+          //分数加上单位
+          if(_this.scoreDetail.athlete.item.itemUnit=="秒"&&_this.scoreDetail.score>60){
+            //如果分数为秒，且分数大于60秒，转成分钟显示
+          let minute=  parseInt(_this.scoreDetail.score/60);
+          let second=  parseInt( _this.scoreDetail.score%60);
+          _this.scoreDetail.score=minute+"分"+second+"秒";
+          }else{
+            _this.scoreDetail.score+= _this.scoreDetail.athlete.item.itemUnit;
+          }
         });
     },
 
-    //修改分数
-    async editScore() {
-      const _this = this;
-      if (_this.score.minute || _this.score.second) {
-        if (
-          parseInt(_this.score.minute) > 60 ||
-          parseInt(_this.score.second) > 60
-        ) {
-          return _this.$message.error("数据错误");
-        }
-        _this.score.score =
-          parseInt(_this.score.minute * 60) + parseInt(_this.score.second);
-      }
-      axios.put("/score/editScore", _this.score).then((res) => {
-        if (res.data.status != 200) {
-          return _this.$message.error(res.data.msg);
-        }
-        _this.$message.success("操作成功");
-        _this.EditDialogVisible = false;
-        _this.page();
-      });
-    },
+  
+
+
+
 
     addDialogClosed() {
       const _this = this;
