@@ -10,28 +10,28 @@
     <el-dialog
       title="项目详情信息"
       :visible.sync="dialogTableVisible"
-      width="80%"
+      width="60%"
     >
       <el-table :data="itemDetail" stripe style="width: 100%">
-        <el-table-column prop="itemName" label="项目名称" width="180">
+        <el-table-column prop="itemName" label="项目名称" width="80">
         </el-table-column>
-        <el-table-column prop="itemSex" label="项目性别" width="180">
+        <el-table-column prop="itemSex" label="项目性别" width="80">
         </el-table-column>
-        <el-table-column prop="itemPlace" label="项目地点" width="180">
+        <el-table-column prop="itemPlace" label="项目地点" width="80">
         </el-table-column>
-        <el-table-column prop="itemUnit" label="项目分数单位" width="180">
+        <el-table-column prop="itemUnit" label="项目分数单位" width="100">
         </el-table-column>
-        <el-table-column prop="user.nickname" label="项目记分员" width="180">
+        <el-table-column prop="user.nickname" label="项目记分员" width="80">
         </el-table-column>
-        <el-table-column prop="startTime" label="项目开始时间" width="180">
+        <el-table-column prop="startTime" label="项目开始时间" width="140">
         </el-table-column>
-        <el-table-column prop="endTime" label="项目结束时间" width="180">
+        <el-table-column prop="endTime" label="项目结束时间" width="140">
         </el-table-column>
-        <el-table-column prop="athleteAmount" label="项目参赛人数" width="180">
+        <el-table-column prop="athleteAmount" label="项目参赛人数" width="100">
         </el-table-column>
-        <el-table-column prop="createTime" label="项目创建时间" width="180">
+        <el-table-column prop="createTime" label="项目创建时间" width="140">
         </el-table-column>
-        <el-table-column prop="editTime" label="项目修改时间" width="180">
+        <el-table-column prop="editTime" label="项目修改时间" width="140">
         </el-table-column>
       </el-table>
     </el-dialog>

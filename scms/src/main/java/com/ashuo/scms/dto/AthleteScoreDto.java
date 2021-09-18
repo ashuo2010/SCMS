@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -23,7 +24,7 @@ public class AthleteScoreDto implements Serializable {
     @ExcelProperty(value = "运动会")
     private String seasonName;
 
-    @ExcelProperty(value = "班级")
+    @ExcelProperty(value = "团体名称")
     private String teamName;
 
     @ExcelProperty(value = "学号")
@@ -39,7 +40,7 @@ public class AthleteScoreDto implements Serializable {
     private String itemName;
 
     @ExcelProperty(value = "项目分数")
-    private String score;
+    private BigDecimal score;
 
     @ExcelProperty(value = "项目单位")
     private String itemUnit;

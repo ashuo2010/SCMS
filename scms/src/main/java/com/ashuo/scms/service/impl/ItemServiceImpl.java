@@ -68,11 +68,8 @@ public class ItemServiceImpl implements ItemService {
             return 0;
         } else {
             int effNum = 0;
-            try {
-                effNum = itemMapper.updateItem(item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            effNum = itemMapper.updateItem(item);
+
             if (effNum != 1) {
                 return 0;
             } else {

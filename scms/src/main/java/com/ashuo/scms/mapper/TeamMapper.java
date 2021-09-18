@@ -29,6 +29,4 @@ public interface TeamMapper {
 
     Team queryTeamByTeamCondition(@Param("team") Team team);
 
-    //获取条件下Team总数
-//    int queryTeamCountByTeamCondition(@Param("teamName") String teamName);
 }

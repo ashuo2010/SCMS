@@ -23,5 +23,4 @@ public interface RecordService extends IService<Record> {
 
     int modifyRecord(Record record);
 
-//    int removeRecord(int recordId);
 }

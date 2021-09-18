@@ -2,7 +2,7 @@ package com.ashuo.scms.controller;
 
 
 import cn.hutool.crypto.SecureUtil;
-import com.ashuo.scms.common.Consant;
+import com.ashuo.scms.common.consant.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.UserDto;
 import com.ashuo.scms.entity.QueryInfo;
@@ -72,7 +72,6 @@ public class UserController {
 
 
     @ApiOperation("用户注销登录")
-    //@RequiresAuthentication
     @GetMapping("/logout")
     public ServerResponse logout() {
         SecurityUtils.getSubject().logout();

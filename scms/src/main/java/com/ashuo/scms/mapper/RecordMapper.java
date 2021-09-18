@@ -21,9 +21,6 @@ public interface RecordMapper extends BaseMapper<Record> {
     //修改Record
     int updateRecord(Record record);
 
-    //删除Record
-//    int deleteRecord(int recordId);
-
     //按条件查询Record
     IPage<Record> queryRecordByRecordCondition(Page<Record> page, @Param("record") Record record);
 

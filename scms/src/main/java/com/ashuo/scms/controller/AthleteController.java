@@ -1,7 +1,7 @@
 package com.ashuo.scms.controller;
 
 
-import com.ashuo.scms.common.Consant;
+import com.ashuo.scms.common.consant.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.Athlete;
 import com.ashuo.scms.entity.Item;
@@ -16,7 +16,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * <p>
@@ -92,13 +90,7 @@ public class AthleteController {
         return ServerResponse.createBySuccess(athleteList);
     }
 
-    /**
-     * 报名
-     * @author AShuo
-     * @date 2021/9/17 17:50
-     * @param athlete
-     * @return com.ashuo.scms.common.lang.ServerResponse
-     */
+
     @ApiOperation("运动员报名")
     @PostMapping("/addAthlete")
     @RequiresAuthentication

@@ -80,15 +80,5 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         return super.preHandle(request, response);
     }
 
-    /**
-     * 将非法请求跳转到 /401
-     */
-    /*private void response401(ServletRequest req, ServletResponse resp) {
-        try {
-            HttpServletResponse httpServletResponse = (HttpServletResponse) resp;
-            httpServletResponse.sendRedirect("/401");
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage());
-        }
-    }*/
+
 }

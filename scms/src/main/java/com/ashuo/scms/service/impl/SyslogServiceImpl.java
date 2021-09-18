@@ -60,23 +60,6 @@ public class SyslogServiceImpl implements SyslogService {
         }
     }
 
-//    @Override
-//    @Transactional
-//    public int removeAllRankingScoreAthlete() {
-//        try {
-//            //删除所有排名
-//            syslogMapper.deleteAllRanking();
-//            //删除所有分数
-//            syslogMapper.deleteAllScore();
-//            //删除所有参赛运动员
-//            syslogMapper.deleteAllAthlete();
-//            return 1;
-//        } catch (Exception e) {
-//            return 0;
-//        }
-//
-//    }
-
     @Override
     @Transactional
     public boolean removeAllData() {
@@ -137,8 +120,6 @@ public class SyslogServiceImpl implements SyslogService {
                     str += ")";
                 }
             }
-//            String regex = "," + "\\(";
-//            s.replaceAll(regex, "AAAAA");
         }
         return str;
     }

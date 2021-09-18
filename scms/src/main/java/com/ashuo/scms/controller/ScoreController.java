@@ -1,6 +1,6 @@
 package com.ashuo.scms.controller;
 
-import com.ashuo.scms.common.Consant;
+import com.ashuo.scms.common.consant.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.entity.*;

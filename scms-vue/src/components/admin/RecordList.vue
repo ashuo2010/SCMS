@@ -158,7 +158,19 @@ export default {
           let data = res.data.data;
           _this.recordList = data.records;
           _this.recordList.forEach((item,index)=>{
-            item.recordScore+=item.athlete.item.itemUnit
+   //分数加上单位
+          if (
+            item.athlete.item.itemUnit == "秒" &&
+            item.recordScore > 60
+          ) {
+            //如果分数为秒，且分数大于60秒，转成分钟显示
+            let minute = parseInt(item.recordScore / 60);
+            let second = parseInt(item.recordScore % 60);
+            item.recordScore = minute + "分" + second + "秒";
+          } else {
+            item.recordScore += item.athlete.item.itemUnit;
+          }
+
             if(item.recordStatus==1){
                 item.recordStatus="是" ;
             }else{

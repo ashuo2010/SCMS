@@ -26,6 +26,8 @@ public class ExcelRecordDto implements Serializable {
     @ExcelProperty(value = "项目成绩", index = 2)
     private BigDecimal recordScore;
 
+    private String itemUnit;
+
     @ExcelProperty(value = "运动员", index = 3)
     private String nickname;
 
@@ -36,10 +38,11 @@ public class ExcelRecordDto implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createTime;
 
-    public ExcelRecordDto(String seasonName, String itemName, BigDecimal recordScore, String nickname, String teamName, LocalDateTime createTime) {
+    public ExcelRecordDto(String seasonName, String itemName, BigDecimal recordScore, String itemUnit, String nickname, String teamName, LocalDateTime createTime) {
         this.seasonName = seasonName;
         this.itemName = itemName;
         this.recordScore = recordScore;
+        this.itemUnit = itemUnit;
         this.nickname = nickname;
         this.teamName = teamName;
         this.createTime = createTime;

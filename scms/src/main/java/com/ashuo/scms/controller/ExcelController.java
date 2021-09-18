@@ -2,7 +2,7 @@ package com.ashuo.scms.controller;
 
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.excel.EasyExcel;
-import com.ashuo.scms.common.Consant;
+import com.ashuo.scms.common.consant.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.*;
 import com.ashuo.scms.entity.*;
@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -205,7 +206,7 @@ public class ExcelController {
     public void exportAllPersonScore(Score score) throws Exception {
         //设置主体风格
         XSSFWorkbook workbook = new XSSFWorkbook();
-        String[] columnNames = {"运动员团体", "运动员学号", "姓名", "性别", "参赛项目", "项目地点", "项目分数", "分数单位", "记分员", "分数最后修改时间"};
+        String[] columnNames = {"运动会","团体名称", "学号", "姓名", "性别", "参赛项目",  "项目分数", "是否破纪录", "记分员", "分数最后修改时间"};
         Sheet sheet = workbook.createSheet();
         Font titleFont = workbook.createFont();
         titleFont.setFontName("simsun");
@@ -241,9 +242,8 @@ public class ExcelController {
         for (AthleteScoreDto as : athleteScoreDtoList) {
             int lastRowNum = sheet.getLastRowNum();
             Row dataRow = sheet.createRow(lastRowNum + 1);
-            if (as.getScore() == null) {
-                as.setScore("未计分");
-            }
+            String scoreStr= scoreHandle(as.getScore(),as.getItemUnit());
+
             dataRow.createCell(0).setCellValue(as.getSeasonName());
             dataRow.getCell(0).setCellStyle(contentStyle);
             dataRow.createCell(1).setCellValue(as.getTeamName());
@@ -256,16 +256,15 @@ public class ExcelController {
             dataRow.getCell(4).setCellStyle(contentStyle);
             dataRow.createCell(5).setCellValue(as.getItemName());
             dataRow.getCell(5).setCellStyle(contentStyle);
-            dataRow.createCell(6).setCellValue(as.getScore());
+            dataRow.createCell(6).setCellValue(scoreStr);
             dataRow.getCell(6).setCellStyle(contentStyle);
-            dataRow.createCell(7).setCellValue(as.getIsBreakRecord());
+            dataRow.createCell(7).setCellValue("0".equals(as.getIsBreakRecord())?"否":"是");
             dataRow.getCell(7).setCellStyle(contentStyle);
             dataRow.createCell(8).setCellValue(as.getScorer());
             dataRow.getCell(8).setCellStyle(contentStyle);
             dataRow.createCell(9).setCellValue(DateFormatterUtil.dateToString(as.getEditTime()));
             dataRow.getCell(9).setCellStyle(contentStyle);
         }
-
 
         response.setContentType("application/vnd.ms-excel");
         response.setHeader("content-Disposition", "attachment;filename=" + URLEncoder.encode("运动员成绩.xlsx", "utf-8"));
@@ -385,7 +384,7 @@ public class ExcelController {
         List<ExcelRecordDto> excelRecordDtoList = new ArrayList<>();
 
         for (Record r : recordList) {
-            excelRecordDtoList.add(new ExcelRecordDto(r.getAthlete().getItem().getSeason().getSeasonName(), r.getAthlete().getItem().getItemName(), r.getRecordScore(), r.getAthlete().getUser().getNickname(), r.getAthlete().getUser().getTeam().getTeamName(), r.getCreateTime()));
+            excelRecordDtoList.add(new ExcelRecordDto(r.getAthlete().getItem().getSeason().getSeasonName(), r.getAthlete().getItem().getItemName(), r.getRecordScore(),r.getAthlete().getItem().getItemUnit(), r.getAthlete().getUser().getNickname(), r.getAthlete().getUser().getTeam().getTeamName(), r.getCreateTime()));
         }
 
         //设置内容表格格式
@@ -396,13 +395,15 @@ public class ExcelController {
         //创建数据行并写入值
         for (int j = 0; j < excelRecordDtoList.size(); j++) {
             ExcelRecordDto excelRecordDto = excelRecordDtoList.get(j);
+            String scoreStr= scoreHandle(excelRecordDto.getRecordScore(),excelRecordDto.getItemUnit());
+
             int lastRowNum = sheet.getLastRowNum();
             Row dataRow = sheet.createRow(lastRowNum + 1);
             dataRow.createCell(0).setCellValue(excelRecordDto.getSeasonName());
             dataRow.getCell(0).setCellStyle(contentStyle);
             dataRow.createCell(1).setCellValue(excelRecordDto.getItemName());
             dataRow.getCell(1).setCellStyle(contentStyle);
-            dataRow.createCell(2).setCellValue(excelRecordDto.getRecordScore().toString());
+            dataRow.createCell(2).setCellValue(scoreStr);
             dataRow.getCell(2).setCellStyle(contentStyle);
             dataRow.createCell(3).setCellValue(excelRecordDto.getNickname());
             dataRow.getCell(3).setCellStyle(contentStyle);
@@ -505,4 +506,20 @@ public class ExcelController {
         return ServerResponse.createBySuccess(userDtoList);
     }
 
+    //分数处理
+    private String scoreHandle(BigDecimal scoreDecimal,String itemUnit){
+        StringBuilder scoreBuilder=new StringBuilder();
+        int score =scoreDecimal.intValue();
+        if ("秒".equals(itemUnit)&&score>60) {
+            //如果分数为秒，且分数大于60秒，转成分钟显示
+            int minute= score/60;
+            int second= score%60;
+            scoreBuilder.append(minute+"分"+second+"秒");
+            return scoreBuilder.toString();
+        }else {
+            scoreBuilder.append(score);
+            scoreBuilder.append(itemUnit);
+            return scoreBuilder.toString();
+        }
+    }
 }

@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ExcelUserDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @ExcelProperty(value = "班级名称", index = 0)
+    @ExcelProperty(value = "团体名称", index = 0)
     private String teamName;
 
     @ExcelProperty(value = "学号", index = 1)

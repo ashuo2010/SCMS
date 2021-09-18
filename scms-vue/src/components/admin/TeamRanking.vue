@@ -59,10 +59,10 @@
 
         <el-table-column type="index"></el-table-column>
         <el-table-column
-          label="班级"
+          label="团体名称"
           prop="athlete.user.team.teamName"
         ></el-table-column>
-        <el-table-column label="班级总得分" prop="rank"></el-table-column>
+        <el-table-column label="团体总得分" prop="rank"></el-table-column>
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
             <!--详情-->
@@ -102,7 +102,7 @@
     >
       <el-table :data="teamRankingDetail" stripe style="width: 100%">
         <el-table-column
-          label="班级"
+          label="团体名称"
           prop="athlete.user.team.teamName"
         ></el-table-column>
         <el-table-column

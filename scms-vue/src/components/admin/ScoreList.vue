@@ -89,7 +89,7 @@
 
         <el-table-column type="index"></el-table-column>
         <el-table-column
-          label="班级"
+          label="团体名称"
           prop="user.team.teamName"
         ></el-table-column>
 

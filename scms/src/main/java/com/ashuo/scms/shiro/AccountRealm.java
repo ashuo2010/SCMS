@@ -1,7 +1,7 @@
 package com.ashuo.scms.shiro;
 
 
-import com.ashuo.scms.common.Consant;
+import com.ashuo.scms.common.consant.Consant;
 import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.UserService;
 import com.ashuo.scms.util.JwtUtil;

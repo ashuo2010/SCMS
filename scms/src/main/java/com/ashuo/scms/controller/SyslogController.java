@@ -71,21 +71,6 @@ public class SyslogController {
         return ServerResponse.createBySuccess(systemStatus);
     }
 
-//    @ApiOperation("清空项目排名分数运动员数据")
-//    @DeleteMapping("/d")
-//    @RequiresRoles(value = {"1"})
-//    public ServerResponse resetRangkingScoreAthlete(Integer itemId) {
-//        int effNum = 0;
-//        try {
-//            effNum = syslogService.removeAllRankingScoreAthlete();
-//        } catch (Exception e) {
-//            return ServerResponse.createByErrorCodeMessage(400, "清空失败");
-//        }
-//        if (effNum == 0) {
-//            return ServerResponse.createByErrorCodeMessage(400, "清空失败");
-//        }
-//        return ServerResponse.createBySuccessMessage("清空成功");
-//    }
 
     @ApiOperation("清空系统数据")
     @DeleteMapping("/resetAllData")

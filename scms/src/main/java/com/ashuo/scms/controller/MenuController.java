@@ -36,7 +36,6 @@ public class MenuController {
 
     @ApiOperation("获取所有一级二级菜单")
     @GetMapping("/menu")
-    // @RequiresAuthentication
     public ServerResponse getMenu() {
         // 主菜单
         List<Mainmenu> main = mainmenuService.list();

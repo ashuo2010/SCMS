@@ -14,9 +14,9 @@ import java.io.Serializable;
  */
 @Data
 public class ExcelTeamRankingDto implements Serializable {
-    @ExcelProperty(value = "班级名称", index = 0)
+    @ExcelProperty(value = "团体名称", index = 0)
     private String teamName;
-    @ExcelProperty(value = "班级总得分", index = 1)
+    @ExcelProperty(value = "团体总得分", index = 1)
     private Integer score;
     @ExcelProperty(value = "排名", index = 2)
     private Integer rank;

@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Data
 public class ExcelPersonRankingDto implements Serializable {
-    @ExcelProperty(value = "班级名称", index = 0)
+    @ExcelProperty(value = "团体名称", index = 0)
     private String teamName;
     @ExcelProperty(value = "学号", index = 1)
     private String userNo;

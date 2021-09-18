@@ -1,7 +1,6 @@
 package com.ashuo.scms.service.impl;
 
-import com.ashuo.scms.common.Consant;
-import com.ashuo.scms.dto.AthleteScoreDto;
+import com.ashuo.scms.common.consant.Consant;
 import com.ashuo.scms.entity.Athlete;
 import com.ashuo.scms.entity.Item;
 import com.ashuo.scms.entity.Season;
@@ -13,8 +12,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>

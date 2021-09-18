@@ -78,7 +78,7 @@
 
         <el-table-column type="index"></el-table-column>
         <el-table-column label="运动会" prop="seasonName"></el-table-column>
-        <el-table-column label="班级" prop="teamName"></el-table-column>
+        <el-table-column label="团体名称" prop="teamName"></el-table-column>
         <el-table-column label="学号" prop="userNo"></el-table-column>
         <el-table-column label="姓名" prop="nickname"></el-table-column>
         <el-table-column label="性别" prop="userSex"></el-table-column>
@@ -151,8 +151,20 @@ export default {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
           _this.athleteScoreList.forEach((item,index)=>{
-            //分数加上单位
-            item.score+=item.itemUnit
+          //分数加上单位
+          if (
+            item.itemUnit == "秒" &&
+            item.score > 60
+          ) {
+            //如果分数为秒，且分数大于60秒，转成分钟显示
+            let minute = parseInt(item.score / 60);
+            let second = parseInt(item.score % 60);
+            item.score = minute + "分" + second + "秒";
+          } else {
+            item.score += item.itemUnit;
+          }
+
+
             if(item.isBreakRecord==1){
                 item.isBreakRecord="是" ;
             }else{

@@ -59,9 +59,10 @@
         <!--索引列-->
 
         <el-table-column type="index"></el-table-column>
+        <el-table-column label="团体名称" prop="athlete.user.team.teamName"></el-table-column>
         <el-table-column label="运动员" prop="athlete.user.nickname"></el-table-column>
+        <el-table-column label="学号" prop="athlete.user.userNo"></el-table-column>
         <el-table-column label="性别" prop="athlete.user.userSex"></el-table-column>
-        <el-table-column label="班级" prop="athlete.user.team.teamName"></el-table-column>
         <el-table-column label="个人总得分" prop="rank"></el-table-column>
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">

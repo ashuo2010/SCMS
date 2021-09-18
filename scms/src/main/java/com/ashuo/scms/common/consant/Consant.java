@@ -1,4 +1,4 @@
-package com.ashuo.scms.common;
+package com.ashuo.scms.common.consant;
 
 /**
  * @author AShuo

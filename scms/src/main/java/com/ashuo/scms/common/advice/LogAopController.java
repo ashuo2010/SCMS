@@ -58,9 +58,9 @@ public class LogAopController {
         sysLog.setExecutionUser(currentUser);
 
         StringBuilder tempMethodName = new StringBuilder();
-         if  (methodName.contains("Season")) {
+        if (methodName.contains("Season")) {
             tempMethodName.append("届时");
-        }else if (methodName.contains("Team")) {
+        } else if (methodName.contains("Team")) {
             tempMethodName.append("团体");
         } else if (methodName.contains("User")) {
             tempMethodName.append("用户");

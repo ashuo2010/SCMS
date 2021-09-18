@@ -55,26 +55,6 @@
         </filter>
     </appender>
 
-<!--	&lt;!&ndash; 用户访问日志输出  &ndash;&gt;-->
-<!--    <appender name="sys-user" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
-<!--		<file>${log.path}/user.log</file>-->
-<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
-<!--            &lt;!&ndash; 按天回滚 daily &ndash;&gt;-->
-<!--            <fileNamePattern>${log.path}/user.%d{yyyy-MM-dd}.log</fileNamePattern>-->
-<!--            &lt;!&ndash; 日志最大的历史 60天 &ndash;&gt;-->
-<!--            <maxHistory>60</maxHistory>-->
-<!--        </rollingPolicy>-->
-<!--        <encoder>-->
-<!--            <pattern>${log.pattern}</pattern>-->
-<!--        </encoder>-->
-<!--    </appender>-->
-
-	<!-- 系统模块日志级别控制  -->
-<!--	<logger name="com.jeoho" level="DEBUG" />-->
-<!--	&lt;!&ndash; Spring日志级别控制  &ndash;&gt;-->
-<!--	<logger name="org.springframework" level="warn" />-->
-
-
 	<!--系统操作日志-->
     <root level="INFO">
         <appender-ref ref="console" />
@@ -82,8 +62,4 @@
         <appender-ref ref="file_error" />
     </root>
 
-<!--	&lt;!&ndash;系统用户操作日志&ndash;&gt;-->
-<!--    <logger name="sys-user" level="info">-->
-<!--        <appender-ref ref="sys-user"/>-->
-<!--    </logger>-->
 </configuration>

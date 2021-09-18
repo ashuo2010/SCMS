@@ -19,9 +19,6 @@ public interface RankingMapper {
     //增加单个Ranking
     int insertRanking(List<Ranking> rankingList);
 
-    //按条件查询Ranking
-    //  List<Ranking> queryRankingByTeamIdOrUserId(@Param("teamId") Integer teamId, @Param("userId") Integer userId);
-
     int deleteRankingByItemId(@Param("itemId") Integer itemId);
 
     //返回团体排名和总积分
