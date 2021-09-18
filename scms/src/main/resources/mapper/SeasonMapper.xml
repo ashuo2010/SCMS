@@ -65,7 +65,7 @@
         season
         <where>
             <if test="season.seasonId!=null and season.seasonId!=0 ">AND season_id=#{season.seasonId}</if>
-            <if test="season.seasonName!=null">AND season_name=#{season.seasonName}</if>
+            <if test="season.seasonName!=null">AND season_name LIKE '%${season.seasonName}%'</if>
             <if test="season.seasonTopicDesc!=null">AND season_topic_desc=#{season.seasonTopicDesc}</if>
             <if test="season.seasonBeginTime!=null">AND season_begin_time=#{season.seasonBeginTime}</if>
             <if test="season.seasonEndTime!=null">AND season_end_time=#{season.seasonEndTime}</if>

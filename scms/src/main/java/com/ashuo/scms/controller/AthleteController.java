@@ -1,6 +1,7 @@
 package com.ashuo.scms.controller;
 
 
+import com.ashuo.scms.common.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.Athlete;
 import com.ashuo.scms.entity.Item;
@@ -60,14 +61,13 @@ public class AthleteController {
             user.setNickname(queryInfo.getQuery());
             athlete.setUser(user);
 
-        //分页查询
-        IPage<Athlete>  athleteList = null;
-            Page<Athlete> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
             if (athlete.getUser()!=null&& athlete.getUser().getUserId()!=null){
                 //加上查询多人项目
                 athlete.setUserIds(athlete.getUser().getUserId().toString());
             }
-            athleteList = athleteService.getAthleteByCondition(page, athlete);
+            //分页查询
+            Page<Athlete> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
+            IPage<Athlete>  athleteList= athleteService.getAthleteByCondition(page, athlete);
             for (Athlete a: athleteList.getRecords()){
                 //如果是多人项目，拼接名字多个运动员名字
                 if (a.getUserIds()!=null){
@@ -76,7 +76,7 @@ public class AthleteController {
                     for (String uId: userIds){
                         User tempUser =new User();
                         tempUser.setUserId(Integer.valueOf(uId));
-                        userList.addAll(userService.getUserByCondition(new Page<>(1, 999999999), tempUser).getRecords());
+                        userList.addAll(userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MAXPAGESIZE), tempUser).getRecords());
                     }
                     String userNickname="";
                     for (User u:userList){
@@ -92,11 +92,17 @@ public class AthleteController {
         return ServerResponse.createBySuccess(athleteList);
     }
 
-    //报名
-    @Transactional
+    /**
+     * 报名
+     * @author AShuo
+     * @date 2021/9/17 17:50
+     * @param athlete
+     * @return com.ashuo.scms.common.lang.ServerResponse
+     */
     @ApiOperation("运动员报名")
     @PostMapping("/addAthlete")
     @RequiresAuthentication
+    @Transactional(rollbackFor=Exception.class)
     public ServerResponse addAthlete(@RequestBody Athlete athlete) throws Exception {
 
         if (athlete == null) {
@@ -113,7 +119,7 @@ public class AthleteController {
         }
 
         //通过Athlete,uId和iId判断是否已经报过名了
-        Page<Athlete> page = new Page<>(1, 999999999);
+        Page<Athlete> page = new Page<>(Consant.MINCURRENTPAGE, Consant.MAXPAGESIZE);
         if (athleteService.getAthleteByCondition(page, athlete).getRecords().size() != 0) {
             return ServerResponse.createByErrorCodeMessage(400, "报名失败，你已经报名过该项目了");
         }
@@ -122,14 +128,14 @@ public class AthleteController {
         if (item.getItemAmount()==1){
             Athlete tempAthlete = new Athlete();
             tempAthlete.setUser(athlete.getUser());
-            if (athleteService.getAthleteByCondition(new Page<>(1, 999999999), tempAthlete).getRecords().size() >= 3) {
+            if (athleteService.getAthleteByCondition(new Page<>(Consant.MINCURRENTPAGE,  Consant.MAXPAGESIZE), tempAthlete).getRecords().size() >= 3) {
                 return ServerResponse.createByErrorCodeMessage(400, "报名失败，你已经报名超过3门项目了");
             }
         }else if(item.getItemAmount()>1) {
             //如果是多人参赛项目,查询该项目的ids,判断报名的运动员中是否已经加入了其他队伍
             Athlete tempAthlete = new Athlete();
             tempAthlete.setItem(item);
-            List<Athlete> athleteList = athleteService.getAthleteByCondition(new Page<>(1, 999999999), tempAthlete).getRecords();
+            List<Athlete> athleteList = athleteService.getAthleteByCondition(new Page<>(Consant.MINCURRENTPAGE,  Consant.MAXPAGESIZE), tempAthlete).getRecords();
             String[] userIds = athlete.getUserIds().split(",");
             if (userIds.length<item.getItemAmount()){
                 return ServerResponse.createByErrorCodeMessage(400, "报名失败，报名该项目的人数不够");
@@ -143,9 +149,9 @@ public class AthleteController {
                 //如果列表不为空，表示至少有一个运动员已经报名过该项目
                 if (collectList!=null&&collectList.size()>0){
                     Class<User> userClass=User.class;
-                    User user = userClass.newInstance();
+                    User user = userClass.getDeclaredConstructor().newInstance();
                     user.setUserId(Integer.valueOf(uId));
-                    user= userService.getUserByCondition(new Page<>(1,1),user).getRecords().get(0);
+                    user= userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE,Consant.MINPAGESIZE),user).getRecords().get(0);
                     return ServerResponse.createByErrorCodeMessage(400, "报名失败，"+user.getNickname()+"已经报名过该项目了");
                 }
             }
@@ -167,7 +173,7 @@ public class AthleteController {
     @ApiOperation("取消报名")
     @DeleteMapping("/deleteAthlete")
     @RequiresAuthentication
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     public ServerResponse deleteAthlete(Integer athleteId) {
         Page<Athlete> page = new Page(1, 1);
         Athlete athlete=new Athlete();

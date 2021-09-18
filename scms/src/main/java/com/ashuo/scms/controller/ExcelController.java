@@ -2,6 +2,7 @@ package com.ashuo.scms.controller;
 
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.excel.EasyExcel;
+import com.ashuo.scms.common.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.dto.ExcelPersonRankingDto;
@@ -226,7 +227,7 @@ public class ExcelController {
         }
 
         //获取数据
-        Page<AthleteScoreDto> page = new Page<>(1, 999999);
+        Page<AthleteScoreDto> page = new Page<>(Consant.MINCURRENTPAGE, Consant.MAXPAGESIZE);
         IPage<AthleteScoreDto> dtoList = scoreService.getAthleteScoreDto(page,  new Score());
         List<AthleteScoreDto> athleteScoreDtoList = dtoList.getRecords();
 
@@ -304,7 +305,7 @@ public class ExcelController {
         }
 
         //获取数据
-        Page<Athlete> page = new Page<>(1, 999999);
+        Page<Athlete> page = new Page<>(Consant.MINCURRENTPAGE, Consant.MAXPAGESIZE);
         IPage<Athlete> dtoList = athleteService.getAthleteByCondition(page, athlete);
         List<Athlete> AthleteList = dtoList.getRecords();
 

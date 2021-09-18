@@ -15,7 +15,10 @@
     </el-header>
     <el-container>
       <el-aside :width="iscollapse ? '64px' : '200px'">
-        <div class="toggle-button" @click="toggleCollapase">|||</div>
+        <div class="toggle-button" @click="toggleCollapase">
+          <i v-show="!this.iscollapse" class="el-icon-d-arrow-left"></i>
+          <i v-show="this.iscollapse" class="el-icon-d-arrow-right"></i>
+        </div>
         <el-menu
           background-color="#545c64"
           text-color="#fff"
@@ -36,6 +39,9 @@
             :key="item.mainmenu.id"
           >
             <template slot="title">
+                 <!-- <i class="el-icon-d-arrow-left"></i> -->
+                 <img src="../assets/team.svg" alt=""  style="font-size: 15px;" >
+
               <!-- <i :class="iconsObj[item.mainmenu.id]"></i> -->
               <span>{{ item.mainmenu.title }}</span>
             </template>

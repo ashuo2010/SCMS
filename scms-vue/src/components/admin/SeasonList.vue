@@ -3,8 +3,8 @@
     <!--导航-->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>运动会届时管理</el-breadcrumb-item>
-      <el-breadcrumb-item>届时列表</el-breadcrumb-item>
+      <el-breadcrumb-item>运动会管理</el-breadcrumb-item>
+      <el-breadcrumb-item>运动会届时</el-breadcrumb-item>
     </el-breadcrumb>
     <!--届时列表主体-->
     <el-card>

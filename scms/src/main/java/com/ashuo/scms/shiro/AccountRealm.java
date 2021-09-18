@@ -1,6 +1,7 @@
 package com.ashuo.scms.shiro;
 
 
+import com.ashuo.scms.common.Consant;
 import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.UserService;
 import com.ashuo.scms.util.JwtUtil;
@@ -34,7 +35,7 @@ public class AccountRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = JwtUtil.getUsername(principals.toString());
-        IPage<User> userList     = userService.getUserByCondition(new Page<>(1, 1), new User().setUsername(username));
+        IPage<User> userList     = userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), new User().setUsername(username));
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.addRole(String.valueOf(userList.getRecords().get(0).getUserType()));
         return simpleAuthorizationInfo;
@@ -53,7 +54,7 @@ public class AccountRealm extends AuthorizingRealm {
             throw new AuthenticationException("token invalid");
         }
 
-        IPage<User> userList     = userService.getUserByCondition(new Page<>(1, 1), new User().setUsername(username));
+        IPage<User> userList     = userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), new User().setUsername(username));
 
         if (userList.getRecords() == null || userList.getRecords().size() == 0) {
             throw new AuthenticationException("user didn't existed!");

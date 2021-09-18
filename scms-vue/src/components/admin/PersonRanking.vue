@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>总分排名管理</el-breadcrumb-item>
-      <el-breadcrumb-item>个人总分排名列表</el-breadcrumb-item>
+      <el-breadcrumb-item>个人总分排名</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--项目列表主体-->

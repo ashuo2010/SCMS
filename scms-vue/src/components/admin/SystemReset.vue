@@ -30,9 +30,10 @@
       <el-form
         ref="FormRef"
         label-width="70px"
+        @submit.native.prevent
       >
          <el-form-item label="删除密码">
-          <el-input type="password" v-model="comfirmPassword" placeholder="请输入删除密码"></el-input>
+          <el-input type="password" v-model="comfirmPassword" placeholder="请输入删除密码" @keyup.enter.native="deleteAllData"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">

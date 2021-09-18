@@ -1,5 +1,6 @@
 package com.ashuo.scms.controller;
 
+import com.ashuo.scms.common.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.entity.*;
@@ -173,7 +174,7 @@ public class ScoreController {
         Record record = new Record();
         //获取该项目的有效记录列表
         record.setRecordStatus(1);
-        List<Record> recordList = recordService.getRecordByRecordCondition(new Page<>(1, 999), record).getRecords();
+        List<Record> recordList = recordService.getRecordByRecordCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MAXPAGESIZE), record).getRecords();
         //设置分数数据
         record.setAthlete(score.getAthlete());
         record.setRecordScore(score.getScore());

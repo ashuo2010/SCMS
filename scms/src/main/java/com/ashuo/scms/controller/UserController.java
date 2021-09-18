@@ -2,6 +2,7 @@ package com.ashuo.scms.controller;
 
 
 import cn.hutool.crypto.SecureUtil;
+import com.ashuo.scms.common.Consant;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.dto.UserDto;
 import com.ashuo.scms.entity.QueryInfo;
@@ -54,7 +55,7 @@ public class UserController {
         tempUser.setUsername(userDto.getUsername());
 
         //用户名唯一，所以肯定只返回一个
-        Page<User> page = new Page<>(1, 1);
+        Page<User> page = new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE);
         IPage<User> userList = userService.getUserByCondition(page, tempUser);
         if (userList.getRecords() == null || userList.getRecords().size() == 0) {
             return ServerResponse.createByErrorCodeMessage(400, "用户不存在");
@@ -91,7 +92,7 @@ public class UserController {
         user.setPassword(SecureUtil.md5(userDto.getPassword()));
 
         //用户名唯一，所以肯定只返回一个
-        Page<User> page = new Page<>(1, 1);
+        Page<User> page = new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE);
         IPage<User> userList = userService.getUserByCondition(page, user);
         if (userList.getRecords() == null || userList.getRecords().size() == 0) {
             return ServerResponse.createByErrorMessage("密码错误");

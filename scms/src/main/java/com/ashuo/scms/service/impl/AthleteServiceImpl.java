@@ -1,5 +1,6 @@
 package com.ashuo.scms.service.impl;
 
+import com.ashuo.scms.common.Consant;
 import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.entity.Athlete;
 import com.ashuo.scms.entity.Item;
@@ -88,7 +89,7 @@ public class AthleteServiceImpl implements AthleteService {
         } else {
             Athlete athlete = new Athlete();
             athlete.setAthleteId(athleteId);
-            IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(new Page<>(1, 1), athlete);
+            IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), athlete);
             athlete = athleteList.getRecords().get(0);
             Item temp =(athlete.getItem());
             Item item = itemMapper.queryOneItemByItemCondition(temp);

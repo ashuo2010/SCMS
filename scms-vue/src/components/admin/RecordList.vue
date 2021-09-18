@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>项目记录管理</el-breadcrumb-item>
-      <el-breadcrumb-item>项目记录列表</el-breadcrumb-item>
+      <el-breadcrumb-item>项目记录信息</el-breadcrumb-item>
     </el-breadcrumb>
 
     <!--参数运动员列表主体-->
