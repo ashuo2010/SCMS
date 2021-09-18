@@ -27,7 +27,7 @@ public interface ScoreMapper {
     IPage<Score> queryScoreByScoreCondition(Page<Score> page, @Param("score") Score score);
 
     //查询分数排名并限制数量
-    List<Score> queryScoreByItemIdLimit(@Param("itemId") Integer itemId,@Param("condition") String condition,@Param("limitAmount") int limitAmount);
+    List<Score> queryScoreByItemIdLimit(@Param("itemId") Integer itemId,@Param("condition") String condition);
 
     //获取单个Score
     Score queryOneScoreByScoreId(@Param("scoreId") Integer scoreId);

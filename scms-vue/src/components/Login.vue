@@ -112,7 +112,10 @@ export default {
       });
     },
     resetForm(loginForm) {
-      this.$refs["loginForm"].resetFields();
+     this.loginForm={
+        username: "",
+        password: "",
+      }
     },
   },
 };

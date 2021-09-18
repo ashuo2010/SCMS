@@ -11,7 +11,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入运动员姓名"
@@ -135,7 +135,6 @@ export default {
     };
   },
   created() {
-    this.getItems();
     this.getSeasons();
   },
   methods: {
@@ -146,8 +145,8 @@ export default {
       }
       const _this = this;
       axios
-       .get("/score/queryAthleteScore?query=&currentPage=1&pageSize=999999999&athlete.item.season.seasonId="+_this.selectSeasonId
-          +"&item.itemId=" + _this.selectItemId+"&queryInfo=", {params: _this.queryInfo})
+       .get("/score/queryAthleteScore?athlete.item.season.seasonId="+_this.selectSeasonId
+          +"&athlete.item.itemId=" + _this.selectItemId+"&queryInfo=", {params: _this.queryInfo})
         .then((res) => {
           let data = res.data.data;
           _this.athleteScoreList = data.records;
@@ -185,7 +184,7 @@ export default {
           })
         _this.allSeasonOptions=data;
         _this.page();
-
+        _this.getItems();
         });
     },
 
@@ -194,7 +193,8 @@ export default {
     async getItems() {
       const _this = this;
       axios
-        .get("/item/queryItem?query=&currentPage=1&pageSize=999999999")
+        .get("/item/queryItem?query=&currentPage=1&pageSize=999999999&season.seasonId="+_this.selectSeasonId
+        )
         .then((res) => {
           let data = res.data.data.records;
           data.push( {
@@ -220,7 +220,7 @@ export default {
         return;
       }
       axios
-        .get("/excel/exportAllPersonScore", {
+        .get("/excel/exportAllPersonScore?athlete.item.season.seasonId="+_this.selectSeasonId, {
           responseType: "blob", //二进制流
         })
         .then((res) => {

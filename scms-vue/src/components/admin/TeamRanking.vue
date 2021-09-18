@@ -11,7 +11,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入运动员名称"
@@ -98,7 +98,7 @@
     <el-dialog
       title="团体分数详情信息"
       :visible.sync="dialogTableVisible"
-      width="80%"
+      width="40%"
     >
       <el-table :data="teamRankingDetail" stripe style="width: 100%">
         <el-table-column
@@ -162,7 +162,7 @@ export default {
         .get(
           "/ranking/queryTeamRanking?athlete.item.season.seasonId=" +
             this.selectSeasonId +
-            "queryInfo=",
+            "&queryInfo=",
           {
             params: _this.queryInfo,
           }
@@ -177,17 +177,22 @@ export default {
     },
 
     //获取运动会届时
-    async getSeasons() {
+      async getSeasons() {
       const _this = this;
       axios
         .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
         .then((res) => {
-          let data = res.data.data.records;
-          _this.allSeasonOptions = data;
-          _this.page();
+        let data = res.data.data.records;
+        data.forEach((item,index)=>{
+            if(item.seasonStatus!=0){
+            _this.selectSeasonId=item.seasonId 
+            }
+          })
+        _this.allSeasonOptions=data;
+        _this.page();
+
         });
     },
-
     async getRankingDetail(teamId) {
       const _this = this;
       axios
@@ -214,7 +219,8 @@ export default {
         return;
       }
       axios
-        .get("/excel/exportTeamRanking", {
+        .get("/excel/exportTeamRanking?athlete.item.season.seasonId=" +
+            this.selectSeasonId, {
           responseType: "blob", //二进制流
         })
         .then((res) => {

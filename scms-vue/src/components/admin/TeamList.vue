@@ -10,7 +10,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入团体名称"
@@ -98,8 +98,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addTeam">确定</el-button>
+        <el-button @click="addDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
     <!--修改团体区域-->
@@ -123,8 +124,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="editTeam">确定</el-button>
+        <el-button @click="editDialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </div>

@@ -66,19 +66,6 @@ public class ScoreController {
         return ServerResponse.createBySuccess(scoreList);
     }
 
-//    @ApiOperation("查询团体项目分数")
-//    @GetMapping("/queryTeamScore")
-//    @RequiresAuthentication
-//    public Object queryTeamScore(QueryInfo queryInfo, int teamId) {
-//        if (StringUtils.isBlank(queryInfo.getQuery())) {
-//            queryInfo.setQuery(null);
-//        }
-//        //分页查询
-//        Page<Score> page = new Page<Score>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-//        IPage<Score> scoreList = scoreService.getScoreByScoreCondition(page, teamId);
-//        return ServerResponse.createBySuccess(scoreList);
-//    }
-
 
     @ApiOperation("添加分数")
     @PostMapping("/addScore")
@@ -218,32 +205,38 @@ public class ScoreController {
         //获取分数单位
         score = scoreService.getOneScoreByScoreId(score.getScoreId());
 
-        //获取前三，并重新计算排名
-        int limitAmount=3;
         //判断分数单位，如果单位为秒，则ASC升序排列
         String condition = "DESC";
         if ("秒".equals(score.getAthlete().getItem().getItemUnit())) {
             condition = "ASC";
         }
-        List<Score> scoreList = scoreService.getScoreByItemIdLimit(score.getAthlete().getItem().getItemId(), condition,limitAmount);
+        List<Score> scoreList = scoreService.getScoreByItemIdLimit(score.getAthlete().getItem().getItemId(), condition);
         //添加到Ranking对象中
         List<Ranking> rankingList = new ArrayList<>();
 
         Score tempScore =new Score();
         tempScore.setScore(new BigDecimal("-1"));
-        limitAmount+=1;
-        for (Score s : scoreList) {
-            //如果分数不相等
-            if (s.getScore().compareTo(tempScore.getScore())!=0){
-                limitAmount--;
+
+        //获取前三，并重新计算排名
+        int limitAmount=4;
+        int i=0;
+        while ( limitAmount>1){
+            if (scoreList.size()> i) {
+                Score s = scoreList.get(i);
+                //如果分数不相等
+                if (s.getScore().compareTo(tempScore.getScore()) != 0) {
+                    limitAmount--;
+                }
+                Ranking ranking = new Ranking();
+                ranking.setAthlete(s.getAthlete());
+                //设置排名得分3、2、1
+                ranking.setRank(limitAmount);
+                ranking.setEditTime(LocalDateTime.now());
+                rankingList.add(ranking);
+                tempScore = s;
+                i++;
             }
-            Ranking ranking = new Ranking();
-            ranking.setAthlete(s.getAthlete());
-            //设置排名得分3、2、1
-            ranking.setRank(limitAmount);
-            ranking.setEditTime(LocalDateTime.now());
-            rankingList.add(ranking);
-            tempScore=s;
+            else {limitAmount--;}
         }
         rankingService.addRanking(rankingList);
     }

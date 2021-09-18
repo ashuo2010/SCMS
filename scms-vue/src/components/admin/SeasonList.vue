@@ -10,7 +10,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入运动会名称"
@@ -94,14 +94,14 @@
         class="demo-ruleForm"
 
       >
-        <el-form-item label="运动会名称" prop="seasonName">
+        <el-form-item label="运动会名称" >
           <el-input v-model="addForm.seasonName" placeholder="第一届运动会"></el-input>
         </el-form-item>
-          <el-form-item label="运动会主题描述" prop="seasonTopicDesc">
+          <el-form-item label="运动会主题描述" >
           <el-input type="textarea" v-model="addForm.seasonTopicDesc" placeholder="友谊第一比赛第二"></el-input>
         </el-form-item>
 
-        <el-form-item label="运动会开始时间" prop="seasonBeginTime">
+        <el-form-item label="运动会开始时间" >
           <el-date-picker
             v-model="addForm.seasonBeginTime"
             type="datetime"
@@ -109,7 +109,7 @@
             placeholder="选择日期时间" >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="运动会结束时间" prop="seasonEndTime">
+        <el-form-item label="运动会结束时间" >
           <el-date-picker
             v-model="addForm.seasonEndTime"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -119,7 +119,7 @@
         </el-form-item>
 
 
-        <el-form-item label="运动会状态" prop="seasonStatus">
+        <el-form-item label="运动会状态" >
           <el-select v-model="addForm.seasonStatus" placeholder="请选择">
             <el-option
               v-for="item in seasonStatusOptions"
@@ -136,6 +136,8 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addSeason">确定</el-button>
+
+
       </span>
     </el-dialog>
     <!--修改届时区域-->
@@ -152,14 +154,14 @@
         class="demo-ruleForm"
       >
        
- <el-form-item label="运动会名称" prop="seasonName">
+ <el-form-item label="运动会名称" >
           <el-input v-model="editForm.seasonName"></el-input>
         </el-form-item>
-          <el-form-item  type="textarea" label="运动会主题描述" prop="seasonTopicDesc">
+          <el-form-item  type="textarea" label="运动会主题描述" >
           <el-input v-model="editForm.seasonTopicDesc"></el-input>
         </el-form-item>
 
-        <el-form-item label="运动会开始时间" prop="seasonBeginTime">
+        <el-form-item label="运动会开始时间" >
           <el-date-picker
             v-model="editForm.seasonBeginTime"
             type="datetime"
@@ -167,7 +169,7 @@
             placeholder="选择日期时间" >
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="运动会结束时间" prop="seasonEndTime">
+        <el-form-item label="运动会结束时间" >
           <el-date-picker
             v-model="editForm.seasonEndTime"
             value-format="yyyy-MM-dd HH:mm:ss"
@@ -177,7 +179,7 @@
         </el-form-item>
 
 
-        <el-form-item label="运动会状态" prop="seasonStatus">
+        <el-form-item label="运动会状态" >
           <el-select v-model="editForm.seasonStatus" placeholder="请选择">
             <el-option
               v-for="item in seasonStatusOptions"
@@ -195,6 +197,8 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="editSeason">确定</el-button>
+
+
       </span>
     </el-dialog>
   </div>
@@ -240,7 +244,7 @@ export default {
         },
         {
           value: "0",
-          label: "禁用",
+          label: "关闭",
         },
       
       ],
@@ -290,6 +294,12 @@ export default {
       axios.get("/season/getSeason?seasonId=" + id).then((res) => {
         let data = res.data.data;
         _this.editForm= data;
+         if(data.seasonStatus==1){
+              data.seasonStatus="启用";
+            }else{
+              data.seasonStatus="关闭";
+            }
+
         _this.editDialogVisible = true;
       });
     },

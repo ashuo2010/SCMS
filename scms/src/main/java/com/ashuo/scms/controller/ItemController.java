@@ -71,15 +71,15 @@ public class ItemController {
         }
         Item itemTemplate = itemService.getItemTemplateDetail(item);
 
-        //设置报名人数
-        item.setAthleteAmount(0);
         //根据模板设置item名称等信息
         if (itemTemplate != null) {
             item.setItemName(itemTemplate.getItemName());
             item.setItemUnit(itemTemplate.getItemUnit());
+            //设置报名人数
             item.setItemAmount(itemTemplate.getItemAmount());
-            item.setAthleteAmount(null);
         }
+        //设置初始人数
+        item.setAthleteAmount(0);
         //设置创建时间
         item.setCreateTime(LocalDateTime.now());
         item.setEditTime(LocalDateTime.now());
@@ -160,7 +160,7 @@ public class ItemController {
 
     @ApiOperation("查询项目模板")
     @GetMapping("/queryItemTemplate")
-    @RequiresRoles(value = {"1"})
+    @RequiresAuthentication
     public ServerResponse queryItemTemplate() {
         List<Item> itemList = itemService.getItemTemplateList();
         return ServerResponse.createBySuccess(itemList);

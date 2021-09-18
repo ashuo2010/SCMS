@@ -11,7 +11,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入运动员姓名"
@@ -83,7 +83,7 @@
 
         <el-table-column type="index"></el-table-column>
         <el-table-column label="运动会" prop="athlete.item.season.seasonName"></el-table-column>
-        <el-table-column label="参赛项目" prop="athlete.item.itemName"></el-table-column>
+        <el-table-column label="项目名称" prop="athlete.item.itemName"></el-table-column>
         <el-table-column label="项目成绩" prop="recordScore"></el-table-column>
         <el-table-column label="项目纪录是否可用" prop="recordStatus"></el-table-column>
         <el-table-column label="运动员姓名" prop="athlete.user.nickname"></el-table-column>
@@ -153,11 +153,12 @@ export default {
       }
       const _this = this;
       axios
-        .get("/record/queryRecord?recordStatus="+_this.selectRecordStatus+"&athlete.item.itemId=" + _this.selectItemId+"&queryInfo=", { params: _this.queryInfo })
+        .get("/record/queryRecord?recordStatus="+_this.selectRecordStatus+"&athlete.item.parentId=" + _this.selectItemId+"&queryInfo=", { params: _this.queryInfo })
         .then((res) => {
           let data = res.data.data;
           _this.recordList = data.records;
           _this.recordList.forEach((item,index)=>{
+            item.recordScore+=item.athlete.item.itemUnit
             if(item.recordStatus==1){
                 item.recordStatus="是" ;
             }else{
@@ -175,9 +176,9 @@ export default {
     async getItems() {
       const _this = this;
       axios
-        .get("/item/queryItem?query=&currentPage=1&pageSize=999999999")
+        .get("/item/queryItemTemplate")
         .then((res) => {
-          let data = res.data.data.records;
+          let data = res.data.data;
           data.push( {
           itemId: 0,
           itemName: "所有项目",
@@ -201,7 +202,7 @@ export default {
         return;
       }
       axios
-        .get("/excel/exportAllPersonScore", {
+        .get("/excel/exportItemRecord?recordStatus=1", {
           responseType: "blob", //二进制流
         })
         .then((res) => {

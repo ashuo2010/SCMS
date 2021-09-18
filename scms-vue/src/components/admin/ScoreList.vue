@@ -11,7 +11,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入运动员姓名"
@@ -131,6 +131,7 @@
                   scoreForm.athlete.athleteId = scope.row.athleteId;
                   scoreForm.athlete.user.userId = scope.row.user.userId;
                   scoreForm.athlete.item.itemId = scope.row.item.itemId;
+                  scoreForm.athlete.item.itemUnit = scope.row.item.itemUnit;
                 "
                 >录入分数</el-button
               >
@@ -144,7 +145,7 @@
                 @click="
                   dialogTableVisible = true;
                   oneAthlete = scope.row;
-                  showScoreDetail(scope.row.user.userId, scope.row.item.itemId);
+                  showScoreDetail(scope.row.user.userId, scope.row.item.itemId,false);
                 "
                 >查看分数</el-button
               >
@@ -159,7 +160,7 @@
                 @click="
                   EditDialogVisible = true;
                   oneAthlete = scope.row;
-                  showScoreDetail(scope.row.user.userId, scope.row.item.itemId);
+                  showScoreDetail(scope.row.user.userId, scope.row.item.itemId,true);
                 "
                 >修改分数</el-button
               >
@@ -231,8 +232,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addScore">确定</el-button>
+        <el-button @click="addDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
 
@@ -312,8 +314,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="EditDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="editScore">确定</el-button>
+        <el-button @click="EditDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
   </div>
@@ -371,6 +374,7 @@ export default {
         athlete: {
           item: {
             itemId: "",
+            itemUnit:"",
           },
           user: {
             userId: "",
@@ -462,6 +466,7 @@ export default {
             }
           });
           _this.allSeasonOptions = data;
+          _this.page()
         });
     },
 
@@ -500,7 +505,9 @@ export default {
     },
     //分数处理
     scoreHandle() {
-      console.log(this.scoreForm);
+      if(this.scoreForm.athlete.item.itemUnit!="秒"){
+return;
+      }
       if (this.scoreForm.minute != "" && this.scoreForm.second != "") {
         if (
           parseInt(this.scoreForm.minute) > 60 ||
@@ -519,7 +526,7 @@ export default {
     },
 
     //查看分数详情
-    async showScoreDetail(userId, itemId) {
+    async showScoreDetail(userId, itemId,isEdit) {
       const _this = this;
       axios
         .get(
@@ -532,7 +539,9 @@ export default {
           let data = res.data.data;
           _this.scoreForm = data.records[0];
           _this.scoreDetail = data.records[0];
-
+if(isEdit){
+  return;
+}
           //分数加上单位
           if (
             _this.scoreDetail.athlete.item.itemUnit == "秒" &&

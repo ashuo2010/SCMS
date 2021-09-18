@@ -11,7 +11,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入运动员姓名"
@@ -103,6 +103,20 @@
         <el-table-column label="地点" prop="item.itemPlace"></el-table-column>
 
         <el-table-column label="报名时间" prop="signTime"></el-table-column>
+
+         <el-table-column label="操作" prop="state">
+          <template slot-scope="scope">
+            <!--删除-->
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="deleteAthlete(scope.row.athleteId)"
+            ></el-button>
+          </template>
+        </el-table-column>
+
+
       </el-table>
       <!--分页组件-->
       <div>
@@ -179,7 +193,7 @@ export default {
       const _this = this;
       axios
         .get(
-          "/athlete/queryAthlete?item.season.seasonId="+_this.selectSeasonId+"&item.itemId=" +_this.selectItemId+"&queryInfo=", { params: _this.queryInfo }
+          "/athlete/queryAthlete?item.season.seasonId="+_this.selectSeasonId+"&item.parentId=" +_this.selectItemId+"&queryInfo=", { params: _this.queryInfo }
         )
         .then((res) => {
           let data = res.data.data;
@@ -218,18 +232,19 @@ export default {
     },
 
 
-    //获取项目列表
+    //获取项目
     async getItems() {
       const _this = this;
       axios
-        .get("/item/queryItem?query=&currentPage=1&pageSize=999999999")
+        .get("/item/queryItemTemplate")
         .then((res) => {
-          let data = res.data.data.records;
-                    data.push( {
+          let data = res.data.data;
+          data.push( {
           itemId: 0,
           itemName: "所有项目",
         })
-          _this.itemList=data;
+        _this.itemList=data;
+        _this.page();
         });
     },
 
@@ -249,7 +264,7 @@ export default {
         return;
       }
       axios
-        .get("/excel/exportItemAthlete?&item.itemId=" + _this.selectItemId, {
+        .get("/excel/exportItemAthlete?item.season.seasonId="+_this.selectSeasonId+"&item.parentId=" +_this.selectItemId, {
           responseType: "blob", //二进制流
         })
         .then((res) => {
@@ -283,6 +298,34 @@ export default {
         _this.systemStatus = res.data.data;
         return _this.$message.success("操作成功");
       });
+    },
+
+
+
+    async deleteAthlete(athleteId) {
+      const _this = this;
+      const confirmResult = await _this
+        .$confirm("是否确定取消报名？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .catch((err) => err);
+      if (confirmResult !== "confirm") {
+        return _this.$message.info("已取消操作");
+      }
+      axios
+        .delete("/athlete/deleteAthlete?athleteId=" + athleteId)
+        .then((res) => {
+          if (res.data.status == 200) {
+            
+            _this.$message.success("已取消该项目");
+            _this.addDialogVisible = false;
+            _this.page();
+          } else {
+            _this.$message.error(res.data.msg);
+          }
+        });
     },
 
     handleSizeChange(newSize) {

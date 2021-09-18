@@ -45,11 +45,11 @@ public class ScoreServiceImpl implements ScoreService {
 
 
     @Override
-    public List<Score> getScoreByItemIdLimit(int itemId, String condition,int limitAmount) {
+    public List<Score> getScoreByItemIdLimit(int itemId, String condition) {
         if (itemId == 0) {
             return null;
         }
-        List<Score> scoreList = scoreMapper.queryScoreByItemIdLimit(itemId, condition,limitAmount);
+        List<Score> scoreList = scoreMapper.queryScoreByItemIdLimit(itemId, condition);
         return scoreList;
     }
 

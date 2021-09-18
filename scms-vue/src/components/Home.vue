@@ -7,6 +7,7 @@
         <span class="span">运动会综合管理系统</span>
       </div>
       <div>
+        <span style="font-size:16px; margin-right:30px; font-weight:700">{{currentUser.nickname}}</span>
         <el-button size="mini" type="info" @click="editDialogVisible = true"
           >修改密码</el-button
         >
@@ -92,8 +93,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="changePassword">确定</el-button>
+        <el-button @click="editDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
   </el-container>

@@ -112,8 +112,6 @@
         ORDER BY
         s.score
         ${condition}
-        Limit
-        ${limitAmount}
     </select>
 
 
@@ -153,6 +151,7 @@
         u.nickname,
         u.user_sex,
         i.item_name,
+        i.item_unit,
         s.score,
         s.is_break_record,
         s.edit_time,

@@ -23,7 +23,7 @@ public interface ScoreService {
     IPage<AthleteScoreDto> getAthleteScoreDto(Page<AthleteScoreDto> page, Score score);
 
 
-    List<Score> getScoreByItemIdLimit(int itemId, String condition,int limitAmount);
+    List<Score> getScoreByItemIdLimit(int itemId, String condition);
 
     Score getOneScoreByScoreId(int scoreId);
 

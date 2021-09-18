@@ -40,7 +40,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入项目名称"
@@ -181,7 +181,12 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="项目名称" >
+
+        <el-form-item label="项目名称" label-width="170px">
+           <el-tooltip class="item" effect="dark" placement="top-start">
+                <div slot="content">{{ itemAddTip }}</div>
+                <i class="el-icon-info" style="font-size: 15px; color:#409ef0;margin-left:-10px;margin-right:5px"></i>
+              </el-tooltip>
           <el-select v-model="addForm.parentId" placeholder="请选择">
             <el-option
               v-for="item in itemTemplateOptions"
@@ -253,8 +258,9 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addItem">确定</el-button>
+        <el-button @click="addDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
     <!--修改项目区域-->
@@ -360,8 +366,9 @@
        
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="editItem">确定</el-button>
+        <el-button @click="editDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
 
@@ -401,8 +408,9 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addTemplateDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addItem">确定</el-button>
+        <el-button @click="addTemplateDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
 
@@ -414,7 +422,7 @@
       :visible.sync="templateListDialogVisible"
       width="40%">
      <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <el-button type="primary" @click="addTemplateDialogVisible = true" size="mini"
             >添加项目模板</el-button
           >
@@ -464,6 +472,7 @@ export default {
 
       itemDetail: [],
 
+      itemAddTip:"如果无数据，请先添加项目模板",
       userSex: [
         {
           value: "男",
@@ -571,7 +580,7 @@ export default {
   created() {
     this.getScorers();
     this.getSeasons();
-        this.getTemplateOptions();
+    this.getTemplateOptions();
 
 
   },
@@ -591,6 +600,8 @@ export default {
           _this.total = data.total;
           _this.queryInfo.pageSize = data.size;
         });
+    _this.getTemplateOptions();
+        
     },
     //获取记分员
     async getScorers() {
@@ -734,6 +745,8 @@ export default {
         if (!valid) {
           return;
         }
+        _this.editForm.itemName=_this.editForm.itemName.replace("(男)","")
+       _this.editForm.itemName= _this.editForm.itemName.replace("(女)","")
         axios.put("/item/editItem", _this.editForm).then((res) => {
           if (res.data.status != 200) {
             return _this.$message.error(res.data.msg);

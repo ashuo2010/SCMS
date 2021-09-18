@@ -13,6 +13,7 @@
                 <id column="item_id" property="itemId"/>
                 <result column="item_name" property="itemName"/>
                 <result column="item_sex" property="itemSex"/>
+                <result column="item_unit" property="itemUnit"/>
                 <association property="season" javaType="com.ashuo.scms.entity.Season">
                     <id column="se_id" property="seasonId"/>
                     <result column="season_name" property="seasonName"/>
@@ -46,6 +47,7 @@
         i.item_id,
         i.item_name,
         i.item_sex,
+        i.item_unit,
         u.user_id,
         u.nickname,
         t.team_id,
@@ -67,6 +69,9 @@
             </if>
             <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.itemId!=null and record.athlete.item.itemId!=0">AND
                 i.item_id=#{record.athlete.item.itemId}
+            </if>
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">AND
+                i.parent_id=#{record.athlete.item.parentId}
             </if>
             <if test="record.athlete!=null and record.athlete.user!=null and record.athlete.user.nickname!=null">AND u.nickname LIKE
                 '%${record.athlete.user.nickname}%'

@@ -37,8 +37,9 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="DialogVisible = false">取消</el-button>
         <el-button type="primary" @click="deleteAllData">确定</el-button>
+        <el-button @click="DialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
   </div>

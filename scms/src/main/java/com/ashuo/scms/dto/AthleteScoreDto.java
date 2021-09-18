@@ -41,6 +41,9 @@ public class AthleteScoreDto implements Serializable {
     @ExcelProperty(value = "项目分数")
     private String score;
 
+    @ExcelProperty(value = "项目单位")
+    private String itemUnit;
+
     @ExcelProperty(value = "项目是否破纪录")
     private String isBreakRecord;
 

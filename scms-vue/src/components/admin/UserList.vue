@@ -10,7 +10,7 @@
     <el-card>
       <!--搜索区域-->
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="5">
           <!--搜索添加-->
           <el-input
             placeholder="请输入搜索内容"
@@ -158,8 +158,9 @@
        
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="addUser">确定</el-button>
+        <el-button @click="addDialogVisible = false">取消</el-button>
+
       </span>
     </el-dialog>
 
@@ -167,7 +168,7 @@
     <el-dialog
       title="批量添加用户"
       :visible.sync="uploadDialogVisible"
-      width="30%"
+      width="21%"
     >
       <el-upload
         :before-upload="beforeUpload"
@@ -177,14 +178,19 @@
         :limit="1"
       >
         <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传 </em></div>
-        <span style="margin-right: 10px" class="el-upload__tip" slot="tip"
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传 </em>
+         <div>
+            <span style="margin-right: 10px" class="el-upload__tip" slot="tip"
           >只能上传excel文件</span
         >
-
-        <a class="el-upload__tip" slot="tip" @click="exportExcel()"
+         </div>
+         <a class="el-upload__tip" slot="tip" @click="exportExcel()"
           ><em>下载批量添加用户模板</em></a
         >
+        </div>
+      
+
+       
       </el-upload>
     </el-dialog>
 
@@ -206,7 +212,7 @@
           <el-input v-model="editForm.userId" disabled></el-input>
         </el-form-item>
         <el-form-item label="学号">
-          <el-input v-model="editForm.userNo"></el-input>
+          <el-input v-model="editForm.userNo" disabled></el-input>
         </el-form-item>
         <el-form-item label="登录账号" >
           <el-input v-model="editForm.username" disabled></el-input>
@@ -265,8 +271,8 @@
        
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取消</el-button>
         <el-button type="primary" @click="editUser">确定</el-button>
+        <el-button @click="editDialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
