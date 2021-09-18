@@ -272,10 +272,10 @@
         class="demo-ruleForm"
 
       >
-        <el-form-item label="项目ID" prop="itemId">
+        <el-form-item label="项目ID">
           <el-input v-model="editForm.itemId" disabled></el-input>
         </el-form-item>
-        <el-form-item label="运动会项目届时"  prop="season.seasonName">
+        <el-form-item label="运动会项目届时"  >
           <el-select v-model="editForm.season.seasonId" filterable placeholder="请选择">
             <el-option
               v-for="item in seasonEnableOptions"
@@ -312,7 +312,7 @@
         </el-form-item>
 
 
-      <el-form-item label="项目记分员" prop="itemName">
+      <el-form-item label="项目记分员">
           <el-select v-model="editForm.user.userId" placeholder="请选择">
             <el-option
               v-for="item in scorers"
@@ -325,7 +325,7 @@
         </el-form-item>
 
 
-        <el-form-item label="项目地点" prop="itemPlace">
+        <el-form-item label="项目地点" >
           <el-select v-model="editForm.itemPlace" placeholder="请选择">
             <el-option
               v-for="item in itemPlaceOptions"
@@ -338,7 +338,7 @@
         </el-form-item>
 
 
-        <el-form-item label="项目开始时间" prop="startTime">
+        <el-form-item label="项目开始时间">
           <el-date-picker
             v-model="editForm.startTime"
             type="datetime"
@@ -348,7 +348,7 @@
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="项目结束时间" prop="endTime">
+        <el-form-item label="项目结束时间">
           <el-date-picker
             v-model="editForm.endTime"
             type="datetime"
@@ -357,7 +357,6 @@
           >
           </el-date-picker>
         </el-form-item>
-
        
       </el-form>
       <span slot="footer" class="dialog-footer">

@@ -194,23 +194,21 @@
         label-width="180px"
         class="demo-ruleForm"
       >
-        <el-form-item label="项目名称" prop="">
+        <el-form-item label="项目名称" >
           <el-input v-model="oneAthlete.item.itemName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="运动员" prop="">
+        <el-form-item label="运动员">
           <el-input v-model="oneAthlete.user.nickname" disabled></el-input>
         </el-form-item>
 
         <el-form-item
           label="分数"
-          prop=""
           v-show="oneAthlete.item.itemUnit != '秒'"
         >
           <el-input v-model="scoreForm.score"></el-input>
         </el-form-item>
         <el-form-item
           label="分数单位"
-          prop=""
           v-show="oneAthlete.item.itemUnit != '秒'"
         >
           <el-input v-model="oneAthlete.item.itemUnit" disabled></el-input>
@@ -218,7 +216,6 @@
 
         <el-form-item
           label="分数"
-          prop=""
           v-show="oneAthlete.item.itemUnit == '秒'"
         >
           <div class="myInput">
@@ -252,14 +249,14 @@
         label-width="180px"
         class="demo-ruleForm"
       >
-        <el-form-item label="项目名称" prop="">
+        <el-form-item label="项目名称" >
           <el-input v-model="oneAthlete.item.itemName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="运动员" prop="">
+        <el-form-item label="运动员" >
           <el-input v-model="oneAthlete.user.nickname" disabled></el-input>
         </el-form-item>
 
-        <el-form-item label="分数" prop="">
+        <el-form-item label="分数" >
           <el-input v-model="scoreDetail.score" disabled></el-input>
         </el-form-item>
       </el-form>
@@ -287,14 +284,12 @@
 
         <el-form-item
           label="分数"
-          prop=""
           v-show="oneAthlete.item.itemUnit != '秒'"
         >
           <el-input v-model="scoreForm.score"></el-input>
         </el-form-item>
         <el-form-item
           label="分数单位"
-          prop=""
           v-show="oneAthlete.item.itemUnit != '秒'"
         >
           <el-input v-model="oneAthlete.item.itemUnit" disabled></el-input>
@@ -302,7 +297,6 @@
 
         <el-form-item
           label="分数"
-          prop=""
           v-show="oneAthlete.item.itemUnit == '秒'"
         >
           <div class="myInput">

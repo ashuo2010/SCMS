@@ -102,22 +102,22 @@
         label-width="80px"
         class="demo-ruleForm"
       >
-        <el-form-item label="学号" prop="userNo">
+        <el-form-item label="学号" >
           <el-input v-model="addForm.userNo"></el-input>
         </el-form-item>
-        <el-form-item label="登录账号" prop="username">
+        <el-form-item label="登录账号" >
           <el-input v-model="addForm.username"></el-input>
         </el-form-item>
-        <el-form-item label="登录密码" prop="password">
+        <el-form-item label="登录密码" >
           <el-input type="password" v-model="addForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="用户姓名" prop="nickname">
+        <el-form-item label="用户姓名" >
           <el-input v-model="addForm.nickname"></el-input>
         </el-form-item>
-         <el-form-item label="电话" prop="phone">
+         <el-form-item label="电话" >
           <el-input  v-model="addForm.phone"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="userSex">
+        <el-form-item label="性别" >
           <el-select v-model="addForm.userSex" filterable placeholder="请选择">
             <el-option
               v-for="item in userSex"
@@ -128,7 +128,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属团体" prop="tid">
+        <el-form-item label="所属团体">
           <el-select
             v-model="addForm.team.teamId"
             filterable
@@ -144,7 +144,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="用户类别" prop="userType">
+        <el-form-item label="用户类别" >
           <el-select v-model="addForm.userType" filterable placeholder="请选择">
             <el-option
               v-for="item in userRole"
@@ -202,25 +202,25 @@
         label-width="80px"
         class="demo-ruleForm"
       >
-        <el-form-item label="用户ID" prop="userId">
+        <el-form-item label="用户ID" >
           <el-input v-model="editForm.userId" disabled></el-input>
         </el-form-item>
-        <el-form-item label="学号" prop="userNo">
+        <el-form-item label="学号">
           <el-input v-model="editForm.userNo"></el-input>
         </el-form-item>
-        <el-form-item label="登录账号" prop="username">
+        <el-form-item label="登录账号" >
           <el-input v-model="editForm.username" disabled></el-input>
         </el-form-item>
-        <el-form-item label="登录密码" prop="password">
+        <el-form-item label="登录密码" >
           <el-input v-model="editForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="用户姓名" prop="nickname">
+        <el-form-item label="用户姓名" >
           <el-input v-model="editForm.nickname"></el-input>
         </el-form-item>
-         <el-form-item label="电话" prop="phone">
+         <el-form-item label="电话">
           <el-input v-model="editForm.phone"></el-input>
         </el-form-item>
-        <el-form-item label="性别" prop="userSex">
+        <el-form-item label="性别" >
           <el-select v-model="editForm.userSex" filterable placeholder="请选择">
             <el-option
               v-for="item in userSex"
@@ -231,7 +231,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="所属团体" prop="tid">
+        <el-form-item label="所属团体" >
           <el-select
             v-model="editForm.team.teamId"
             filterable
@@ -247,7 +247,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="用户类别" prop="userType">
+        <el-form-item label="用户类别" >
           <el-select
             v-model="editForm.userType"
             filterable
