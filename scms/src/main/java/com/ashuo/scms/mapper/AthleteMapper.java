@@ -1,11 +1,8 @@
 package com.ashuo.scms.mapper;
 
-import com.ashuo.scms.dto.AthleteScoreDto;
 import com.ashuo.scms.entity.Athlete;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-import java.util.List;
 
 /**
  * <p>

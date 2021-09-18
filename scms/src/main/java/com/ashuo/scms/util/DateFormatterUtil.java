@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class DateFormatterUtil {
 
-      private static DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+      private static final DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
       public static String localDateTimeToString(LocalDateTime dateTime) {
           return dateTime.format(localDateTimeFormatter);
@@ -19,7 +19,7 @@ public class DateFormatterUtil {
       }
 
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static String dateToString(Date dateTime) {
         return formatter.format(dateTime);

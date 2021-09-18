@@ -1,8 +1,6 @@
 package com.ashuo.scms.service.impl;
 
 import com.ashuo.scms.entity.Record;
-import com.ashuo.scms.entity.Record;
-import com.ashuo.scms.mapper.RecordMapper;
 import com.ashuo.scms.mapper.RecordMapper;
 import com.ashuo.scms.service.RecordService;
 import com.baomidou.mybatisplus.core.metadata.IPage;

@@ -2,18 +2,14 @@ package com.ashuo.scms.task;
 
 import com.ashuo.scms.entity.Season;
 import com.ashuo.scms.mapper.SeasonMapper;
-import com.ashuo.scms.service.SeasonService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author AShuo

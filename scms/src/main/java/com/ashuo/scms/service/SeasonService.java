@@ -1,7 +1,6 @@
 package com.ashuo.scms.service;
 
 import com.ashuo.scms.entity.Season;
-import com.ashuo.scms.entity.Season;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;

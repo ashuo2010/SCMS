@@ -1,19 +1,15 @@
 package com.ashuo.scms.controller;
 
 
-import cn.hutool.crypto.SecureUtil;
 import com.ashuo.scms.common.lang.ServerResponse;
 import com.ashuo.scms.entity.QueryInfo;
 import com.ashuo.scms.entity.Season;
-import com.ashuo.scms.entity.Season;
 import com.ashuo.scms.service.SeasonService;
-import com.ashuo.scms.service.UserService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;

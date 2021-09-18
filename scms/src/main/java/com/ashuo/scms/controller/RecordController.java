@@ -2,7 +2,10 @@ package com.ashuo.scms.controller;
 
 
 import com.ashuo.scms.common.lang.ServerResponse;
-import com.ashuo.scms.entity.*;
+import com.ashuo.scms.entity.Athlete;
+import com.ashuo.scms.entity.QueryInfo;
+import com.ashuo.scms.entity.Record;
+import com.ashuo.scms.entity.User;
 import com.ashuo.scms.service.RecordService;
 import com.ashuo.scms.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -10,12 +13,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
