@@ -1,5 +1,5 @@
 <template>
-  <div class="login_container" :style="bg">
+  <div :style="bg" class="login_container">
     <!--登录块-->
     <div class="login_box">
       <div class="title">运 动 会 综 合 管 理 系 统</div>
@@ -9,37 +9,39 @@
       </div> -->
       <!--表单-->
       <el-form
-        ref="loginForm"
-        :model="loginForm"
-        :rules="loginRules"
-        class="login_form"
-        label-width="0"
+          ref="loginForm"
+          :model="loginForm"
+          :rules="loginRules"
+          class="login_form"
+          label-width="0"
       >
         <!--用户名-->
-        <el-form-item >
+        <el-form-item>
           用户名：
           <el-input
-            v-model="loginForm.username"
-            prefix-icon="iconfont icon-denglu"
+              v-model="loginForm.username"
+              prefix-icon="iconfont icon-denglu"
           ></el-input>
         </el-form-item>
         <!--密码-->
-        <el-form-item >
+        <el-form-item>
           密码：
           <el-input
-            type="password"
-            v-model="loginForm.password"
-            prefix-icon="iconfont icon-mima"
-            @keyup.enter.native="submitForm('loginForm')"
+              v-model="loginForm.password"
+              prefix-icon="iconfont icon-mima"
+              type="password"
+              @keyup.enter.native="submitForm('loginForm')"
           ></el-input>
         </el-form-item>
         <!--按钮-->
         <el-form-item class="btns">
           <el-button type="primary" @click="submitForm('loginForm')"
-            >登录</el-button
+          >登录
+          </el-button
           >
           <el-button type="primary" @click="resetForm('loginForm')"
-            >重置</el-button
+          >重置
+          </el-button
           >
         </el-form-item>
       </el-form>
@@ -65,7 +67,7 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
+          {required: true, message: "请输入用户名", trigger: "blur"},
           {
             min: 3,
             max: 30,
@@ -74,7 +76,7 @@ export default {
           },
         ],
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
+          {required: true, message: "请输入密码", trigger: "blur"},
           {
             min: 1,
             max: 99,
@@ -103,7 +105,7 @@ export default {
               /*路由跳转*/
               _this.$router.push("/home");
             } else {
-              _this.$message.error( res.data.msg);
+              _this.$message.error(res.data.msg);
             }
           });
         } else {
@@ -112,7 +114,7 @@ export default {
       });
     },
     resetForm(loginForm) {
-     this.loginForm={
+      this.loginForm = {
         username: "",
         password: "",
       }
@@ -127,6 +129,7 @@ export default {
   //background-color: #2b4b6b;
   height: 100%;
 }
+
 /*输入框样式*/
 .login_box {
   width: 450px;
@@ -137,6 +140,7 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+
   .avatar_box {
     width: 130px;
     height: 130px;
@@ -148,6 +152,7 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #eee;
+
     img {
       width: 100%;
       height: 100%;
@@ -164,10 +169,12 @@ export default {
   height: 40px;
   margin-top: 30px;
 }
+
 .btns {
   display: flex;
   justify-content: flex-end;
 }
+
 .login_form {
   position: absolute;
   bottom: 0%;

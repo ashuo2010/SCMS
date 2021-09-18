@@ -3,13 +3,14 @@
   <el-container class="home-container">
     <el-header>
       <div class="div">
-        <img class="img" src="../assets/hzu_logo.jpg" alt />
+        <img alt class="img" src="../assets/hzu_logo.jpg"/>
         <span class="span">运动会综合管理系统</span>
       </div>
       <div>
         <span style="font-size:16px; margin-right:30px; font-weight:700">{{currentUser.nickname}}</span>
         <el-button size="mini" type="info" @click="editDialogVisible = true"
-          >修改密码</el-button
+        >修改密码
+        </el-button
         >
         <el-button size="mini" type="info" @click="logout">安全退出</el-button>
       </div>
@@ -21,23 +22,23 @@
           <i v-show="this.iscollapse" class="el-icon-d-arrow-right"></i>
         </div>
         <el-menu
-          background-color="#545c64"
-          text-color="#fff"
-          active-text-color="#409eff"
-          :collapse="iscollapse"
-          :collapse-transition="false"
-          :router="isrouter"
-          :default-active="activePath"
+            :collapse="iscollapse"
+            :collapse-transition="false"
+            :default-active="activePath"
+            :router="isrouter"
+            active-text-color="#409eff"
+            background-color="#545c64"
+            text-color="#fff"
         >
           <!--一级菜单 -->
           <el-submenu
-            v-show="
+              v-for="item in menuList"
+              v-show="
               item.mainmenu.type == 0 ||
               currentUser.userType == item.mainmenu.type
             "
-            :index="item.mainmenu.path"
-            v-for="item in menuList"
-            :key="item.mainmenu.mainmenuId"
+              :key="item.mainmenu.mainmenuId"
+              :index="item.mainmenu.path"
           >
             <template slot="title">
               <i :class="iconsObj[item.mainmenu.mainmenuId]"></i>
@@ -45,11 +46,11 @@
             </template>
             <!--二级菜单-->
             <el-menu-item
-              :index="item.mainmenu.path + sub.path"
-              v-for="sub in item.mlist"
-              :key="sub.id"
-              v-show="sub.type == 0 || currentUser.userType == sub.type"
-              @click="savePathState(item.mainmenu.path + sub.path)"
+                v-for="sub in item.mlist"
+                v-show="sub.type == 0 || currentUser.userType == sub.type"
+                :key="sub.id"
+                :index="item.mainmenu.path + sub.path"
+                @click="savePathState(item.mainmenu.path + sub.path)"
             >
               <template slot="title">
                 <!-- <i :class="iconsObj[sub.id]"></i> -->
@@ -60,7 +61,7 @@
         </el-menu>
       </el-aside>
       <el-main>
-        <transition name="fade" mode="out-in">
+        <transition mode="out-in" name="fade">
           <router-view></router-view>
         </transition>
       </el-main>
@@ -68,27 +69,27 @@
 
     <!--修改用户区域-->
     <el-dialog
-      title="修改密码"
-      :visible.sync="editDialogVisible"
-      width="40%"
-      @close="editDialogClosed"
+        :visible.sync="editDialogVisible"
+        title="修改密码"
+        width="40%"
+        @close="editDialogClosed"
     >
       <el-form
-        :model="editForm"
-        ref="editFormRef"
-        label-width="180px"
-        class="demo-ruleForm"
+          ref="editFormRef"
+          :model="editForm"
+          class="demo-ruleForm"
+          label-width="180px"
       >
-        <el-form-item label="请输入旧密码" >
-          <el-input type="password" v-model="editForm.password"></el-input>
+        <el-form-item label="请输入旧密码">
+          <el-input v-model="editForm.password" type="password"></el-input>
         </el-form-item>
-        <el-form-item label="请输入新密码" >
-          <el-input type="password" v-model="editForm.newPassword"></el-input>
+        <el-form-item label="请输入新密码">
+          <el-input v-model="editForm.newPassword" type="password"></el-input>
         </el-form-item>
         <el-form-item label="请再次确认密码">
           <el-input
-            type="password"
-            v-model="editForm.newPasswordConfirm"
+              v-model="editForm.newPasswordConfirm"
+              type="password"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -149,25 +150,25 @@ export default {
     logout() {
       const _this = this;
       _this.$http
-        .get("/user/logout", {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then((res) => {
-          _this.$store.commit("REMOVE_INFO");
-          _this.$router.push("/login");
-          _this.savePathState("/")
-        });
+          .get("/user/logout", {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          })
+          .then((res) => {
+            _this.$store.commit("REMOVE_INFO");
+            _this.$router.push("/login");
+            _this.savePathState("/")
+          });
     },
 
     //修改密码
     changePassword() {
       const _this = this;
       if (
-        _this.editForm.password == "" ||
-        _this.editForm.newPassword == "" ||
-        _this.editForm.newPassword == ""
+          _this.editForm.password == "" ||
+          _this.editForm.newPassword == "" ||
+          _this.editForm.newPassword == ""
       ) {
         return _this.$message.info("请输入完整");
       }
@@ -198,7 +199,7 @@ export default {
           if (res.status === 200) {
             _this.menuList = res.data.data;
             _this.$message.success(
-              " 欢迎您! " + JSON.parse(localStorage.getItem("user")).nickname
+                " 欢迎您! " + JSON.parse(localStorage.getItem("user")).nickname
             );
           } else {
             _this.$message.error("获取列表失败");
@@ -253,6 +254,7 @@ export default {
 .el-aside {
   background-color: #444444;
 }
+
 .el-menu {
   border-right: none;
 }
@@ -265,6 +267,7 @@ export default {
   width: 55px;
   height: 55px;
 }
+
 /*|||按钮样式*/
 .toggle-button {
   background-color: #4a5064;
@@ -279,12 +282,15 @@ export default {
 .fade-enter {
   opacity: 0;
 }
+
 .fade-leave {
   opacity: 1;
 }
+
 .fade-enter-active {
   transition: opacity 0.3s;
 }
+
 .fade-leave-active {
   opacity: 0;
   transition: opacity 0.3s;

@@ -79,12 +79,16 @@
         <where>
             <if test="user.userId!=null and user.userId!=null and user.userId!=0">AND u.user_id = #{user.userId}</if>
             <if test="user.userNo!=null">AND u.user_no = #{user.userNo}</if>
-            <if test="user.userType!=null and user.userType!=null and user.userType!=0">AND u.user_type = #{user.userType}</if>
+            <if test="user.userType!=null and user.userType!=null and user.userType!=0">AND u.user_type =
+                #{user.userType}
+            </if>
             <if test="user.userNo!=null">AND u.user_no = #{user.userNo}</if>
             <if test="user.username!=null">AND u.username = #{user.username}</if>
             <if test="user.password!=null">AND u.password = #{user.password}</if>
             <if test="user.nickname!=null">AND u.nickname LIKE '%${user.nickname}%'</if>
-            <if test="user.team!=null and user.team.team_id!=null and user.team.team_id!=0">AND t.team_id = #{user.team.teamId}</if>
+            <if test="user.team!=null and user.team.team_id!=null and user.team.team_id!=0">AND t.team_id =
+                #{user.team.teamId}
+            </if>
             <if test="user.team!=null and user.team.teamName!=null">AND t.team_name LIKE '%${user.team.teamName}%'</if>
         </where>
     </select>

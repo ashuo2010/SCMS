@@ -14,17 +14,17 @@
         <el-col :span="5">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入操作用户姓名"
-            v-model="queryInfo.query"
-            clearable
-            @keyup.enter.native="page"
-            @clear="page"
+              v-model="queryInfo.query"
+              clearable
+              placeholder="请输入操作用户姓名"
+              @clear="page"
+              @keyup.enter.native="page"
           >
             <!--搜索按钮-->
             <el-button
-              slot="append"
-              icon="el-icon-search"
-              @click="page"
+                slot="append"
+                icon="el-icon-search"
+                @click="page"
             ></el-button>
           </el-input>
         </el-col>
@@ -35,33 +35,33 @@
 
         <el-table-column type="index"></el-table-column>
         <el-table-column
-          label="操作时间"
-          prop="executionTime"
+            label="操作时间"
+            prop="executionTime"
         ></el-table-column>
         <el-table-column
-          label="操作用户"
-          prop="executionUser.nickname"
+            label="操作用户"
+            prop="executionUser.nickname"
         ></el-table-column>
 
         <el-table-column
-          label="用户角色"
-          prop="executionUser.userType"
+            label="用户角色"
+            prop="executionUser.userType"
         ></el-table-column>
 
         <el-table-column label="执行操作" prop="method"></el-table-column>
-        <el-table-column label="执行参数" prop="parameter"
-          :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column :show-overflow-tooltip="true" label="执行参数"
+                         prop="parameter"></el-table-column>
       </el-table>
       <!--分页组件-->
       <div>
         <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.currentPage"
-          :page-sizes="[5, 10, 20, 50]"
-          :page-size="queryInfo.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+            :current-page="queryInfo.currentPage"
+            :page-size="queryInfo.pageSize"
+            :page-sizes="[5, 10, 20, 50]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
         >
         </el-pagination>
       </div>
@@ -95,24 +95,24 @@ export default {
     async page() {
       const _this = this;
       axios
-        .get("/syslog/querySyslog?queryInfo=", { params: _this.queryInfo })
-        .then((res) => {
-          let data = res.data.data;
-          _this.syslogList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-          //userType->userRole
-          _this.syslogList.forEach((item, index) => {
-            if (item.executionUser.userType == 1) {
-              item.executionUser.userType = "管理员";
-            } else if (item.executionUser.userType == 2) {
-              item.executionUser.userType = "计分员";
-            } else {
-              item.executionUser.userType = "运动员";
-            }
+          .get("/syslog/querySyslog?queryInfo=", {params: _this.queryInfo})
+          .then((res) => {
+            let data = res.data.data;
+            _this.syslogList = data.records;
+            _this.queryInfo.currentPage = data.current;
+            _this.total = data.total;
+            _this.queryInfo.pageSize = data.size;
+            //userType->userRole
+            _this.syslogList.forEach((item, index) => {
+              if (item.executionUser.userType == 1) {
+                item.executionUser.userType = "管理员";
+              } else if (item.executionUser.userType == 2) {
+                item.executionUser.userType = "计分员";
+              } else {
+                item.executionUser.userType = "运动员";
+              }
+            });
           });
-        });
     },
 
     handleSizeChange(newSize) {
@@ -134,6 +134,7 @@ export default {
   margin-bottom: 15px;
   font-size: 17px;
 }
+
 .myTable {
   border-collapse: collapse;
   margin: 0 auto;

@@ -35,7 +35,7 @@ public class AccountRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = JwtUtil.getUsername(principals.toString());
-        IPage<User> userList     = userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), new User().setUsername(username));
+        IPage<User> userList = userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), new User().setUsername(username));
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         simpleAuthorizationInfo.addRole(String.valueOf(userList.getRecords().get(0).getUserType()));
         return simpleAuthorizationInfo;
@@ -49,18 +49,18 @@ public class AccountRealm extends AuthorizingRealm {
         String token = (String) auth.getCredentials();
         // 解密获得username，用于和数据库进行对比
         String username = JwtUtil.getUsername(token);
-        int userId=JwtUtil.getUserId(token);
+        int userId = JwtUtil.getUserId(token);
         if (username == null) {
             throw new AuthenticationException("token invalid");
         }
 
-        IPage<User> userList     = userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), new User().setUsername(username));
+        IPage<User> userList = userService.getUserByCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), new User().setUsername(username));
 
         if (userList.getRecords() == null || userList.getRecords().size() == 0) {
             throw new AuthenticationException("user didn't existed!");
         }
 
-        if (!JwtUtil.verify(token, username,userId)) {
+        if (!JwtUtil.verify(token, username, userId)) {
             throw new AuthenticationException("username or password error");
         }
 

@@ -33,8 +33,8 @@
 
     <insert id="insertRecord" parameterType="com.ashuo.scms.entity.Record"
             useGeneratedKeys="true" keyColumn="record_id" keyProperty="recordId">
-        INSERT INTO record( a_id,record_score, record_status, create_time,edit_time)
-        VALUES (#{athlete.athleteId},#{recordScore},#{recordStatus},#{createTime},#{editTime})
+        INSERT INTO record(a_id, record_score, record_status, create_time, edit_time)
+        VALUES (#{athlete.athleteId}, #{recordScore}, #{recordStatus}, #{createTime}, #{editTime})
     </insert>
 
     <select id="queryRecordByRecordCondition" resultMap="recordMap">
@@ -63,20 +63,27 @@
         INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
             <if test="record.recordId!=null and record.recordId!=0">AND r.record_id=#{record.recordId}</if>
-            <if test="record.recordStatus!=null and record.recordStatus!=0 ">AND r.record_status=#{record.recordStatus}</if>
-            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">AND
+            <if test="record.recordStatus!=null and record.recordStatus!=0 ">AND
+                r.record_status=#{record.recordStatus}
+            </if>
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">
+                AND
                 i.parent_id=#{record.athlete.item.parentId}
             </if>
-            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.itemId!=null and record.athlete.item.itemId!=0">AND
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.itemId!=null and record.athlete.item.itemId!=0">
+                AND
                 i.item_id=#{record.athlete.item.itemId}
             </if>
-            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">AND
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.parentId!=null and record.athlete.item.parentId!=0">
+                AND
                 i.parent_id=#{record.athlete.item.parentId}
             </if>
-            <if test="record.athlete!=null and record.athlete.user!=null and record.athlete.user.nickname!=null">AND u.nickname LIKE
+            <if test="record.athlete!=null and record.athlete.user!=null and record.athlete.user.nickname!=null">AND
+                u.nickname LIKE
                 '%${record.athlete.user.nickname}%'
             </if>
-            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.itemName!=null">AND i.item_name LIKE
+            <if test="record.athlete!=null and record.athlete.item!=null and record.athlete.item.itemName!=null">AND
+                i.item_name LIKE
                 '%${record.athlete.item.itemName}%'
             </if>
         </where>
@@ -89,9 +96,8 @@
     <update id="updateRecord" parameterType="com.ashuo.scms.entity.Record">
         UPDATE record
         SET record_status=#{recordStatus}
-        where record_id=#{recordId}
+        where record_id = #{recordId}
     </update>
-
 
 
 </mapper>

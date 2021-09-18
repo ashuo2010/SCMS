@@ -38,6 +38,4 @@ public interface ItemMapper {
     Item queryItemTemplateDetail(@Param("item") Item item);
 
 
-
-
 }

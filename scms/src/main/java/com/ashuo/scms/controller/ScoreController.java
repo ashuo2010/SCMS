@@ -72,29 +72,29 @@ public class ScoreController {
     @RequiresRoles(value = {"2"})
     @Transactional
     public ServerResponse addScore(@RequestBody Score score) {
-            if (score == null||score.getAthlete()==null) {
-                return ServerResponse.createByErrorCodeMessage(400, "添加失败，分数信息为空");
-            }
-            Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
-            if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
-                return ServerResponse.createByErrorCodeMessage(400, "分数录入失败，该届运动会已结束");
-            }
-            //分数纪录处理，因为分数需要加上是否破纪录，所以记录在分数之前处理
-            scoreRecordHandle(score);
+        if (score == null || score.getAthlete() == null) {
+            return ServerResponse.createByErrorCodeMessage(400, "添加失败，分数信息为空");
+        }
+        Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
+        if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus() == 0) {
+            return ServerResponse.createByErrorCodeMessage(400, "分数录入失败，该届运动会已结束");
+        }
+        //分数纪录处理，因为分数需要加上是否破纪录，所以记录在分数之前处理
+        scoreRecordHandle(score);
 
-            //设置创建、修改时间
-            score.setCreateTime(LocalDateTime.now());
-            score.setEditTime(LocalDateTime.now());
-            //添加成绩
-            scoreService.addScore(score);
+        //设置创建、修改时间
+        score.setCreateTime(LocalDateTime.now());
+        score.setEditTime(LocalDateTime.now());
+        //添加成绩
+        scoreService.addScore(score);
 
-            //设置1,表示已记分
-            Athlete athlete =score.getAthlete();
-            athlete.setScoreStatus(1);
-            athleteService.modifyAthlete(athlete);
+        //设置1,表示已记分
+        Athlete athlete = score.getAthlete();
+        athlete.setScoreStatus(1);
+        athleteService.modifyAthlete(athlete);
 
-            //分数排名处理
-            scoreRankingHandle(score);
+        //分数排名处理
+        scoreRankingHandle(score);
         return ServerResponse.createBySuccessMessage("添加成功");
 
     }
@@ -118,12 +118,12 @@ public class ScoreController {
     @RequiresRoles(value = {"2"})
     @Transactional
     public ServerResponse editScore(@RequestBody Score score) {
-        if (score == null ||score.getScore()==null|| score.getScore().compareTo(BigDecimal.ZERO)==0||score.getAthlete()==null) {
+        if (score == null || score.getScore() == null || score.getScore().compareTo(BigDecimal.ZERO) == 0 || score.getAthlete() == null) {
             return ServerResponse.createByErrorCodeMessage(400, "修改失败，分数信息为空");
         }
 
         Item item = itemService.getOneItemByCondition(score.getAthlete().getItem());
-        if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus()==0) {
+        if (item != null && item.getSeason() != null && item.getSeason().getSeasonStatus() == 0) {
             return ServerResponse.createByErrorCodeMessage(400, "分数修改失败，该届运动会已结束");
         }
         //分数纪录处理
@@ -143,8 +143,8 @@ public class ScoreController {
     @GetMapping("/queryAthleteScore")
     @RequiresAuthentication
     public ServerResponse queryAthleteScore(QueryInfo queryInfo, Score score) {
-        Athlete athlete= ObjectUtils.isNull(score.getAthlete())? new Athlete(): score.getAthlete();
-        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
+        Athlete athlete = ObjectUtils.isNull(score.getAthlete()) ? new Athlete() : score.getAthlete();
+        User user = ObjectUtils.isNull(athlete.getUser()) ? new User() : athlete.getUser();
 
         user.setNickname(queryInfo.getQuery());
         athlete.setUser(user);
@@ -173,10 +173,10 @@ public class ScoreController {
             //获取该项目之前记录
             Record itemRecord = recordList.get(0);
             //如果分数破纪录或持平记录
-            if (score.getScore().compareTo(itemRecord.getRecordScore())>=0) {
+            if (score.getScore().compareTo(itemRecord.getRecordScore()) >= 0) {
 
                 //如果分数破纪录，如果和记录持平则直接添加
-                if (score.getScore().compareTo(itemRecord.getRecordScore())==1 ) {
+                if (score.getScore().compareTo(itemRecord.getRecordScore()) == 1) {
 
                     //使之前记录失效
                     recordList.stream().forEach(r -> {
@@ -192,7 +192,7 @@ public class ScoreController {
                 //如果没有破纪录或者和记录持平
                 score.setIsBreakRecord(0);
             }
-        }else {
+        } else {
             recordService.addRecord(record);
             score.setIsBreakRecord(1);
         }
@@ -214,14 +214,14 @@ public class ScoreController {
         //添加到Ranking对象中
         List<Ranking> rankingList = new ArrayList<>();
 
-        Score tempScore =new Score();
+        Score tempScore = new Score();
         tempScore.setScore(new BigDecimal("-1"));
 
         //获取前三，并重新计算排名
-        int limitAmount=4;
-        int i=0;
-        while ( limitAmount>1){
-            if (scoreList.size()> i) {
+        int limitAmount = 4;
+        int i = 0;
+        while (limitAmount > 1) {
+            if (scoreList.size() > i) {
                 Score s = scoreList.get(i);
                 //如果分数不相等
                 if (s.getScore().compareTo(tempScore.getScore()) != 0) {
@@ -235,8 +235,9 @@ public class ScoreController {
                 rankingList.add(ranking);
                 tempScore = s;
                 i++;
+            } else {
+                limitAmount--;
             }
-            else {limitAmount--;}
         }
         rankingService.addRanking(rankingList);
     }

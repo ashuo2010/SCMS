@@ -28,9 +28,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public IPage<Item> getItemByItemCondition(Page<Item> page, Item item) {
         IPage<Item> itemList = itemMapper.queryItemByItemCondition(page, item);
-        if (itemList.getRecords()!=null && itemList.getRecords().size()>0);
+        if (itemList.getRecords() != null && itemList.getRecords().size() > 0) ;
         //项目名称加上性别
-        itemList.setRecords(itemList.getRecords().stream().map(i -> i.setItemName(i.getItemName()+" ("+i.getItemSex()+")")).collect(Collectors.toList()));
+        itemList.setRecords(itemList.getRecords().stream().map(i -> i.setItemName(i.getItemName() + " (" + i.getItemSex() + ")")).collect(Collectors.toList()));
         return itemList;
     }
 
@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
             return null;
         }
         Item item = itemMapper.queryOneItemByItemCondition(itemCondition);
-        if (item!=null) {
+        if (item != null) {
             item.setItemName(item.getItemName() + " (" + item.getItemSex() + ")");
         }
         return item;

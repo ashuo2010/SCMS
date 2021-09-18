@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author AShuo
@@ -38,10 +37,10 @@ public class RankingController {
     @ApiOperation("团体总排名")
     @GetMapping("/queryTeamRanking")
     @RequiresAuthentication
-    public ServerResponse queryTeamRanking(QueryInfo queryInfo,Ranking ranking) {
-        Athlete athlete= ObjectUtils.isNull(ranking.getAthlete())? new Athlete(): ranking.getAthlete();
-        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
-        Team team =ObjectUtils.isNull(user.getTeam())? new Team():user.getTeam();
+    public ServerResponse queryTeamRanking(QueryInfo queryInfo, Ranking ranking) {
+        Athlete athlete = ObjectUtils.isNull(ranking.getAthlete()) ? new Athlete() : ranking.getAthlete();
+        User user = ObjectUtils.isNull(athlete.getUser()) ? new User() : athlete.getUser();
+        Team team = ObjectUtils.isNull(user.getTeam()) ? new Team() : user.getTeam();
 
         team.setTeamName(queryInfo.getQuery());
         user.setTeam(team);
@@ -58,9 +57,9 @@ public class RankingController {
     @ApiOperation("个人总排名")
     @GetMapping("/queryUserRanking")
     @RequiresAuthentication
-    public ServerResponse queryUserRanking(QueryInfo queryInfo,Ranking ranking) {
-        Athlete athlete= ObjectUtils.isNull(ranking.getAthlete())? new Athlete(): ranking.getAthlete();
-        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
+    public ServerResponse queryUserRanking(QueryInfo queryInfo, Ranking ranking) {
+        Athlete athlete = ObjectUtils.isNull(ranking.getAthlete()) ? new Athlete() : ranking.getAthlete();
+        User user = ObjectUtils.isNull(athlete.getUser()) ? new User() : athlete.getUser();
 
         user.setNickname(queryInfo.getQuery());
         athlete.setUser(user);

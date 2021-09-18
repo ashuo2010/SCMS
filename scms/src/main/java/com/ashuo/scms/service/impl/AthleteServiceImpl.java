@@ -55,7 +55,7 @@ public class AthleteServiceImpl implements AthleteService {
             int effNum2 = itemMapper.updateItem(item);
             //将本届运动会的报名人数增加一
             Season season = seasonService.getSeasonById(item.getSeason());
-            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount()+1);
+            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount() + 1);
             int effNum3 = seasonService.modifySeason(season);
             if (effNum != 1 || effNum2 != 1 || effNum3 != 1) {
                 return 0;
@@ -88,7 +88,7 @@ public class AthleteServiceImpl implements AthleteService {
             athlete.setAthleteId(athleteId);
             IPage<Athlete> athleteList = athleteMapper.queryAthleteByAthleteCondition(new Page<>(Consant.MINCURRENTPAGE, Consant.MINPAGESIZE), athlete);
             athlete = athleteList.getRecords().get(0);
-            Item temp =(athlete.getItem());
+            Item temp = (athlete.getItem());
             Item item = itemMapper.queryOneItemByItemCondition(temp);
             //将对应项目报名数量减一
             item.setAthleteAmount(item.getAthleteAmount() - 1);
@@ -96,7 +96,7 @@ public class AthleteServiceImpl implements AthleteService {
             int effNum2 = athleteMapper.deleteAthlete(athleteId);
             //将本届运动会的报名人数减一
             Season season = seasonService.getSeasonById(item.getSeason());
-            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount()-1);
+            season.setSeasonAthleteAmount(season.getSeasonAthleteAmount() - 1);
             int effNum3 = seasonService.modifySeason(season);
             if (effNum <= 0 || effNum2 <= 0 || effNum3 <= 0) {
                 return 0;

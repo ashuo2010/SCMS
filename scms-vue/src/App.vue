@@ -38,18 +38,22 @@ export default {
   backface-visibility: hidden;
   perspective: 1000;
 }
+
 .vux-pop-out-enter {
   opacity: 0;
   transform: translate3d(-100%, 0, 0);
 }
+
 .vux-pop-out-leave-active {
   opacity: 0;
   transform: translate3d(100%, 0, 0);
 }
+
 .vux-pop-in-enter {
   opacity: 0;
   transform: translate3d(100%, 0, 0);
 }
+
 .vux-pop-in-leave-active {
   opacity: 0;
   transform: translate3d(-100%, 0, 0);

@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author AShuo
@@ -24,5 +24,5 @@ public interface RecordMapper extends BaseMapper<Record> {
     //按条件查询Record
     IPage<Record> queryRecordByRecordCondition(Page<Record> page, @Param("record") Record record);
 
-  
+
 }

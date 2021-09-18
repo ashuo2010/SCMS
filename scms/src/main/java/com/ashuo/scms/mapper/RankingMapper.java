@@ -22,7 +22,7 @@ public interface RankingMapper {
     int deleteRankingByItemId(@Param("itemId") Integer itemId);
 
     //返回团体排名和总积分
-    IPage<Ranking> queryTeamTotalRanking(Page<Ranking> page,  @Param("ranking") Ranking ranking);
+    IPage<Ranking> queryTeamTotalRanking(Page<Ranking> page, @Param("ranking") Ranking ranking);
 
     //返回个人排名和总积分
     IPage<Ranking> queryUserTotalRanking(Page<Ranking> page, @Param("ranking") Ranking ranking);

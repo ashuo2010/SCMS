@@ -9,20 +9,20 @@
 
     <!--项目列表主体-->
     <el-card>
-        <el-row :gutter="25">
+      <el-row :gutter="25">
         <div style="float: left">
           <el-col>
             <el-select
-              v-model="selectSeasonId"
-              filterable
-              placeholder="请选择运动会"
-              @change="page(true)"
+                v-model="selectSeasonId"
+                filterable
+                placeholder="请选择运动会"
+                @change="page(true)"
             >
               <el-option
-                v-for="item in allSeasonOptions"
-                :key="item.seasonId"
-                :label="item.seasonName"
-                :value="item.seasonId"
+                  v-for="item in allSeasonOptions"
+                  :key="item.seasonId"
+                  :label="item.seasonName"
+                  :value="item.seasonId"
               >
               </el-option>
             </el-select>
@@ -38,19 +38,19 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column label="学号" prop="user.userNo"></el-table-column>
         <el-table-column
-          label="参数运动员"
-          prop="user.nickname"
+            label="参数运动员"
+            prop="user.nickname"
         ></el-table-column>
         <el-table-column label="性别" prop="user.userSex"></el-table-column>
 
         <el-table-column
-          label="参赛项目"
-          prop="item.itemName"
+            label="参赛项目"
+            prop="item.itemName"
         ></el-table-column>
         <el-table-column label="地点" prop="item.itemPlace"></el-table-column>
         <el-table-column
-          label="开始时间"
-          prop="item.startTime"
+            label="开始时间"
+            prop="item.startTime"
         ></el-table-column>
         <el-table-column label="结束时间" prop="item.endTime"></el-table-column>
 
@@ -60,11 +60,12 @@
           <template slot-scope="scope">
             <!--取消报名-->
             <el-button
-              type="danger"
-              size="mini"
-              :disabled="scope.row.userIds!=null"
-              @click="deleteAthlete(scope.row.athleteId)"
-              >取消报名</el-button
+                :disabled="scope.row.userIds!=null"
+                size="mini"
+                type="danger"
+                @click="deleteAthlete(scope.row.athleteId)"
+            >取消报名
+            </el-button
             >
           </template>
         </el-table-column>
@@ -72,13 +73,13 @@
       <!--分页组件-->
       <div>
         <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.currentPage"
-          :page-sizes="[5, 10, 20, 50]"
-          :page-size="queryInfo.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+            :current-page="queryInfo.currentPage"
+            :page-size="queryInfo.pageSize"
+            :page-sizes="[5, 10, 20, 50]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
         >
         </el-pagination>
       </div>
@@ -97,9 +98,9 @@ export default {
       scorers: [],
       itemDetail: [],
       //所有运动会届时列表
-      allSeasonOptions:[],
+      allSeasonOptions: [],
       //选择的届时
-      selectSeasonId:"",
+      selectSeasonId: "",
       userId: JSON.parse(localStorage.getItem("user")).userId,
 
       queryInfo: {
@@ -114,75 +115,75 @@ export default {
     };
   },
   created() {
-     this.getSeasons();
+    this.getSeasons();
   },
   methods: {
-      async page(isSelect) {
-      if(isSelect===true){
-        this.queryInfo.currentPage=1;
+    async page(isSelect) {
+      if (isSelect === true) {
+        this.queryInfo.currentPage = 1;
         this.queryInfo.pageSize = 10;
       }
       const _this = this;
       axios
-        .get(
-          "/athlete/queryAthlete?item.season.seasonId="+_this.selectSeasonId+"&user.userId=" + this.userId+"&queryInfo=",{ params: _this.queryInfo }
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.athletelist = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
+          .get(
+              "/athlete/queryAthlete?item.season.seasonId=" + _this.selectSeasonId + "&user.userId=" + this.userId + "&queryInfo=", {params: _this.queryInfo}
+          )
+          .then((res) => {
+            let data = res.data.data;
+            _this.athletelist = data.records;
+            _this.queryInfo.currentPage = data.current;
+            _this.total = data.total;
+            _this.queryInfo.pageSize = data.size;
+          });
     },
 
 //获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
-        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
-        .then((res) => {
-        let data = res.data.data.records;
-        data.push( {
-          seasonId: 0,
-          seasonStatus:0,
-          seasonName: "所有运动会",
-        })
-        data.forEach((item,index)=>{
-            if(item.seasonStatus!=0){
-            _this.selectSeasonId=item.seasonId 
-            }
-          })
-        _this.allSeasonOptions=data;
-    _this.page();
-        });
+          .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
+          .then((res) => {
+            let data = res.data.data.records;
+            data.push({
+              seasonId: 0,
+              seasonStatus: 0,
+              seasonName: "所有运动会",
+            })
+            data.forEach((item, index) => {
+              if (item.seasonStatus != 0) {
+                _this.selectSeasonId = item.seasonId
+              }
+            })
+            _this.allSeasonOptions = data;
+            _this.page();
+          });
     },
 
 
     async deleteAthlete(athleteId) {
       const _this = this;
       const confirmResult = await _this
-        .$confirm("是否确定取消报名？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .catch((err) => err);
+          .$confirm("是否确定取消报名？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+          .catch((err) => err);
       if (confirmResult !== "confirm") {
         return _this.$message.info("已取消操作");
       }
       axios
-        .delete("/athlete/deleteAthlete?athleteId=" + athleteId)
-        .then((res) => {
-          if (res.data.status == 200) {
-            
-            _this.$message.success("已取消该项目");
-            _this.addDialogVisible = false;
-            _this.page();
-          } else {
-            _this.$message.error(res.data.msg);
-          }
-        });
+          .delete("/athlete/deleteAthlete?athleteId=" + athleteId)
+          .then((res) => {
+            if (res.data.status == 200) {
+
+              _this.$message.success("已取消该项目");
+              _this.addDialogVisible = false;
+              _this.page();
+            } else {
+              _this.$message.error(res.data.msg);
+            }
+          });
     },
 
     handleSizeChange(newSize) {
@@ -204,6 +205,7 @@ export default {
   margin-bottom: 15px;
   font-size: 17px;
 }
+
 .myTable {
   border-collapse: collapse;
   margin: 0 auto;

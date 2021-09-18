@@ -22,9 +22,9 @@ import AthleteScoreList from "../components/admin/AthleteScoreList";
 Vue.use(VueRouter);
 
 const routes = [{
-        path: "/",
-        redirect: "/login",
-    },
+    path: "/",
+    redirect: "/login",
+},
     {
         path: "/login",
         component: Login
@@ -34,9 +34,9 @@ const routes = [{
         component: Home,
         redirect: "welcome",
         children: [{
-                path: "/welcome",
-                component: Welcome
-            },
+            path: "/welcome",
+            component: Welcome
+        },
             {
                 path: "/401",
                 component: Page401

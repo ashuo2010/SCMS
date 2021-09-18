@@ -64,7 +64,7 @@ public class UserController {
         if (!user.getPassword().equals(SecureUtil.md5(userDto.getPassword()))) {
             return ServerResponse.createByErrorCodeMessage(400, "用户名或密码错误");
         }
-        String jwt = JwtUtil.sign(user.getUsername(),user.getUserId());
+        String jwt = JwtUtil.sign(user.getUsername(), user.getUserId());
         response.setHeader("Authorization", jwt);
         response.setHeader("Access-Control-Expose-Headers", "Authorization");
         return ServerResponse.createBySuccess(user);

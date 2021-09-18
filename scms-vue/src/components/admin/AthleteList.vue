@@ -14,17 +14,17 @@
         <el-col :span="5">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入运动员姓名"
-            v-model="queryInfo.query"
-            clearable
-            @keyup.enter.native="page"
-            @clear="page"
+              v-model="queryInfo.query"
+              clearable
+              placeholder="请输入运动员姓名"
+              @clear="page"
+              @keyup.enter.native="page"
           >
             <!--搜索按钮-->
             <el-button
-              slot="append"
-              icon="el-icon-search"
-              @click="page"
+                slot="append"
+                icon="el-icon-search"
+                @click="page"
             ></el-button>
           </el-input>
         </el-col>
@@ -32,16 +32,16 @@
         <div style="float: left">
           <el-col>
             <el-select
-              v-model="selectSeasonId"
-              filterable
-              placeholder="请选择运动会"
-              @change="page(true)"
+                v-model="selectSeasonId"
+                filterable
+                placeholder="请选择运动会"
+                @change="page(true)"
             >
               <el-option
-                v-for="item in allSeasonOptions"
-                :key="item.seasonId"
-                :label="item.seasonName"
-                :value="item.seasonId"
+                  v-for="item in allSeasonOptions"
+                  :key="item.seasonId"
+                  :label="item.seasonName"
+                  :value="item.seasonId"
               >
               </el-option>
             </el-select>
@@ -51,16 +51,16 @@
         <div style="float: left">
           <el-col>
             <el-select
-              v-model="selectItemId"
-              filterable
-              placeholder="请选择项目"
-              @change="page(true)"
+                v-model="selectItemId"
+                filterable
+                placeholder="请选择项目"
+                @change="page(true)"
             >
               <el-option
-                v-for="item in itemList"
-                :key="item.itemId"
-                :label="item.itemName"
-                :value="item.itemId"
+                  v-for="item in itemList"
+                  :key="item.itemId"
+                  :label="item.itemName"
+                  :value="item.itemId"
               >
               </el-option>
             </el-select>
@@ -68,19 +68,22 @@
         </div>
         <el-col :span="4">
           <el-button type="primary" @click="exportExcel()"
-            >导出运动员列表</el-button
+          >导出运动员列表
+          </el-button
           >
         </el-col>
 
-        <el-col :span="4" v-show="systemStatus && currentUser.userType == 1">
+        <el-col v-show="systemStatus && currentUser.userType == 1" :span="4">
           <el-button type="danger" @click="switchSystem()"
-            >关闭系统报名</el-button
+          >关闭系统报名
+          </el-button
           >
         </el-col>
 
-        <el-col :span="4" v-show="!systemStatus && currentUser.userType == 1">
+        <el-col v-show="!systemStatus && currentUser.userType == 1" :span="4">
           <el-button type="success" @click="switchSystem()"
-            >开启系统报名</el-button
+          >开启系统报名
+          </el-button
           >
         </el-col>
       </el-row>
@@ -91,27 +94,27 @@
         <el-table-column type="index"></el-table-column>
         <el-table-column label="学号" prop="user.userNo"></el-table-column>
         <el-table-column
-          label="参数运动员"
-          prop="user.nickname"
+            label="参数运动员"
+            prop="user.nickname"
         ></el-table-column>
         <el-table-column label="性别" prop="user.userSex"></el-table-column>
 
         <el-table-column
-          label="参赛项目"
-          prop="item.itemName"
+            label="参赛项目"
+            prop="item.itemName"
         ></el-table-column>
         <el-table-column label="地点" prop="item.itemPlace"></el-table-column>
 
         <el-table-column label="报名时间" prop="signTime"></el-table-column>
 
-         <el-table-column label="操作" prop="state">
+        <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
             <!--删除-->
             <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="deleteAthlete(scope.row.athleteId)"
+                icon="el-icon-delete"
+                size="mini"
+                type="danger"
+                @click="deleteAthlete(scope.row.athleteId)"
             ></el-button>
           </template>
         </el-table-column>
@@ -121,13 +124,13 @@
       <!--分页组件-->
       <div>
         <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.currentPage"
-          :page-sizes="[5, 10, 20, 50]"
-          :page-size="queryInfo.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+            :current-page="queryInfo.currentPage"
+            :page-size="queryInfo.pageSize"
+            :page-sizes="[5, 10, 20, 50]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
         >
         </el-pagination>
       </div>
@@ -150,9 +153,9 @@ export default {
       selectItemId: "",
 
       //所有运动会届时列表
-      allSeasonOptions:[],
+      allSeasonOptions: [],
       //选择的届时
-      selectSeasonId:"",
+      selectSeasonId: "",
 
       currentUser: "",
 
@@ -169,7 +172,7 @@ export default {
       FormRules: {
         itemPlace: [
           //   { required: true, message: "请输入用户名", trigger: "blur" },
-          { required: true, trigger: "blur" },
+          {required: true, trigger: "blur"},
         ],
       },
 
@@ -186,22 +189,22 @@ export default {
   },
   methods: {
     async page(isSelect) {
-      if(isSelect===true){
-        this.queryInfo.currentPage=1;
+      if (isSelect === true) {
+        this.queryInfo.currentPage = 1;
         this.queryInfo.pageSize = 10;
       }
       const _this = this;
       axios
-        .get(
-          "/athlete/queryAthlete?item.season.seasonId="+_this.selectSeasonId+"&item.parentId=" +_this.selectItemId+"&queryInfo=", { params: _this.queryInfo }
-        )
-        .then((res) => {
-          let data = res.data.data;
-          _this.athleteList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
+          .get(
+              "/athlete/queryAthlete?item.season.seasonId=" + _this.selectSeasonId + "&item.parentId=" + _this.selectItemId + "&queryInfo=", {params: _this.queryInfo}
+          )
+          .then((res) => {
+            let data = res.data.data;
+            _this.athleteList = data.records;
+            _this.queryInfo.currentPage = data.current;
+            _this.total = data.total;
+            _this.queryInfo.pageSize = data.size;
+          });
       axios.post("/syslog/getSystemStatus").then((res) => {
         _this.systemStatus = res.data.data;
       });
@@ -212,23 +215,23 @@ export default {
     async getSeasons() {
       const _this = this;
       axios
-        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
-        .then((res) => {
-        let data = res.data.data.records;
-        data.push( {
-          seasonId: 0,
-          seasonStatus:0,
-          seasonName: "所有运动会",
-        })
-        data.forEach((item,index)=>{
-            if(item.seasonStatus!=0){
-            _this.selectSeasonId=item.seasonId 
-            }
-          })
-        _this.allSeasonOptions=data;
-        _this.page();
+          .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
+          .then((res) => {
+            let data = res.data.data.records;
+            data.push({
+              seasonId: 0,
+              seasonStatus: 0,
+              seasonName: "所有运动会",
+            })
+            data.forEach((item, index) => {
+              if (item.seasonStatus != 0) {
+                _this.selectSeasonId = item.seasonId
+              }
+            })
+            _this.allSeasonOptions = data;
+            _this.page();
 
-        });
+          });
     },
 
 
@@ -236,58 +239,56 @@ export default {
     async getItems() {
       const _this = this;
       axios
-        .get("/item/queryItemTemplate")
-        .then((res) => {
-          let data = res.data.data;
-          data.push( {
-          itemId: 0,
-          itemName: "所有项目",
-        })
-        _this.itemList=data;
-        _this.page();
-        });
+          .get("/item/queryItemTemplate")
+          .then((res) => {
+            let data = res.data.data;
+            data.push({
+              itemId: 0,
+              itemName: "所有项目",
+            })
+            _this.itemList = data;
+            _this.page();
+          });
     },
-
-
 
 
     async exportExcel() {
       const _this = this;
       const confirmResult = await _this
-        .$confirm("确定导出成绩吗？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .catch((err) => err);
+          .$confirm("确定导出成绩吗？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+          .catch((err) => err);
       if (confirmResult !== "confirm") {
         return;
       }
       axios
-        .get("/excel/exportItemAthlete?item.season.seasonId="+_this.selectSeasonId+"&item.parentId=" +_this.selectItemId, {
-          responseType: "blob", //二进制流
-        })
-        .then((res) => {
-          const filename = res.headers["content-disposition"];
-          let blob = new Blob([res.data], { type: "application/vnd.ms-excel" });
-          let url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a"); // 创建a标签
-          link.href = url;
-          link.download = decodeURIComponent(filename.split("filename=")[1]); // 重命名文件
-          link.click();
-          URL.revokeObjectURL(url);
-        });
+          .get("/excel/exportItemAthlete?item.season.seasonId=" + _this.selectSeasonId + "&item.parentId=" + _this.selectItemId, {
+            responseType: "blob", //二进制流
+          })
+          .then((res) => {
+            const filename = res.headers["content-disposition"];
+            let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
+            let url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a"); // 创建a标签
+            link.href = url;
+            link.download = decodeURIComponent(filename.split("filename=")[1]); // 重命名文件
+            link.click();
+            URL.revokeObjectURL(url);
+          });
     },
 
     async switchSystem(id) {
       const _this = this;
       const confirmResult = await _this
-        .$confirm("是否关闭/开启系统报名？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .catch((err) => err);
+          .$confirm("是否关闭/开启系统报名？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+          .catch((err) => err);
       if (confirmResult !== "confirm") {
         return _this.$message.info("已取消");
       }
@@ -301,31 +302,30 @@ export default {
     },
 
 
-
     async deleteAthlete(athleteId) {
       const _this = this;
       const confirmResult = await _this
-        .$confirm("是否确定取消报名？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .catch((err) => err);
+          .$confirm("是否确定取消报名？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+          .catch((err) => err);
       if (confirmResult !== "confirm") {
         return _this.$message.info("已取消操作");
       }
       axios
-        .delete("/athlete/deleteAthlete?athleteId=" + athleteId)
-        .then((res) => {
-          if (res.data.status == 200) {
-            
-            _this.$message.success("已取消该项目");
-            _this.addDialogVisible = false;
-            _this.page();
-          } else {
-            _this.$message.error(res.data.msg);
-          }
-        });
+          .delete("/athlete/deleteAthlete?athleteId=" + athleteId)
+          .then((res) => {
+            if (res.data.status == 200) {
+
+              _this.$message.success("已取消该项目");
+              _this.addDialogVisible = false;
+              _this.page();
+            } else {
+              _this.$message.error(res.data.msg);
+            }
+          });
     },
 
     handleSizeChange(newSize) {
@@ -347,6 +347,7 @@ export default {
   margin-bottom: 15px;
   font-size: 17px;
 }
+
 .myTable {
   border-collapse: collapse;
   margin: 0 auto;

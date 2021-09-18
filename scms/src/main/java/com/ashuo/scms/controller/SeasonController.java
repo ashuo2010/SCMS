@@ -54,7 +54,7 @@ public class SeasonController {
         }
 
         Page<Season> page = new Page(1, 999999);
-        Season tempSeason=new Season();
+        Season tempSeason = new Season();
         tempSeason.setSeasonName(season.getSeasonName());
         if (seasonService.getSeasonByCondition(page, tempSeason) != null) {
             return ServerResponse.createByErrorCodeMessage(400, "添加失败，届时名称已存在");

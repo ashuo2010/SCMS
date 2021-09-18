@@ -16,9 +16,9 @@
 
     <insert id="insertSeason" parameterType="com.ashuo.scms.entity.Season"
             useGeneratedKeys="true" keyColumn="season_id" keyProperty="seasonId">
-        INSERT INTO season( season_name, season_topic_desc, season_begin_time, season_end_time,season_status,
+        INSERT INTO season(season_name, season_topic_desc, season_begin_time, season_end_time, season_status,
         season_athlete_amount, create_time, edit_time)
-        VALUES ( #{seasonName}, #{seasonTopicDesc}, #{seasonBeginTime},#{seasonEndTime}, #{seasonStatus},
+        VALUES (#{seasonName}, #{seasonTopicDesc}, #{seasonBeginTime}, #{seasonEndTime}, #{seasonStatus},
         #{seasonAthleteAmount}, #{createTime}, #{editTime})
     </insert>
 
@@ -33,17 +33,17 @@
         UPDATE
         season
         <set>
-            <if test="season.seasonStatus!=null"> season_status=#{season.seasonStatus},</if>
-            <if test="season.seasonName!=null"> season_name=#{season.seasonName},</if>
-            <if test="season.seasonTopicDesc!=null"> season_topic_desc=#{season.seasonTopicDesc},</if>
-            <if test="season.seasonBeginTime!=null"> season_begin_time=#{season.seasonBeginTime},</if>
-            <if test="season.seasonEndTime!=null"> season_end_time=#{season.seasonEndTime},</if>
-            <if test="season.seasonStatus!=null"> season_status=#{season.seasonStatus},</if>
+            <if test="season.seasonStatus!=null">season_status=#{season.seasonStatus},</if>
+            <if test="season.seasonName!=null">season_name=#{season.seasonName},</if>
+            <if test="season.seasonTopicDesc!=null">season_topic_desc=#{season.seasonTopicDesc},</if>
+            <if test="season.seasonBeginTime!=null">season_begin_time=#{season.seasonBeginTime},</if>
+            <if test="season.seasonEndTime!=null">season_end_time=#{season.seasonEndTime},</if>
+            <if test="season.seasonStatus!=null">season_status=#{season.seasonStatus},</if>
             <if test="season.seasonAthleteAmount!=null">
                 season_athlete_amount=#{season.seasonAthleteAmount},
             </if>
-            <if test="season.createTime!=null"> create_time=#{season.createTime},</if>
-            <if test="season.editTime!=null"> edit_time=#{season.editTime},</if>
+            <if test="season.createTime!=null">create_time=#{season.createTime},</if>
+            <if test="season.editTime!=null">edit_time=#{season.editTime},</if>
         </set>
         WHERE
         season_id=#{season.seasonId}
@@ -79,8 +79,9 @@
     </select>
 
     <select id="querySeasonById" resultType="com.ashuo.scms.entity.Season">
-        SELECT * FROM season
-        WHERE season_id=#{seasonId}
+        SELECT *
+        FROM season
+        WHERE season_id = #{seasonId}
     </select>
 
 </mapper>

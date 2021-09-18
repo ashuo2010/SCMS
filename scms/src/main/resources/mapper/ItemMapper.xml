@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ashuo.scms.mapper.ItemMapper">
     <sql id="itemSql">
-        SELECT
-        i.item_id,
+        SELECT i.item_id,
         i.parent_id,
         i.u_id,
         i.item_name,
@@ -55,9 +54,11 @@
 
     <insert id="insertItem" parameterType="com.ashuo.scms.entity.Item"
             useGeneratedKeys="true" keyColumn="item_id" keyProperty="itemId">
-        INSERT INTO item(parent_id,se_id,u_id, item_name, item_place, item_unit, item_sex, item_amount,athlete_amount, start_time, end_time,
+        INSERT INTO item(parent_id, se_id, u_id, item_name, item_place, item_unit, item_sex, item_amount,
+        athlete_amount, start_time, end_time,
         create_time, edit_time)
-        VALUES (#{parentId},#{season.seasonId},#{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex}, #{itemAmount},#{athleteAmount},
+        VALUES (#{parentId}, #{season.seasonId}, #{user.userId}, #{itemName}, #{itemPlace}, #{itemUnit}, #{itemSex},
+        #{itemAmount}, #{athleteAmount},
         #{startTime},
         #{endTime},
         #{createTime}, #{editTime})
@@ -67,7 +68,9 @@
         UPDATE item
         <set>
             <if test="item.parentId!=null and item.parentId!=0">parent_id=#{item.parentId},</if>
-            <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">se_id=#{item.season.seasonId},</if>
+            <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">
+                se_id=#{item.season.seasonId},
+            </if>
             <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">u_id=#{item.user.userId},</if>
             <if test="item.itemName!=null">item_name=#{item.itemName},</if>
             <if test="item.itemPlace!=null">item_place=#{item.itemPlace},</if>
@@ -94,8 +97,12 @@
         <where>
             <if test="item.itemId!=null and item.itemId!=0">AND i.item_id=#{item.itemId}</if>
             <if test="item.parentId!=null and item.parentId!=0">AND i.parent_id=#{item.parentId}</if>
-            <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
-            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.season!=null and item.season.seasonId!=null and item.season.seasonId!=0">AND
+                i.se_id=#{item.season.seasonId}
+            </if>
+            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND
+                i.u_id=#{item.user.userId}
+            </if>
             <if test="item.itemName!=null">AND i.item_name =#{item.itemName}</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
@@ -113,8 +120,12 @@
         <where>
             <if test="item.itemId!=null and item.itemId!=0">AND i.item_id=#{item.itemId}</if>
             <if test="item.parentId!=null and item.parentId!=0">AND i.parent_id=#{item.parentId}</if>
-            <if test="item.season!=null and item.season.seasonId!=null and  item.season.seasonId!=0">AND i.se_id=#{item.season.seasonId}</if>
-            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND i.u_id=#{item.user.userId}</if>
+            <if test="item.season!=null and item.season.seasonId!=null and  item.season.seasonId!=0">AND
+                i.se_id=#{item.season.seasonId}
+            </if>
+            <if test="item.user!=null and item.user.userId!=null and item.user.userId!=0">AND
+                i.u_id=#{item.user.userId}
+            </if>
             <if test="item.itemName!=null">AND i.item_name LIKE '%${item.itemName}%'</if>
             <if test="item.itemPlace!=null">AND i.item_place=#{item.itemPlace}</if>
             <if test="item.itemUnit!=null">AND i.item_unit=#{item.itemUnit}</if>
@@ -129,16 +140,13 @@
 
 
     <select id="queryItemTemplateList" resultMap="itemMap">
-        SELECT
-        item_id,
+        SELECT item_id,
         parent_id,
         item_name,
         item_unit,
         item_amount
-        FROM
-        item
-        WHERE
-        parent_id IS NULL
+        FROM item
+        WHERE parent_id IS NULL
     </select>
 
     <select id="queryItemTemplateDetail" resultMap="itemMap">
@@ -150,11 +158,11 @@
         item_amount
         FROM
         item
-       <where>
-           <if test="item.itemName!=null">AND item_name LIKE '%${item.itemName}%'</if>
-           <if test="item.itemId!=null and item.itemId!=0 ">AND item_id=#{item.itemId}</if>
-           <if test="item.parentId!=null and item.parentId!=0">AND item_id=#{item.parentId}</if>
-           AND parent_id IS NULL
-       </where>
+        <where>
+            <if test="item.itemName!=null">AND item_name LIKE '%${item.itemName}%'</if>
+            <if test="item.itemId!=null and item.itemId!=0 ">AND item_id=#{item.itemId}</if>
+            <if test="item.parentId!=null and item.parentId!=0">AND item_id=#{item.parentId}</if>
+            AND parent_id IS NULL
+        </where>
     </select>
 </mapper>

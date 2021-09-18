@@ -1,14 +1,16 @@
 /*全局样式*/
-HTML,body,#app{
+HTML, body, #app {
     height: 100%;
     margin: 0;
     padding: 0;
 }
-.el-card{
-    box-shadow: 0 1px 1px rgba(0,8,10,0.15) !important;
+
+.el-card {
+    box-shadow: 0 1px 1px rgba(0, 8, 10, 0.15) !important;
 }
+
 /*表格样式*/
-.el-table{
+.el-table {
     margin-top: 15px;
     font-size: 12px;
     min-width: 350px;

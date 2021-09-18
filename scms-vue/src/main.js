@@ -19,27 +19,27 @@ axios.defaults.baseURL = "http://localhost:8088";
 
 // 请求携带token
 axios.interceptors.request.use(
-  config => {
-    config.headers['Authorization'] = localStorage.getItem("token"); // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
-    return config
-  })
+    config => {
+        config.headers['Authorization'] = localStorage.getItem("token"); // 让每个请求携带token--['X-Token']为自定义key 请根据实际情况自行修改
+        return config
+    })
 
 // 响应数据处理
 axios.interceptors.response.use(function (response) {
-    if (response.data.status == 401) {
-      window.location.href = "/401"
-    }
-    return response;
-  },
-  function (error) {
-    if (response.data.status == 401) {
-      window.location.href = "/401"
-    }
-    return Promise.reject(error);
-  });
+        if (response.data.status == 401) {
+            window.location.href = "/401"
+        }
+        return response;
+    },
+    function (error) {
+        if (response.data.status == 401) {
+            window.location.href = "/401"
+        }
+        return Promise.reject(error);
+    });
 
 new Vue({
-  router,
-  store: store,
-  render: h => h(App)
+    router,
+    store: store,
+    render: h => h(App)
 }).$mount('#app');

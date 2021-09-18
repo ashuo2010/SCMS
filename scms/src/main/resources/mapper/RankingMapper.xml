@@ -44,12 +44,10 @@
 
     <delete id="deleteRankingByItemId" parameterType="integer">
         DELETE r.*
-        FROM
-        ranking r
+        FROM ranking r
         INNER JOIN athlete a ON r.a_id = a.athlete_id
         INNER JOIN item i ON a.i_id = i.item_id
-        WHERE
-        i.item_id  = #{itemId}
+        WHERE i.item_id = #{itemId}
     </delete>
 
     <select id="queryTeamTotalRanking" resultMap="rankingMap">
@@ -75,7 +73,8 @@
             <if test="ranking.athlete!=null and ranking.athlete.user!=null  and ranking.athlete.user.team!=null and ranking.athlete.user.team.teamId!=null and ranking.athlete.user.team.teamId!=0">
                 AND t.team_id=#{ranking.athlete.user.team.teamId}
             </if>
-            <if test="ranking.athlete!=null and ranking.athlete.user!=null  and ranking.athlete.user.team!=null and ranking.athlete.user.team.teamName!=null">AND t.team_name LIKE
+            <if test="ranking.athlete!=null and ranking.athlete.user!=null  and ranking.athlete.user.team!=null and ranking.athlete.user.team.teamName!=null">
+                AND t.team_name LIKE
                 '%${ranking.athlete.user.team.teamName}%'
             </if>
             <if test="ranking.athlete!=null and ranking.athlete.item!=null and ranking.athlete.item.season!=null and ranking.athlete.item.season.seasonId!=null and ranking.athlete.item.season.seasonId!=0">
@@ -111,8 +110,11 @@
         INNER JOIN `team` t ON u.t_id = t.team_id
         INNER JOIN `season` se ON i.se_id = se.season_id
         <where>
-            <if test="ranking.athlete!=null and ranking.athlete.user!=null and ranking.athlete.user.userId!=null and ranking.athlete.user.userId!=0">AND u.user_id=#{ranking.athlete.user.userId}</if>
-            <if test="ranking.athlete!=null and ranking.athlete.user!=null and ranking.athlete.user.nickname!=null">AND u.nickname LIKE
+            <if test="ranking.athlete!=null and ranking.athlete.user!=null and ranking.athlete.user.userId!=null and ranking.athlete.user.userId!=0">
+                AND u.user_id=#{ranking.athlete.user.userId}
+            </if>
+            <if test="ranking.athlete!=null and ranking.athlete.user!=null and ranking.athlete.user.nickname!=null">AND
+                u.nickname LIKE
                 '%${ranking.athlete.user.nickname}%'
             </if>
             <if test="ranking.athlete!=null and ranking.athlete.user!=null  and ranking.athlete.user.team!=null and ranking.athlete.user.team.teamId!=null and ranking.athlete.user.team.teamId!=0">

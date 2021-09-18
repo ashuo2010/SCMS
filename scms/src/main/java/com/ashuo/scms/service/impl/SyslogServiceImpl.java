@@ -63,49 +63,49 @@ public class SyslogServiceImpl implements SyslogService {
     @Override
     @Transactional
     public boolean removeAllData() {
-            //删除所有记录
-            syslogMapper.deleteAllRecord();
-            //删除所有排名
-            syslogMapper.deleteAllRanking();
-            //删除所有分数
-            syslogMapper.deleteAllScore();
-            //删除所有参赛运动员
-            syslogMapper.deleteAllAthlete();
-            //删除所有参赛项目
-            syslogMapper.deleteAllItem();
-            //删除所有系统日志
-            syslogMapper.deleteAllSyslog();
-            //删除所有用户
-            syslogMapper.deleteAllUser();
-            //删除所有团队
-            syslogMapper.deleteAllTeam();
-            //删除所有运动会
-            syslogMapper.deleteAllSeason();
+        //删除所有记录
+        syslogMapper.deleteAllRecord();
+        //删除所有排名
+        syslogMapper.deleteAllRanking();
+        //删除所有分数
+        syslogMapper.deleteAllScore();
+        //删除所有参赛运动员
+        syslogMapper.deleteAllAthlete();
+        //删除所有参赛项目
+        syslogMapper.deleteAllItem();
+        //删除所有系统日志
+        syslogMapper.deleteAllSyslog();
+        //删除所有用户
+        syslogMapper.deleteAllUser();
+        //删除所有团队
+        syslogMapper.deleteAllTeam();
+        //删除所有运动会
+        syslogMapper.deleteAllSeason();
 
-            //添加root用户,清空数据后用于登录系统
-            Team rootTeam = new Team();
-            rootTeam.setTeamId(1);
-            rootTeam.setTeamName("超级管理员");
-            rootTeam.setCreateTime(LocalDateTime.now());
-            rootTeam.setEditTime(LocalDateTime.now());
-            teamMapper.insertTeam(rootTeam);
+        //添加root用户,清空数据后用于登录系统
+        Team rootTeam = new Team();
+        rootTeam.setTeamId(1);
+        rootTeam.setTeamName("超级管理员");
+        rootTeam.setCreateTime(LocalDateTime.now());
+        rootTeam.setEditTime(LocalDateTime.now());
+        teamMapper.insertTeam(rootTeam);
 
-            User rootUser = new User();
-            rootUser.setUserId(1);
-            rootUser.setUserNo("17140809011");
-            rootUser.setNickname("AShuo");
-            rootUser.setUsername("ashuo");
-            rootUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
-            rootUser.setUserSex("男");
-            rootUser.setUserType(1);
-            rootUser.setTeam(rootTeam);
-            rootUser.setPhone("1772726XXXX");
-            rootUser.setCreateTime(LocalDateTime.now());
-            rootUser.setEditTime(LocalDateTime.now());
-            userMapper.insertUser(rootUser);
-            //删除所有系统日志
-            syslogMapper.deleteAllSyslog();
-            return true;
+        User rootUser = new User();
+        rootUser.setUserId(1);
+        rootUser.setUserNo("17140809011");
+        rootUser.setNickname("AShuo");
+        rootUser.setUsername("ashuo");
+        rootUser.setPassword("e10adc3949ba59abbe56e057f20f883e");
+        rootUser.setUserSex("男");
+        rootUser.setUserType(1);
+        rootUser.setTeam(rootTeam);
+        rootUser.setPhone("1772726XXXX");
+        rootUser.setCreateTime(LocalDateTime.now());
+        rootUser.setEditTime(LocalDateTime.now());
+        userMapper.insertUser(rootUser);
+        //删除所有系统日志
+        syslogMapper.deleteAllSyslog();
+        return true;
     }
 
     //字符串去除null

@@ -33,24 +33,23 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/syslog")
 public class SyslogController {
 
-    @Value("${meet.you.year}")
-    private String meetYouYear;
-    public  static  boolean systemStatus=true;
-
+    public static boolean systemStatus = true;
     @Autowired
     SyslogService syslogService;
+    @Value("${meet.you.year}")
+    private String meetYouYear;
 
     @ApiOperation("查询系统操作日志")
     @GetMapping("/querySyslog")
     @RequiresRoles(value = {"1"})
     public ServerResponse querySyslog(QueryInfo queryInfo, Syslog syslog) {
-        User user = ObjectUtils.isNull(syslog.getExecutionUser())? new User():syslog.getExecutionUser();
+        User user = ObjectUtils.isNull(syslog.getExecutionUser()) ? new User() : syslog.getExecutionUser();
         user.setNickname(queryInfo.getQuery());
         syslog.setExecutionUser(user);
 
         //分页查询
         Page<Syslog> page = new Page<>(queryInfo.getCurrentPage(), queryInfo.getPageSize());
-        IPage<Syslog> syslogList = syslogService.getAllSyslog(page,syslog);
+        IPage<Syslog> syslogList = syslogService.getAllSyslog(page, syslog);
         return ServerResponse.createBySuccess(syslogList);
     }
 
@@ -58,15 +57,15 @@ public class SyslogController {
     @ApiOperation("获取报名系统状态")
     @PostMapping("/getSystemStatus")
     @RequiresAuthentication
-    public  ServerResponse getSystemStatus() {
+    public ServerResponse getSystemStatus() {
         return ServerResponse.createBySuccess(systemStatus);
     }
 
     @ApiOperation("修改报名系统状态")
     @PostMapping("/switchSystemStatus")
     @RequiresAuthentication
-    public  ServerResponse switchSystemStatus() {
-        systemStatus=!systemStatus;
+    public ServerResponse switchSystemStatus() {
+        systemStatus = !systemStatus;
         return ServerResponse.createBySuccess(systemStatus);
     }
 
@@ -76,7 +75,7 @@ public class SyslogController {
     @RequiresRoles(value = {"1"})
     @Transactional
     public ServerResponse resetAllData(String comfirmPassword) {
-        if (!comfirmPassword.equals(meetYouYear)){
+        if (!comfirmPassword.equals(meetYouYear)) {
             return ServerResponse.createByErrorCodeMessage(400, "密码输入错误");
         }
         boolean status = syslogService.removeAllData();

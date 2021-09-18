@@ -14,34 +14,34 @@
         <el-col :span="5">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入运动员名称"
-            v-model="queryInfo.query"
-            clearable
-            @keyup.enter.native="page"
-            @clear="page"
+              v-model="queryInfo.query"
+              clearable
+              placeholder="请输入运动员名称"
+              @clear="page"
+              @keyup.enter.native="page"
           >
             <!--搜索按钮-->
             <el-button
-              slot="append"
-              icon="el-icon-search"
-              @click="page"
+                slot="append"
+                icon="el-icon-search"
+                @click="page"
             ></el-button>
           </el-input>
         </el-col>
 
-         <div style="float: left">
+        <div style="float: left">
           <el-col>
             <el-select
-              v-model="selectSeasonId"
-              filterable
-              placeholder="请选择运动会"
-              @change="page(true)"
+                v-model="selectSeasonId"
+                filterable
+                placeholder="请选择运动会"
+                @change="page(true)"
             >
               <el-option
-                v-for="item in allSeasonOptions"
-                :key="item.seasonId"
-                :label="item.seasonName"
-                :value="item.seasonId"
+                  v-for="item in allSeasonOptions"
+                  :key="item.seasonId"
+                  :label="item.seasonName"
+                  :value="item.seasonId"
               >
               </el-option>
             </el-select>
@@ -50,7 +50,8 @@
 
         <el-col :span="4">
           <el-button type="primary" @click="exportExcel()"
-            >导出排名列表</el-button
+          >导出排名列表
+          </el-button
           >
         </el-col>
       </el-row>
@@ -68,14 +69,15 @@
           <template slot-scope="scope">
             <!--详情-->
             <el-button
-              type="primary"
-              icon="el-icon-tickets"
-              size="mini"
-              @click="
+                icon="el-icon-tickets"
+                size="mini"
+                type="primary"
+                @click="
                 dialogTableVisible = true;
                 getRankingDetail(scope.row.athlete.user.userId);
               "
-              >查看详情</el-button
+            >查看详情
+            </el-button
             >
           </template>
         </el-table-column>
@@ -83,31 +85,31 @@
       <!--分页组件-->
       <div>
         <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.currentPage"
-          :page-sizes="[5, 10, 20, 50]"
-          :page-size="queryInfo.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+            :current-page="queryInfo.currentPage"
+            :page-size="queryInfo.pageSize"
+            :page-sizes="[5, 10, 20, 50]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
         >
         </el-pagination>
       </div>
     </el-card>
 
     <el-dialog
-      title="分数详情信息"
-      :visible.sync="dialogTableVisible"
-      width="40%"
+        :visible.sync="dialogTableVisible"
+        title="分数详情信息"
+        width="40%"
     >
       <el-table :data="personScoreDetail" stripe style="width: 100%">
-        <el-table-column prop="athlete.item.itemName" label="项目名称" width="180">
+        <el-table-column label="项目名称" prop="athlete.item.itemName" width="180">
         </el-table-column>
-        <el-table-column prop="athlete.item.itemSex" label="项目性别" width="180">
+        <el-table-column label="项目性别" prop="athlete.item.itemSex" width="180">
         </el-table-column>
-        <el-table-column prop="athlete.user.nickname" label="运动员" width="180">
+        <el-table-column label="运动员" prop="athlete.user.nickname" width="180">
         </el-table-column>
-        <el-table-column prop="score" label="分数" width="180">
+        <el-table-column label="分数" prop="score" width="180">
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -123,10 +125,10 @@ export default {
     return {
       rankingList: [],
       personScoreDetail: [],
-    //所有运动会届时列表
-      allSeasonOptions:[],
+      //所有运动会届时列表
+      allSeasonOptions: [],
       //选择的届时
-      selectSeasonId:"",
+      selectSeasonId: "",
       queryInfo: {
         currentPage: 1,
         pageSize: 10,
@@ -143,91 +145,91 @@ export default {
   },
   methods: {
     async page(isSelect) {
-      if(this.selectSeasonId==""){
-         return this.$message.info("请先选择运动会");
+      if (this.selectSeasonId == "") {
+        return this.$message.info("请先选择运动会");
       }
-      if(isSelect===true){
-        this.queryInfo.currentPage=1;
+      if (isSelect === true) {
+        this.queryInfo.currentPage = 1;
         this.queryInfo.pageSize = 10;
       }
       const _this = this;
       axios
-        .get("/ranking/queryUserRanking?athlete.item.season.seasonId="+this.selectSeasonId+"&queryInfo=", {
-          params: _this.queryInfo,
-        })
-        .then((res) => {
-          let data = res.data.data;
-          _this.rankingList = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
+          .get("/ranking/queryUserRanking?athlete.item.season.seasonId=" + this.selectSeasonId + "&queryInfo=", {
+            params: _this.queryInfo,
+          })
+          .then((res) => {
+            let data = res.data.data;
+            _this.rankingList = data.records;
+            _this.queryInfo.currentPage = data.current;
+            _this.total = data.total;
+            _this.queryInfo.pageSize = data.size;
+          });
     },
 
 //获取运动会届时
     async getSeasons() {
       const _this = this;
       axios
-        .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
-        .then((res) => {
-        let data = res.data.data.records;
-        data.forEach((item,index)=>{
-            if(item.seasonStatus!=0){
-            _this.selectSeasonId=item.seasonId 
-            }
-          })
-        _this.allSeasonOptions=data;
-        _this.page();
+          .get("/season/querySeason?query=&currentPage=1&pageSize=999999999")
+          .then((res) => {
+            let data = res.data.data.records;
+            data.forEach((item, index) => {
+              if (item.seasonStatus != 0) {
+                _this.selectSeasonId = item.seasonId
+              }
+            })
+            _this.allSeasonOptions = data;
+            _this.page();
 
-        });
+          });
     },
 
 
     async getRankingDetail(userId) {
       const _this = this;
       axios
-        .get(
-          "/score/queryScore?currentPage=1&pageSize=999999999&athlete.user.userId=" +
-            userId
-        )
-        .then((res) => {
-          let data = res.data.data.records;
-          data.forEach((i,index)=>{
+          .get(
+              "/score/queryScore?currentPage=1&pageSize=999999999&athlete.user.userId=" +
+              userId
+          )
+          .then((res) => {
+            let data = res.data.data.records;
+            data.forEach((i, index) => {
               //分数加上单位
-            i.score+=i.athlete.item.itemUnit
+              i.score += i.athlete.item.itemUnit
             });
-          
-          _this.personScoreDetail = data;
-        });
+
+            _this.personScoreDetail = data;
+          });
     },
 
     async exportExcel() {
       const _this = this;
       const confirmResult = await _this
-        .$confirm("确定导出成绩吗？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .catch((err) => err);
+          .$confirm("确定导出成绩吗？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+          .catch((err) => err);
       if (confirmResult !== "confirm") {
         return;
       }
       axios
-        .get("/excel/exportPersonRanking?athlete.item.season.seasonId=" +
-            this.selectSeasonId, {
-          responseType: "blob", //二进制流
-        })
-        .then((res) => {
-          const filename = res.headers["content-disposition"];
-          let blob = new Blob([res.data], { type: "application/vnd.ms-excel" });
-          let url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a"); // 创建a标签
-          link.href = url;
-          link.download = decodeURIComponent(filename.split("filename=")[1]); // 重命名文件
-          link.click();
-          URL.revokeObjectURL(url);
-        });
+          .get("/excel/exportPersonRanking?athlete.item.season.seasonId=" +
+              this.selectSeasonId, {
+            responseType: "blob", //二进制流
+          })
+          .then((res) => {
+            const filename = res.headers["content-disposition"];
+            let blob = new Blob([res.data], {type: "application/vnd.ms-excel"});
+            let url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a"); // 创建a标签
+            link.href = url;
+            link.download = decodeURIComponent(filename.split("filename=")[1]); // 重命名文件
+            link.click();
+            URL.revokeObjectURL(url);
+          });
     },
 
     handleSizeChange(newSize) {
@@ -249,6 +251,7 @@ export default {
   margin-bottom: 15px;
   font-size: 17px;
 }
+
 .myTable {
   border-collapse: collapse;
   margin: 0 auto;

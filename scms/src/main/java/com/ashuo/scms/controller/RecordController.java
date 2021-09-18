@@ -34,13 +34,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecordController {
     @Autowired
     RecordService recordService;
-    
+
     @ApiOperation("查询项目记录列表")
     @GetMapping("/queryRecord")
     @RequiresAuthentication
     public ServerResponse queryRecord(QueryInfo queryInfo, Record record) {
-        Athlete athlete= ObjectUtils.isNull(record.getAthlete())? new Athlete(): record.getAthlete();
-        User user =ObjectUtils.isNull(athlete.getUser())? new User():athlete.getUser();
+        Athlete athlete = ObjectUtils.isNull(record.getAthlete()) ? new Athlete() : record.getAthlete();
+        User user = ObjectUtils.isNull(athlete.getUser()) ? new User() : athlete.getUser();
 
         user.setNickname(queryInfo.getQuery());
         athlete.setUser(user);

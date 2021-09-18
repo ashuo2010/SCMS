@@ -134,7 +134,7 @@ public class ItemController {
         tempItem.setItemName(item.getItemName());
         tempItem.setItemSex(item.getItemSex());
         //如果不是添加模板，则需要加上seasonId来区分是否会和之前届的冲突
-        if (item.getSeason() != null && item.getSeason().getSeasonId() != null&& item.getSeason().getSeasonId() != 0 ) {
+        if (item.getSeason() != null && item.getSeason().getSeasonId() != null && item.getSeason().getSeasonId() != 0) {
             Season season = item.getSeason();
             tempItem.setSeason(season);
         }
@@ -173,14 +173,15 @@ public class ItemController {
         }
         return ServerResponse.createByErrorMessage("查询不到该项目信息");
     }
+
     @ApiOperation("删除项目模板")
     @DeleteMapping("/deleteItemTemplate")
     @RequiresRoles(value = {"1"})
     public ServerResponse deleteItemTemplate(Item item) {
-        Item tempItem=new Item();
+        Item tempItem = new Item();
         tempItem.setParentId(item.getItemId());
         IPage<Item> itemList = itemService.getItemByItemCondition(new Page(1, 9999), tempItem);
-        if (itemList!=null && itemList.getRecords()!=null&&itemList.getRecords().size()!=0){
+        if (itemList != null && itemList.getRecords() != null && itemList.getRecords().size() != 0) {
             return ServerResponse.createByErrorCodeMessage(400, "删除失败,该模板下有已举行的项目");
         }
         int effNum = 0;

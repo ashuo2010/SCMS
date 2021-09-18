@@ -48,8 +48,8 @@
 
     <insert id="insertAthlete" parameterType="com.ashuo.scms.entity.Athlete"
             useGeneratedKeys="true" keyColumn="athlete_id" keyProperty="athleteId">
-        INSERT INTO athlete(u_id,user_ids, i_id, score_status, sign_time)
-        VALUES (#{user.userId},#{userIds}, #{item.itemId}, #{scoreStatus}, #{signTime})
+        INSERT INTO athlete(u_id, user_ids, i_id, score_status, sign_time)
+        VALUES (#{user.userId}, #{userIds}, #{item.itemId}, #{scoreStatus}, #{signTime})
     </insert>
 
     <select id="queryAthleteByAthleteCondition" resultMap="athleteMap">
@@ -84,22 +84,31 @@
         INNER JOIN `user` u2 ON i.u_id = u2.user_id
         <where>
             <if test="athlete.athleteId!=null and athlete.athleteId!=0">AND a.athlete_id=#{athlete.athleteId}</if>
-            <if test="athlete.user!=null and athlete.user.userId!=null and athlete.user.userId!=0">AND u.user_id=#{athlete.user.userId}</if>
+            <if test="athlete.user!=null and athlete.user.userId!=null and athlete.user.userId!=0">AND
+                u.user_id=#{athlete.user.userId}
+            </if>
             <if test="athlete.user!=null and athlete.user.nickname!=null">AND u.nickname LIKE
                 '%${athlete.user.nickname}%'
             </if>
-            <if test="athlete.item!=null and athlete.item.itemId!=null and athlete.item.itemId!=0">AND i.item_id=#{athlete.item.itemId}</if>
-            <if test="athlete.item!=null and athlete.item.parentId!=null and athlete.item.parentId!=0">AND i.parent_id=#{athlete.item.parentId}</if>
-            <if test="athlete.item!=null and athlete.item.user!=null and athlete.item.user.userId!=null and athlete.item.user.userId!=0">AND
+            <if test="athlete.item!=null and athlete.item.itemId!=null and athlete.item.itemId!=0">AND
+                i.item_id=#{athlete.item.itemId}
+            </if>
+            <if test="athlete.item!=null and athlete.item.parentId!=null and athlete.item.parentId!=0">AND
+                i.parent_id=#{athlete.item.parentId}
+            </if>
+            <if test="athlete.item!=null and athlete.item.user!=null and athlete.item.user.userId!=null and athlete.item.user.userId!=0">
+                AND
                 i.u_id=#{athlete.item.user.userId}
             </if>
             <if test="athlete.item!=null and athlete.item.itemName!=null">AND i.item_name LIKE
                 '%${athlete.item.itemName}%'
             </if>
-            <if test="athlete.item!=null and athlete.item.season!=null and athlete.item.season.seasonId!=null and athlete.item.season.seasonId!=0">AND
+            <if test="athlete.item!=null and athlete.item.season!=null and athlete.item.season.seasonId!=null and athlete.item.season.seasonId!=0">
+                AND
                 se.season_id=#{athlete.item.season.seasonId}
             </if>
-            <if test="athlete.scoreStatus!=null and athlete.scoreStatus!=-1">AND a.score_status=#{athlete.scoreStatus}</if>
+            <if test="athlete.scoreStatus!=null and athlete.scoreStatus!=-1">AND a.score_status=#{athlete.scoreStatus}
+            </if>
             <if test="athlete.userIds!=null and athlete.userIds!=''">OR a.user_ids LIKE '%${athlete.userIds}%'</if>
 
         </where>

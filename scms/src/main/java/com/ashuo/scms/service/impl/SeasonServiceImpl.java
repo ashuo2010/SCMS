@@ -29,15 +29,15 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season> impleme
             return null;
         }
         IPage<Season> seasonList = seasonMapper.querySeasonBySeasonCondition(page, season);
-        if (seasonList.getRecords().size()==0){
+        if (seasonList.getRecords().size() == 0) {
             return null;
         }
         return seasonList;
     }
 
     @Override
-    public Season getSeasonById(Season season){
-        if (season == null||season.getSeasonId()==null||season.getSeasonId()==0) {
+    public Season getSeasonById(Season season) {
+        if (season == null || season.getSeasonId() == null || season.getSeasonId() == 0) {
             return null;
         }
         return seasonMapper.querySeasonById(season);

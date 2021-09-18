@@ -13,17 +13,17 @@
         <el-col :span="5">
           <!--搜索添加-->
           <el-input
-            placeholder="请输入团体名称"
-            v-model="queryInfo.query"
-            clearable
-            @keyup.enter.native="page"
-            @clear="page"
+              v-model="queryInfo.query"
+              clearable
+              placeholder="请输入团体名称"
+              @clear="page"
+              @keyup.enter.native="page"
           >
             <!--搜索按钮-->
             <el-button
-              slot="append"
-              icon="el-icon-search"
-              @click="page"
+                slot="append"
+                icon="el-icon-search"
+                @click="page"
             ></el-button>
           </el-input>
         </el-col>
@@ -31,7 +31,8 @@
         <!--添加按钮-->
         <el-col :span="4">
           <el-button type="primary" @click="addDialogVisible = true"
-            >添加团体</el-button
+          >添加团体
+          </el-button
           >
         </el-col>
       </el-row>
@@ -42,26 +43,26 @@
         <el-table-column label="团体名称" prop="teamName"></el-table-column>
         <el-table-column label="创建时间" prop="createTime"></el-table-column>
         <el-table-column
-          label="最后一次修改时间"
-          prop="editTime"
+            label="最后一次修改时间"
+            prop="editTime"
         ></el-table-column>
         <el-table-column label="操作" prop="state">
           <template slot-scope="scope">
             <!--修改-->
             <el-button
-              type="primary"
-              icon="el-icon-edit"
-              size="mini"
-              @click="showEditDialog(scope.row.teamId)"
-              :disabled="scope.row.teamId == 1"
+                :disabled="scope.row.teamId == 1"
+                icon="el-icon-edit"
+                size="mini"
+                type="primary"
+                @click="showEditDialog(scope.row.teamId)"
             ></el-button>
             <!--删除-->
             <el-button
-              type="danger"
-              icon="el-icon-delete"
-              size="mini"
-              @click="deleteTeam(scope.row.teamId)"
-              :disabled="scope.row.teamId == 1"
+                :disabled="scope.row.teamId == 1"
+                icon="el-icon-delete"
+                size="mini"
+                type="danger"
+                @click="deleteTeam(scope.row.teamId)"
             ></el-button>
           </template>
         </el-table-column>
@@ -69,31 +70,31 @@
       <!--分页组件-->
       <div>
         <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="queryInfo.currentPage"
-          :page-sizes="[5, 10, 20, 50]"
-          :page-size="queryInfo.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+            :current-page="queryInfo.currentPage"
+            :page-size="queryInfo.pageSize"
+            :page-sizes="[5, 10, 20, 50]"
+            :total="total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
         >
         </el-pagination>
       </div>
     </el-card>
     <!--新增团体区域-->
     <el-dialog
-      title="添加团体"
-      :visible.sync="addDialogVisible"
-      width="40%"
-      @close="addDialogClosed"
+        :visible.sync="addDialogVisible"
+        title="添加团体"
+        width="40%"
+        @close="addDialogClosed"
     >
       <el-form
-        :model="addForm"
-        ref="addFormRef"
-        label-width="80px"
-        class="demo-ruleForm"
+          ref="addFormRef"
+          :model="addForm"
+          class="demo-ruleForm"
+          label-width="80px"
       >
-        <el-form-item label="团体名称" prop="teamName" >
+        <el-form-item label="团体名称" prop="teamName">
           <el-input v-model="addForm.teamName"></el-input>
         </el-form-item>
       </el-form>
@@ -105,16 +106,16 @@
     </el-dialog>
     <!--修改团体区域-->
     <el-dialog
-      title="修改团体"
-      :visible.sync="editDialogVisible"
-      width="40%"
-      @close="editDialogClosed"
+        :visible.sync="editDialogVisible"
+        title="修改团体"
+        width="40%"
+        @close="editDialogClosed"
     >
       <el-form
-        :model="editForm"
-        ref="editFormRef"
-        label-width="80px"
-        class="demo-ruleForm"
+          ref="editFormRef"
+          :model="editForm"
+          class="demo-ruleForm"
+          label-width="80px"
       >
         <el-form-item label="团体ID" prop="teamId">
           <el-input v-model="editForm.teamId" disabled></el-input>
@@ -164,14 +165,14 @@ export default {
     async page() {
       const _this = this;
       axios
-        .get("/team/queryTeam?queryInfo=", { params: _this.queryInfo })
-        .then((res) => {
-          let data = res.data.data;
-          _this.team = data.records;
-          _this.queryInfo.currentPage = data.current;
-          _this.total = data.total;
-          _this.queryInfo.pageSize = data.size;
-        });
+          .get("/team/queryTeam?queryInfo=", {params: _this.queryInfo})
+          .then((res) => {
+            let data = res.data.data;
+            _this.team = data.records;
+            _this.queryInfo.currentPage = data.current;
+            _this.total = data.total;
+            _this.queryInfo.pageSize = data.size;
+          });
     },
     handleSizeChange(newSize) {
       const _this = this;
@@ -208,7 +209,7 @@ export default {
         if (!valid) return;
         axios.post("/team/addTeam", _this.addForm).then((res) => {
           if (res.data.status != 200) {
-            return _this.$message.error( res.data.msg);
+            return _this.$message.error(res.data.msg);
           }
           _this.$message.success("操作成功");
           _this.addDialogVisible = false;
@@ -219,12 +220,12 @@ export default {
     async deleteTeam(id) {
       const _this = this;
       const confirmResult = await _this
-        .$confirm("此操作将永久删除团体，是否继续？", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-        .catch((err) => err);
+          .$confirm("此操作将永久删除团体，是否继续？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          })
+          .catch((err) => err);
       if (confirmResult !== "confirm") {
         return _this.$message.info("已取消删除");
       }
