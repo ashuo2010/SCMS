@@ -103,13 +103,13 @@
     <el-dialog
       title="多人项目报名"
       :visible.sync="dialogTableVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="addAthletesItemForm"
         ref="addFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
         <el-form-item label="项目名称">

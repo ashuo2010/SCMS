@@ -45,7 +45,7 @@
         <!--索引列-->
         <el-table-column type="index"></el-table-column>
         <el-table-column label="学号" prop="userNo"></el-table-column>
-        <el-table-column label="用户名" prop="nickname"></el-table-column>
+        <el-table-column label="用户姓名" prop="nickname"></el-table-column>
         <el-table-column label="性别" prop="userSex"></el-table-column>
         <el-table-column
           label="团体名称"
@@ -92,14 +92,14 @@
     <el-dialog
       title="添加用户"
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="addForm"
         :rules="addFormRules"
         ref="addFormRef"
-        label-width="70px"
+        label-width="80px"
         class="demo-ruleForm"
       >
         <el-form-item label="学号" prop="userNo">
@@ -111,8 +111,11 @@
         <el-form-item label="登录密码" prop="password">
           <el-input type="password" v-model="addForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" prop="nickname">
+        <el-form-item label="用户姓名" prop="nickname">
           <el-input v-model="addForm.nickname"></el-input>
+        </el-form-item>
+         <el-form-item label="电话" prop="phone">
+          <el-input  v-model="addForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="userSex">
           <el-select v-model="addForm.userSex" filterable placeholder="请选择">
@@ -152,9 +155,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="addForm.phone"></el-input>
-        </el-form-item>
+       
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="addDialogVisible = false">取消</el-button>
@@ -191,17 +192,17 @@
     <el-dialog
       title="修改用户"
       :visible.sync="editDialogVisible"
-      width="50%"
+      width="40%"
       @close="editDialogClosed"
     >
       <el-form
         :model="editForm"
         :rules="editFormRules"
         ref="editFormRef"
-        label-width="70px"
+        label-width="80px"
         class="demo-ruleForm"
       >
-        <el-form-item label="用户唯一ID" prop="userId">
+        <el-form-item label="用户ID" prop="userId">
           <el-input v-model="editForm.userId" disabled></el-input>
         </el-form-item>
         <el-form-item label="学号" prop="userNo">
@@ -213,8 +214,11 @@
         <el-form-item label="登录密码" prop="password">
           <el-input v-model="editForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="用户名" prop="nickname">
+        <el-form-item label="用户姓名" prop="nickname">
           <el-input v-model="editForm.nickname"></el-input>
+        </el-form-item>
+         <el-form-item label="电话" prop="phone">
+          <el-input v-model="editForm.phone"></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="userSex">
           <el-select v-model="editForm.userSex" filterable placeholder="请选择">
@@ -258,9 +262,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="电话" prop="phone">
-          <el-input v-model="editForm.phone"></el-input>
-        </el-form-item>
+       
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取消</el-button>

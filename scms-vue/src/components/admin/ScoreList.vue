@@ -185,13 +185,13 @@
     <el-dialog
       title="项目记分"
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="oneAthlete"
         ref="addFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
         <el-form-item label="项目名称" prop="">
@@ -243,13 +243,13 @@
     <el-dialog
       title="分数详情"
       :visible.sync="dialogTableVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="oneAthlete"
         ref="addFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
         <el-form-item label="项目名称" prop="">
@@ -269,19 +269,19 @@
     <el-dialog
       title="分数详情"
       :visible.sync="EditDialogVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="oneAthlete"
         ref="addFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
-        <el-form-item label="项目名称" prop="">
+        <el-form-item label="项目名称">
           <el-input v-model="oneAthlete.item.itemName" disabled></el-input>
         </el-form-item>
-        <el-form-item label="运动员" prop="">
+        <el-form-item label="运动员">
           <el-input v-model="oneAthlete.user.nickname" disabled></el-input>
         </el-form-item>
 

@@ -84,16 +84,16 @@
     <el-dialog
       title="添加团体"
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="addForm"
         ref="addFormRef"
-        label-width="70px"
+        label-width="80px"
         class="demo-ruleForm"
       >
-        <el-form-item label="团体名称" prop="teamName">
+        <el-form-item label="团体名称" prop="teamName" >
           <el-input v-model="addForm.teamName"></el-input>
         </el-form-item>
       </el-form>
@@ -106,13 +106,13 @@
     <el-dialog
       title="修改团体"
       :visible.sync="editDialogVisible"
-      width="50%"
+      width="40%"
       @close="editDialogClosed"
     >
       <el-form
         :model="editForm"
         ref="editFormRef"
-        label-width="70px"
+        label-width="80px"
         class="demo-ruleForm"
       >
         <el-form-item label="团体ID" prop="teamId">

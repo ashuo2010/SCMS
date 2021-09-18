@@ -160,13 +160,13 @@
     <el-dialog
       title="添加项目"
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="30%"
       @close="addDialogClosed"
     >
       <el-form
         :model="addForm"
         ref="addFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
         <el-form-item label="运动会项目届时" >
@@ -261,15 +261,16 @@
     <el-dialog
       title="修改项目"
       :visible.sync="editDialogVisible"
-      width="50%"
+      width="30%"
       @close="editDialogClosed"
     >
       <el-form
         :model="editForm"
         :rules="FormRules"
         ref="editFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
+
       >
         <el-form-item label="项目ID" prop="itemId">
           <el-input v-model="editForm.itemId" disabled></el-input>
@@ -369,14 +370,15 @@
      <el-dialog
       title="添加项目模板"
       :visible.sync="addTemplateDialogVisible"
-      width="50%"
+      width="30%"
       @close="addDialogClosed"
     >
       <el-form
         :model="addForm"
         ref="addFormRef"
-        label-width="70px"
+        label-width="100px"
         class="demo-ruleForm"
+
       >
         <el-form-item label="项目名称" >
           <el-input v-model="addForm.itemName" placeholder="请输入项目名称"></el-input>
@@ -411,7 +413,7 @@
     <el-dialog
       title="项目模板列表"
       :visible.sync="templateListDialogVisible"
-      width="50%">
+      width="40%">
      <el-row :gutter="25">
         <el-col :span="10">
           <el-button type="primary" @click="addTemplateDialogVisible = true" size="mini"

@@ -84,20 +84,21 @@
     <el-dialog
       title="添加届时"
       :visible.sync="addDialogVisible"
-      width="50%"
+      width="40%"
       @close="addDialogClosed"
     >
       <el-form
         :model="addForm"
         ref="addFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
+
       >
-        <el-form-item label="运动会届时名称" prop="seasonName">
-          <el-input v-model="addForm.seasonName"></el-input>
+        <el-form-item label="运动会名称" prop="seasonName">
+          <el-input v-model="addForm.seasonName" placeholder="第一届运动会"></el-input>
         </el-form-item>
           <el-form-item label="运动会主题描述" prop="seasonTopicDesc">
-          <el-input v-model="addForm.seasonTopicDesc"></el-input>
+          <el-input type="textarea" v-model="addForm.seasonTopicDesc" placeholder="友谊第一比赛第二"></el-input>
         </el-form-item>
 
         <el-form-item label="运动会开始时间" prop="seasonBeginTime">
@@ -141,20 +142,20 @@
     <el-dialog
       title="修改届时"
       :visible.sync="editDialogVisible"
-      width="50%"
+      width="40%"
       @close="editDialogClosed"
     >
       <el-form
         :model="editForm"
         ref="editFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
        
- <el-form-item label="运动会届时名称" prop="seasonName">
+ <el-form-item label="运动会名称" prop="seasonName">
           <el-input v-model="editForm.seasonName"></el-input>
         </el-form-item>
-          <el-form-item label="运动会主题描述" prop="seasonTopicDesc">
+          <el-form-item  type="textarea" label="运动会主题描述" prop="seasonTopicDesc">
           <el-input v-model="editForm.seasonTopicDesc"></el-input>
         </el-form-item>
 

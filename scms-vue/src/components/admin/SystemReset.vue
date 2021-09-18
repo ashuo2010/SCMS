@@ -24,12 +24,12 @@
     <el-dialog
       title="清空系统数据"
       :visible.sync="DialogVisible"
-      width="50%"
+      width="40%"
       @close="comfirmPassword=''"
     >
       <el-form
         ref="FormRef"
-        label-width="70px"
+        label-width="180px"
         @submit.native.prevent
       >
          <el-form-item label="删除密码">

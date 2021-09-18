@@ -39,7 +39,6 @@
             :key="item.mainmenu.mainmenuId"
           >
             <template slot="title">
-              <!-- <i class="iconfont icon-huifeijiaona"></i> -->
               <i :class="iconsObj[item.mainmenu.mainmenuId]"></i>
               <span style="margin-left:1em">{{ item.mainmenu.title }}</span>
             </template>
@@ -70,22 +69,22 @@
     <el-dialog
       title="修改密码"
       :visible.sync="editDialogVisible"
-      width="50%"
+      width="40%"
       @close="editDialogClosed"
     >
       <el-form
         :model="editForm"
         ref="editFormRef"
-        label-width="70px"
+        label-width="180px"
         class="demo-ruleForm"
       >
-        <el-form-item label="请输入旧密码" prop="userId">
+        <el-form-item label="请输入旧密码" >
           <el-input type="password" v-model="editForm.password"></el-input>
         </el-form-item>
-        <el-form-item label="请输入新密码" prop="userId">
+        <el-form-item label="请输入新密码" >
           <el-input type="password" v-model="editForm.newPassword"></el-input>
         </el-form-item>
-        <el-form-item label="请再次确认密码" prop="userId">
+        <el-form-item label="请再次确认密码">
           <el-input
             type="password"
             v-model="editForm.newPasswordConfirm"

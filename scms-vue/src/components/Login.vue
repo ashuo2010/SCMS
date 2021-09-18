@@ -16,7 +16,7 @@
         label-width="0"
       >
         <!--用户名-->
-        <el-form-item prop="username">
+        <el-form-item >
           用户名：
           <el-input
             v-model="loginForm.username"
@@ -24,7 +24,7 @@
           ></el-input>
         </el-form-item>
         <!--密码-->
-        <el-form-item prop="password">
+        <el-form-item >
           密码：
           <el-input
             type="password"
