@@ -36,14 +36,12 @@
             "
             :index="item.mainmenu.path"
             v-for="item in menuList"
-            :key="item.mainmenu.id"
+            :key="item.mainmenu.mainmenuId"
           >
             <template slot="title">
-                 <!-- <i class="el-icon-d-arrow-left"></i> -->
-                 <img src="../assets/team.svg" alt=""  style="font-size: 15px;" >
-
-              <!-- <i :class="iconsObj[item.mainmenu.id]"></i> -->
-              <span>{{ item.mainmenu.title }}</span>
+              <!-- <i class="iconfont icon-huifeijiaona"></i> -->
+              <i :class="iconsObj[item.mainmenu.mainmenuId]"></i>
+              <span style="margin-left:1em">{{ item.mainmenu.title }}</span>
             </template>
             <!--二级菜单-->
             <el-menu-item
@@ -127,15 +125,17 @@ export default {
       isrouter: true,
       activePath: "/welcome",
       iconsObj: {
-        100: "iconfont icon-guanliyuan",
-        200: "iconfont icon-yundong",
-        101: "iconfont icon-denglu",
-        102: "iconfont icon-mima",
-        103: "iconfont icon-yundong",
-        104: "iconfont icon-shangpin",
-        201: "iconfont icon-shu",
-        202: "iconfont icon-qialuli",
-        203: "iconfont icon-shiwu",
+        100: "iconfont icon-tiyuketeshuchuli",
+        200: "iconfont icon-bumen",
+        300: "iconfont icon-peixunhuodongdongyuandahui",
+        400: "iconfont icon-shebeiyanshoudan",
+        500: "iconfont icon-yuangong",
+        600: "iconfont icon-zhishijingsai",
+        700: "iconfont icon-chengjishouji",
+        800: "iconfont icon-canjiaxiaowaijingsai",
+        900: "iconfont icon-dangtuanzhishijuesai",
+        1000: "iconfont icon-xinxibeian",
+
       },
     };
   },
